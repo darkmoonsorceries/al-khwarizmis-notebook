@@ -57,9 +57,51 @@
       letter-spacing: 0.5px;
       text-transform: uppercase;
       color: var(--accent);
+      padding: 0;
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       padding: 0 20px 16px;
       border-bottom: 1px solid var(--border);
       margin-bottom: 8px;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 18px;
+    }
+
+    .nav-body {
+      transition: max-height 0.3s ease, opacity 0.2s ease;
+      overflow: hidden;
+    }
+
+    @media (max-width: 640px) {
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-body.collapsed {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+      }
+
+      .nav-body:not(.collapsed) {
+        max-height: 80vh;
+        opacity: 1;
+      }
     }
 
     nav .section-label {
@@ -401,20 +443,27 @@
 <body>
 
 <nav>
-  <h1>Al-Khwarizmi's Notebook</h1>
+  <div class="nav-header">
+    <h1>Al-Khwarizmi's Notebook</h1>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
+      <span class="nav-toggle-icon">&#9776;</span>
+    </button>
+  </div>
 
-  <div class="section-label">Arc 0 — Foundation</div>
-  <div id="nav-arc0"></div>
+  <div class="nav-body">
+    <div class="section-label">Arc 0 — Foundation</div>
+    <div id="nav-arc0"></div>
 
-  <div class="section-label">FP1 — Further Pure</div>
-  <div id="nav-fp1"></div>
+    <div class="section-label">FP1 — Further Pure</div>
+    <div id="nav-fp1"></div>
 
-  <div class="section-label">Tools</div>
-  <a href="#" onclick="loadGapDashboard(); return false;">Gap Dashboard</a>
+    <div class="section-label">Tools</div>
+    <a href="#" onclick="loadGapDashboard(); return false;">Gap Dashboard</a>
 
-  <div class="nav-hint">
-    <kbd>j</kbd> / <kbd>k</kbd> next / prev island<br>
-    <kbd>t</kbd> scroll to top
+    <div class="nav-hint">
+      <kbd>j</kbd> / <kbd>k</kbd> next / prev island<br>
+      <kbd>t</kbd> scroll to top
+    </div>
   </div>
 </nav>
 
@@ -3573,6 +3622,25 @@ function injectConstruction(islandId) {
 }
 
 // ══════════════════════════════════════════════════════════
+
+// ── Mobile Nav Toggle ──
+function toggleNav() {
+  document.querySelector('.nav-body').classList.toggle('collapsed');
+}
+
+// Auto-collapse nav on mobile when a link is clicked
+document.querySelector('nav').addEventListener('click', function(e) {
+  if (e.target.closest('a') && window.innerWidth <= 640) {
+    document.querySelector('.nav-body').classList.add('collapsed');
+  }
+});
+
+// Start collapsed on mobile
+if (window.innerWidth <= 640) {
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.nav-body').classList.add('collapsed');
+  });
+}
 
 // ── Init ──
 buildNav();
