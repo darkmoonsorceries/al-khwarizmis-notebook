@@ -986,6 +986,689 @@ class CompletingTheSquareV2 extends Construction {
   }
 }
 
+// ── 0.0: The Impossible Sum ──
+class ImpossibleSumV2 extends Construction {
+  get title() { return 'The Impossible Sum'; }
+  get duration() { return 24; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+    // A single bar representing the estate, divided into 24 parts
+    // Four heirs fill it — the fourth overflows
+    const barW = zones.contentW - 20, barH = 40;
+    const barX = zones.left + 10, barY = zones.midY - barH / 2;
+    const segW = barW / 24;
+
+    // Phase 0 (0-3s): Estate bar
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, barX, barY, barW, barH, { progress: p0, seed: 50, color: ink });
+      // Right boundary — the edge of 1
+      if (p0 > 0.7) Organic.structural(ctx, barX + barW, barY - 4, barX + barW, barY + barH + 4,
+        { progress: (p0 - 0.7) / 0.3, seed: 54, color: ink, width: 2 });
+    }
+
+    // Phase 1 (3.5-6s): Wife 3/24
+    const p1 = phase(t, 3.5, 2);
+    if (p1 > 0) {
+      Organic.fill(ctx, barX, barY, 3 * segW * p1, barH, '#6a9e8f', 0.6);
+    }
+
+    // Phase 2 (6.5-10s): Daughters 16/24
+    const p2 = phase(t, 6.5, 2.5);
+    if (p2 > 0) {
+      Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW * p2, barH, '#d4a843', 0.55);
+    }
+
+    // Phase 3 (10.5-13s): Father 4/24
+    const p3 = phase(t, 10.5, 2);
+    if (p3 > 0) {
+      Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW * p3, barH, '#b07050', 0.55);
+    }
+
+    // Phase 4 (13.5-18s): Mother — 1 fits, 3 overflow
+    const p4 = phase(t, 13.5, 3);
+    if (p4 > 0) {
+      // The 1 that fits
+      Organic.fill(ctx, barX + 23 * segW, barY, segW * Math.min(p4 * 4, 1), barH, '#b07050', 0.5);
+      // Overflow — 3 segments beyond the boundary
+      if (p4 > 0.3) {
+        const overP = (p4 - 0.3) / 0.7;
+        const ovX = barX + 24 * segW;
+        Organic.fill(ctx, ovX, barY, 3 * segW * overP, barH, '#c0392b', 0.3);
+        // Dashed overflow border
+        if (overP > 0.4) {
+          ctx.save();
+          ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 4]); ctx.globalAlpha = (overP - 0.4) / 0.6;
+          ctx.strokeRect(ovX, barY, 3 * segW, barH);
+          ctx.restore();
+        }
+      }
+      // Boundary pulses red
+      if (p4 > 0.2) {
+        const pulse = 0.4 + 0.3 * Math.sin(t * 5);
+        ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5;
+        ctx.globalAlpha = pulse * Math.min((p4 - 0.2) * 3, 1);
+        ctx.beginPath(); ctx.moveTo(barX + barW, barY - 6); ctx.lineTo(barX + barW, barY + barH + 6);
+        ctx.stroke(); ctx.restore();
+      }
+    }
+  }
+}
+
+// ── 0.1: The Merchant's Scales ──
+class BalanceBeamV2 extends Construction {
+  get title() { return 'The Scales of Equality'; }
+  get duration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold } = this;
+    const cx = zones.midX, fy = zones.midY + 30;
+    const beamLen = 130, fulcrumH = 50, panDrop = 25;
+
+    // Helper: draw beam at a tilt
+    const drawBeam = (tilt, progress) => {
+      const angle = tilt * 0.12;
+      // Fulcrum
+      Organic.structural(ctx, cx, fy, cx - 16, fy + fulcrumH, { seed: 200, color: ink, progress });
+      Organic.structural(ctx, cx, fy, cx + 16, fy + fulcrumH, { seed: 201, color: ink, progress });
+      Organic.structural(ctx, cx - 16, fy + fulcrumH, cx + 16, fy + fulcrumH, { seed: 202, color: ink, progress });
+      // Beam
+      const lx = cx - Math.cos(angle) * beamLen, ly = fy - Math.sin(angle) * beamLen * 0.3;
+      const rx = cx + Math.cos(angle) * beamLen, ry = fy + Math.sin(angle) * beamLen * 0.3;
+      Organic.structural(ctx, lx, ly, rx, ry, { seed: 203, color: ink, width: 2, progress });
+      // Pan lines + pans
+      Organic.annotation(ctx, lx, ly, lx, ly + panDrop, { seed: 204, color: ink });
+      Organic.annotation(ctx, rx, ry, rx, ry + panDrop, { seed: 205, color: ink });
+      Organic.structural(ctx, lx - 20, ly + panDrop, lx + 20, ly + panDrop, { seed: 206, color: ink, width: 1.3 });
+      Organic.structural(ctx, rx - 20, ry + panDrop, rx + 20, ry + panDrop, { seed: 207, color: ink, width: 1.3 });
+      return { lx, ly: ly + panDrop, rx, ry: ry + panDrop };
+    };
+
+    // Phase 0 (0-4s): Beam appears, balanced
+    const p0 = phase(t, 0, 3);
+    if (p0 > 0) drawBeam(0, p0);
+
+    // Phase 1 (4.5-9s): Objects placed on both sides — beam stays level
+    const p1 = phase(t, 4.5, 3);
+    if (p1 > 0) {
+      const pans = drawBeam(0, 1);
+      if (p1 > 0.3) {
+        const lo = (p1 - 0.3) / 0.7;
+        Organic.point(ctx, pans.lx, pans.ly - 12, { r: 7, color: '#8a7a6a', opacity: lo * 0.7 });
+        Organic.point(ctx, pans.rx, pans.ry - 12, { r: 7, color: '#8a7a6a', opacity: lo * 0.7 });
+      }
+    }
+
+    // Phase 2 (10-15s): Swap — beam tilts, then returns to level
+    const p2 = phase(t, 10, 4);
+    if (p2 > 0) {
+      const swing = Math.sin(p2 * Math.PI) * 3;
+      const pans = drawBeam(swing, 1);
+      const swapped = p2 > 0.5;
+      Organic.point(ctx, pans.lx, pans.ly - 12, { r: 7, color: swapped ? gold : '#8a7a6a', opacity: 0.7 });
+      Organic.point(ctx, pans.rx, pans.ry - 12, { r: 7, color: swapped ? '#8a7a6a' : gold, opacity: 0.7 });
+    }
+
+    // Phase 3 (16-20s): Add to both sides — beam stays level
+    const p3 = phase(t, 16, 3);
+    if (p3 > 0) {
+      const pans = drawBeam(0, 1);
+      Organic.point(ctx, pans.lx - 8, pans.ly - 12, { r: 7, color: '#8a7a6a', opacity: 0.7 });
+      Organic.point(ctx, pans.rx + 8, pans.ry - 12, { r: 7, color: gold, opacity: 0.7 });
+      if (p3 > 0.3) {
+        const drop = Math.min((p3 - 0.3) * 2, 1);
+        const dy = -30 + drop * 18;
+        Organic.point(ctx, pans.lx + 8, pans.ly + dy, { r: 5, color: '#6a9e8f', opacity: drop * 0.6 });
+        Organic.point(ctx, pans.rx - 8, pans.ry + dy, { r: 5, color: '#6a9e8f', opacity: drop * 0.6 });
+      }
+    }
+  }
+}
+
+// ── 0.2: The Shepherd's Gate ──
+class ShepherdsGateV2 extends Construction {
+  get title() { return 'Counting'; }
+  get duration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold } = this;
+    const lineY = zones.midY, startX = zones.left + 10, gap = 30;
+    const count = 10;
+
+    // Phase 0 (0-3s): Number line with arrow
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      const endX = startX + count * gap + 30;
+      Organic.structural(ctx, startX, lineY, startX + (endX - startX) * p0, lineY, { seed: 300, color: ink });
+      if (p0 > 0.8) {
+        const ax = endX;
+        Organic.structural(ctx, ax - 8, lineY - 5, ax, lineY, { seed: 301, color: ink, width: 1.3 });
+        Organic.structural(ctx, ax - 8, lineY + 5, ax, lineY, { seed: 302, color: ink, width: 1.3 });
+      }
+    }
+
+    // Phase 1 (3-14s): Points appear one by one with successor arcs
+    for (let i = 1; i <= count; i++) {
+      const delay = 3 + (i - 1) * 1.0;
+      const p = phase(t, delay, 0.6);
+      if (p > 0) {
+        const x = startX + i * gap;
+        // Tick mark
+        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 310 + i, color: ink, width: 1.2, progress: p });
+        // Point
+        Organic.point(ctx, x, lineY, { r: 3, color: ink, opacity: p });
+        // Successor arc to next
+        if (i < count && p > 0.5) {
+          const nx = x + gap;
+          ctx.save();
+          ctx.strokeStyle = gold; ctx.lineWidth = 0.8;
+          ctx.globalAlpha = (p - 0.5) * 0.8;
+          ctx.beginPath();
+          ctx.moveTo(x + 4, lineY - 10);
+          ctx.quadraticCurveTo((x + nx) / 2, lineY - 22, nx - 4, lineY - 10);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+
+    // Phase 2 (14-18s): Dots trailing off — infinity
+    const p2 = phase(t, 14, 2);
+    if (p2 > 0) {
+      const dotsX = startX + (count + 1) * gap;
+      for (let i = 0; i < 3; i++) {
+        Organic.point(ctx, dotsX + i * 12, lineY, { r: 2, color: gold, opacity: p2 * (0.8 - i * 0.2) });
+      }
+    }
+  }
+}
+
+// ── 0.3: The Farmer's Grain ──
+class FarmersGrainV2 extends Construction {
+  get title() { return 'Multiplication'; }
+  get duration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold } = this;
+    const rows = 4, cols = 3, dotR = 5, gapX = 36, gapY = 36;
+    const gridW = (cols - 1) * gapX, gridH = (rows - 1) * gapY;
+    const ox = zones.midX - gridW / 2, oy = zones.midY - gridH / 2 - 40;
+
+    // Phase 0 (0-5s): Pebbles appear one by one
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const idx = r * cols + c;
+        const delay = 0.5 + idx * 0.3;
+        const p = phase(t, delay, 0.3);
+        if (p > 0) {
+          Organic.point(ctx, ox + c * gapX, oy + r * gapY, { r: dotR * p, color: '#6a5a4a', opacity: 0.8 });
+        }
+      }
+    }
+
+    // Phase 1 (6-10s): Row grouping — golden brackets
+    const p1 = phase(t, 6, 3);
+    if (p1 > 0) {
+      for (let r = 0; r < rows; r++) {
+        const lo = Math.min(Math.max((p1 - r * 0.15) * 3, 0), 1);
+        if (lo > 0) {
+          ctx.save();
+          ctx.strokeStyle = gold; ctx.lineWidth = 1; ctx.globalAlpha = lo * 0.5;
+          ctx.setLineDash([3, 3]);
+          ctx.strokeRect(ox - dotR - 6, oy + r * gapY - dotR - 4, gridW + dotR * 2 + 12, dotR * 2 + 8);
+          ctx.restore();
+        }
+      }
+    }
+
+    // Phase 2 (11-15s): Rotate — column grouping appears
+    const p2 = phase(t, 11, 3);
+    if (p2 > 0) {
+      // Fade row brackets
+      // Show column brackets
+      for (let c = 0; c < cols; c++) {
+        const lo = Math.min(Math.max((p2 - c * 0.15) * 3, 0), 1);
+        if (lo > 0) {
+          ctx.save();
+          ctx.strokeStyle = '#6a9e8f'; ctx.lineWidth = 1; ctx.globalAlpha = lo * 0.5;
+          ctx.setLineDash([3, 3]);
+          ctx.strokeRect(ox + c * gapX - dotR - 4, oy - dotR - 6, dotR * 2 + 8, gridH + dotR * 2 + 12);
+          ctx.restore();
+        }
+      }
+    }
+
+    // Phase 3 (16-19s): Golden = sign between the two views
+    const p3 = phase(t, 16, 2);
+    if (p3 > 0) {
+      Organic.structural(ctx, zones.midX - 15, oy + gridH + 40, zones.midX + 15, oy + gridH + 40,
+        { seed: 350, color: gold, width: 2, progress: p3 });
+      Organic.structural(ctx, zones.midX - 15, oy + gridH + 48, zones.midX + 15, oy + gridH + 48,
+        { seed: 351, color: gold, width: 2, progress: p3 });
+    }
+  }
+}
+
+// ── 0.4: The Debtor's Position ──
+class DebtorsPositionV2 extends Construction {
+  get title() { return 'Zero and Negatives'; }
+  get duration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold } = this;
+    const lineY = zones.midY, zeroX = zones.midX, gap = 35;
+
+    // Phase 0 (0-3s): Number line
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.structural(ctx, zones.left, lineY, zones.right, lineY, { seed: 400, color: ink, progress: p0 });
+      if (p0 > 0.5) Organic.structural(ctx, zeroX, lineY - 10, zeroX, lineY + 10,
+        { progress: (p0 - 0.5) * 2, seed: 401, color: ink, width: 2 });
+    }
+
+    // Phase 1 (3.5-7s): Positive numbers — green ticks right
+    const p1 = phase(t, 3.5, 2.5);
+    if (p1 > 0) {
+      for (let i = 1; i <= 4; i++) {
+        const lo = Math.min(Math.max((p1 - (i - 1) * 0.15) * 4, 0), 1);
+        const x = zeroX + i * gap;
+        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 410 + i, color: '#2d6a4f', width: 1.2, progress: lo });
+        Organic.point(ctx, x, lineY, { r: 2.5, color: '#2d6a4f', opacity: lo });
+      }
+    }
+
+    // Phase 2 (7.5-11s): Negative numbers — red ticks left (the mirror)
+    const p2 = phase(t, 7.5, 2.5);
+    if (p2 > 0) {
+      for (let i = 1; i <= 4; i++) {
+        const lo = Math.min(Math.max((p2 - (i - 1) * 0.15) * 4, 0), 1);
+        const x = zeroX - i * gap;
+        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 420 + i, color: '#c0392b', width: 1.2, progress: lo });
+        Organic.point(ctx, x, lineY, { r: 2.5, color: '#c0392b', opacity: lo });
+      }
+    }
+
+    // Phase 3 (12-17s): The debtor — marker at -2, pulsing
+    const p3 = phase(t, 12, 3);
+    if (p3 > 0) {
+      const debtorX = zeroX - 2 * gap;
+      const pulse = 0.7 + 0.3 * Math.sin(t * 3);
+      Organic.point(ctx, debtorX, lineY, { r: 6 * p3, color: '#c0392b', opacity: p3 * pulse });
+      // Faint line from 0 to debtor position
+      if (p3 > 0.4) {
+        ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1;
+        ctx.setLineDash([4, 3]); ctx.globalAlpha = (p3 - 0.4) * 0.4;
+        ctx.beginPath(); ctx.moveTo(zeroX, lineY + 16); ctx.lineTo(debtorX, lineY + 16); ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+}
+
+// ── 0.5: The Inheritance Fulfilled ──
+class InheritanceFulfilledV2 extends Construction {
+  get title() { return 'Fractions'; }
+  get duration() { return 26; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold } = this;
+    const sq = Math.min(zones.contentW - 40, 260);
+    const ox = zones.midX - sq / 2, oy = zones.midY - sq / 2 - 20;
+    const cellH = sq / 27; // 27 parts after 'awl
+
+    // Phase 0 (0-3s): The estate square
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, ox, oy, sq, sq, { progress: p0, seed: 500, color: ink });
+    }
+
+    // Phase 1 (3.5-6s): Wife 3/27
+    const p1 = phase(t, 3.5, 2);
+    if (p1 > 0) Organic.fill(ctx, ox, oy, sq, 3 * cellH * p1, '#6a9e8f', 0.55);
+
+    // Phase 2 (6.5-10s): Daughters 16/27
+    const p2 = phase(t, 6.5, 2.5);
+    if (p2 > 0) Organic.fill(ctx, ox, oy + 3 * cellH, sq, 16 * cellH * p2, '#d4a843', 0.5);
+
+    // Phase 3 (10.5-13s): Father 4/27
+    const p3 = phase(t, 10.5, 2);
+    if (p3 > 0) Organic.fill(ctx, ox, oy + 19 * cellH, sq, 4 * cellH * p3, '#b07050', 0.5);
+
+    // Phase 4 (13.5-17s): Mother 4/27 — fits perfectly
+    const p4 = phase(t, 13.5, 2.5);
+    if (p4 > 0) {
+      Organic.fill(ctx, ox, oy + 23 * cellH, sq, 4 * cellH * p4, '#b07050', 0.45);
+      // The boundary holds — no overflow this time
+      if (p4 > 0.7) {
+        Organic.structural(ctx, ox, oy + sq, ox + sq, oy + sq,
+          { progress: (p4 - 0.7) / 0.3, seed: 530, color: gold, width: 2 });
+      }
+    }
+  }
+}
+
+// ── 0.6: The Merchant's Unknown ──
+class MerchantsUnknownV2 extends Construction {
+  get title() { return 'The Variable'; }
+  get duration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+    const cx = zones.midX, fy = zones.midY - 20;
+    const beamLen = 120;
+
+    // Phase 0 (0-4s): Balance beam
+    const p0 = phase(t, 0, 3);
+    if (p0 > 0) {
+      // Fulcrum
+      Organic.structural(ctx, cx, fy, cx - 14, fy + 40, { seed: 600, color: ink, progress: p0 });
+      Organic.structural(ctx, cx, fy, cx + 14, fy + 40, { seed: 601, color: ink, progress: p0 });
+      // Beam
+      Organic.structural(ctx, cx - beamLen, fy, cx + beamLen, fy, { seed: 602, color: ink, width: 2, progress: p0 });
+    }
+
+    // Phase 1 (4.5-8s): Known objects on the left pan
+    const p1 = phase(t, 4.5, 2.5);
+    if (p1 > 0) {
+      const lx = cx - beamLen;
+      for (let i = 0; i < 5; i++) {
+        const delay = i * 0.12;
+        if (p1 > delay) {
+          const lo = Math.min((p1 - delay) * 4, 1);
+          Organic.point(ctx, lx - 12 + i * 6, fy - 14, { r: 4, color: '#8a7a6a', opacity: lo * 0.7 });
+        }
+      }
+    }
+
+    // Phase 2 (9-14s): The unknown on the right — x appears, golden
+    const p2 = phase(t, 9, 3.5);
+    if (p2 > 0) {
+      const rx = cx + beamLen;
+      // A golden square placeholder
+      const boxSize = 24;
+      Organic.fill(ctx, rx - boxSize / 2, fy - boxSize - 4, boxSize, boxSize, gold, p2 * 0.3);
+      Organic.structRect(ctx, rx - boxSize / 2, fy - boxSize - 4, boxSize, boxSize,
+        { progress: p2, seed: 610, color: gold, width: 1.5 });
+    }
+
+    // Phase 3 (15-19s): Beam stays level — the unknown BALANCES the known
+    const p3 = phase(t, 15, 3);
+    if (p3 > 0) {
+      // Redraw beam level with both sides
+      Organic.structural(ctx, cx - beamLen, fy, cx + beamLen, fy, { seed: 602, color: ink, width: 2 });
+      // Golden glow on equilibrium point
+      if (p3 > 0.5) {
+        Organic.point(ctx, cx, fy, { r: 4, color: gold, opacity: (p3 - 0.5) * 0.6 });
+      }
+    }
+  }
+}
+
+// ── 0.8: The Builder's Diagonal ──
+class BuildersDiagonalV2 extends Construction {
+  get title() { return 'The Irrational Diagonal'; }
+  get duration() { return 24; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+    const sq = Math.min(zones.contentW - 60, 200);
+    const ox = zones.midX - sq / 2, oy = zones.midY - sq / 2 - 40;
+
+    // Phase 0 (0-4s): Unit square
+    const p0 = phase(t, 0, 3);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.35);
+      Organic.structRect(ctx, ox, oy, sq, sq, { progress: p0, seed: 700, color: ink });
+    }
+
+    // Phase 1 (5-9s): Diagonal drawn — the golden line
+    const p1 = phase(t, 5, 3);
+    if (p1 > 0) {
+      Organic.structural(ctx, ox, oy + sq, ox + sq, oy,
+        { progress: p1, seed: 710, color: gold, width: 2.2 });
+      // Corner points
+      if (p1 > 0.3) {
+        Organic.point(ctx, ox, oy + sq, { r: 3, color: gold, opacity: (p1 - 0.3) / 0.7 });
+        Organic.point(ctx, ox + sq, oy, { r: 3, color: gold, opacity: (p1 - 0.3) / 0.7 });
+      }
+    }
+
+    // Phase 2 (10-15s): Compass arc — sweep from one corner showing the diagonal length
+    const p2 = phase(t, 10, 4);
+    if (p2 > 0) {
+      const diagLen = sq * Math.SQRT2;
+      // Arc from bottom-left corner, radius = diagonal, sweeping down to the number line
+      Organic.arc(ctx, ox, oy + sq, diagLen, -Math.PI / 4, Math.PI / 12,
+        { seed: 720, color: gold, width: 1.5, progress: p2 });
+    }
+
+    // Phase 3 (16-20s): Number line below — √2 position marked
+    const p3 = phase(t, 16, 3);
+    if (p3 > 0) {
+      const nlY = oy + sq + 80;
+      Organic.structural(ctx, zones.left + 10, nlY, zones.right - 10, nlY,
+        { seed: 730, color: ink, width: 1.2, progress: p3 });
+      // Mark 0, 1, √2, 2
+      const nlLeft = zones.left + 30, nlW = zones.contentW - 40;
+      if (p3 > 0.3) {
+        const lo = (p3 - 0.3) / 0.7;
+        // Ticks at 0, 1, 2
+        [0, 0.5, 1].forEach(frac => {
+          const x = nlLeft + frac * nlW;
+          Organic.structural(ctx, x, nlY - 5, x, nlY + 5, { seed: 740 + Math.floor(frac * 10), color: ink, width: 1 });
+        });
+        // √2 point — golden
+        const sqrtX = nlLeft + (Math.SQRT2 / 2) * nlW;
+        Organic.point(ctx, sqrtX, nlY, { r: 4, color: gold, opacity: lo });
+      }
+    }
+  }
+}
+
+// ── 0.9: The Muezzin's Rule ──
+class MuezzinsRuleV2 extends Construction {
+  get title() { return 'The Function'; }
+  get duration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+    const boxW = 70, boxH = 50;
+    const boxX = zones.midX - boxW / 2, boxY = zones.midY - boxH / 2 - 20;
+    const inputs = [boxY - 60, boxY, boxY + 60];
+    const inX = zones.left + 30, outX = zones.right - 30;
+
+    // Phase 0 (0-3s): The rule box
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, boxX, boxY, boxW, boxH, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, boxX, boxY, boxW, boxH, { progress: p0, seed: 800, color: ink });
+    }
+
+    // Phase 1 (3.5-12s): Three inputs flow through, one at a time
+    for (let i = 0; i < 3; i++) {
+      const delay = 3.5 + i * 2.5;
+      const p = phase(t, delay, 2);
+      if (p > 0) {
+        const iy = inputs[i];
+        // Input point
+        Organic.point(ctx, inX, iy, { r: 5, color: ink, opacity: Math.min(p * 3, 1) });
+        // Arrow in
+        if (p > 0.15) {
+          Organic.guide(ctx, inX + 8, iy, boxX - 4, boxY + boxH / 2,
+            { progress: Math.min((p - 0.15) * 2.5, 1), seed: 810 + i, color: gold });
+        }
+        // Arrow out
+        if (p > 0.5) {
+          Organic.guide(ctx, boxX + boxW + 4, boxY + boxH / 2, outX - 8, iy,
+            { progress: (p - 0.5) * 2, seed: 820 + i, color: gold });
+        }
+        // Output point
+        if (p > 0.7) {
+          Organic.point(ctx, outX, iy, { r: 5, color: highlight, opacity: (p - 0.7) / 0.3 });
+        }
+      }
+    }
+
+    // Phase 2 (13-18s): Composition — two boxes chained
+    const p2 = phase(t, 13, 3.5);
+    if (p2 > 0) {
+      const cy = boxY + boxH + 80;
+      const b1x = zones.midX - 60, b2x = zones.midX + 20;
+      const bw = 40, bh = 30;
+      Organic.fill(ctx, b1x, cy, bw, bh, '#efe0c0', p2 * 0.3);
+      Organic.structRect(ctx, b1x, cy, bw, bh, { progress: p2, seed: 850, color: ink, width: 1.2 });
+      if (p2 > 0.3) {
+        Organic.fill(ctx, b2x, cy, bw, bh, '#efe0c0', (p2 - 0.3) / 0.7 * 0.3);
+        Organic.structRect(ctx, b2x, cy, bw, bh, { progress: (p2 - 0.3) / 0.7, seed: 855, color: ink, width: 1.2 });
+        Organic.guide(ctx, b1x + bw + 3, cy + bh / 2, b2x - 3, cy + bh / 2,
+          { progress: (p2 - 0.3) / 0.7, seed: 860, color: gold });
+      }
+      // Input arrow
+      if (p2 > 0.1) Organic.guide(ctx, b1x - 20, cy + bh / 2, b1x - 3, cy + bh / 2, { seed: 865, color: ink, progress: p2 });
+      // Output arrow
+      if (p2 > 0.5) Organic.guide(ctx, b2x + bw + 3, cy + bh / 2, b2x + bw + 20, cy + bh / 2, { seed: 866, color: gold, progress: (p2 - 0.5) * 2 });
+    }
+  }
+}
+
+// ── 0.10: The Traveler's Approach ──
+class TravelersApproachV2 extends Construction {
+  get title() { return 'The Limit'; }
+  get duration() { return 24; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+    const lineY = zones.midY, nlLeft = zones.left + 10, nlRight = zones.right - 10;
+    const targetX = nlRight - 30;
+
+    // Phase 0 (0-2.5s): Number line + target
+    const p0 = phase(t, 0, 2);
+    if (p0 > 0) {
+      Organic.structural(ctx, nlLeft, lineY, nlRight, lineY, { seed: 900, color: ink, progress: p0 });
+      if (p0 > 0.6) {
+        Organic.point(ctx, targetX, lineY, { r: 5, color: highlight, opacity: (p0 - 0.6) / 0.4 });
+      }
+    }
+
+    // Phase 1 (3-16s): Points converge — each halving the distance
+    const sequence = [0, 0.5, 0.75, 0.875, 0.9375, 0.96875, 0.984375, 0.992];
+    const startX = nlLeft + 20;
+    const range = targetX - startX;
+
+    for (let i = 0; i < sequence.length; i++) {
+      const delay = 3 + i * 1.5;
+      const p = phase(t, delay, 1);
+      if (p > 0) {
+        const x = startX + sequence[i] * range;
+        Organic.point(ctx, x, lineY, { r: Math.max(3.5 - i * 0.3, 1.5), color: gold, opacity: p * 0.8 });
+        // Diminishing arc to next
+        if (i < sequence.length - 1 && p > 0.5) {
+          const nx = startX + sequence[i + 1] * range;
+          ctx.save();
+          ctx.strokeStyle = gold; ctx.lineWidth = 0.7;
+          ctx.globalAlpha = (p - 0.5) * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(x + 3, lineY - 8);
+          ctx.quadraticCurveTo((x + nx) / 2, lineY - 16 + i * 1.5, nx - 2, lineY - 8);
+          ctx.stroke(); ctx.restore();
+        }
+      }
+    }
+
+    // Phase 2 (17-21s): Epsilon band shrinks around L
+    const p2 = phase(t, 17, 3);
+    if (p2 > 0) {
+      const eps = 25 * (1 - p2 * 0.75);
+      ctx.save();
+      ctx.fillStyle = highlight; ctx.globalAlpha = 0.1;
+      ctx.fillRect(targetX - eps, lineY - 18, eps * 2, 36);
+      ctx.restore();
+      ctx.save();
+      ctx.strokeStyle = highlight; ctx.lineWidth = 1; ctx.globalAlpha = p2 * 0.4;
+      ctx.setLineDash([3, 3]);
+      ctx.strokeRect(targetX - eps, lineY - 18, eps * 2, 36);
+      ctx.restore();
+    }
+  }
+}
+
+// ── 0.11: The Fajr Call ──
+class FajrCallV2 extends Construction {
+  get title() { return 'The Derivative'; }
+  get duration() { return 28; }
+
+  curve(x) { return -0.004 * (x - 195) * (x - 195) + 180; }
+  curveDeriv(x) { return -0.008 * (x - 195); }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+    const ox = zones.left + 10, oy = zones.bottom - 30;
+
+    // Phase 0 (0-4s): Axes and curve
+    const p0 = phase(t, 0, 3.5);
+    if (p0 > 0) {
+      Organic.structural(ctx, ox, oy, zones.right - 10, oy, { seed: 950, color: ink, width: 1.2, progress: p0 });
+      Organic.structural(ctx, ox, oy, ox, zones.top + 20, { seed: 951, color: ink, width: 1.2, progress: p0 });
+      // Curve
+      if (p0 > 0.3) {
+        const cp = (p0 - 0.3) / 0.7;
+        ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 1.8; ctx.globalAlpha = cp;
+        ctx.beginPath();
+        const maxPx = 50 + 280 * cp;
+        for (let px = 50; px <= maxPx; px += 2) {
+          const py = oy - this.curve(px);
+          if (px === 50) ctx.moveTo(ox + px, py); else ctx.lineTo(ox + px, py);
+        }
+        ctx.stroke(); ctx.restore();
+      }
+    }
+
+    // Fixed point for derivative
+    const ax = 120, ay = this.curve(ax);
+
+    // Phase 1 (5-14s): Secant slides — b approaches a
+    const p1 = phase(t, 5, 8);
+    if (p1 > 0) {
+      const aScreenX = ox + ax, aScreenY = oy - ay;
+      Organic.point(ctx, aScreenX, aScreenY, { r: 4, color: highlight, opacity: Math.min(p1 * 3, 1) });
+
+      const bStart = 300, bEnd = 130;
+      const bx = bStart + (bEnd - bStart) * p1;
+      const by = this.curve(bx);
+      const bScreenX = ox + bx, bScreenY = oy - by;
+      Organic.point(ctx, bScreenX, bScreenY, { r: 3, color: gold, opacity: Math.min(p1 * 2, 1) });
+
+      // Secant line (clipped)
+      const slope = (by - ay) / (bx - ax);
+      const lsx = 30, lex = 340;
+      const lsy = Math.max(oy - (ay + slope * (lsx - ax)), zones.top + 30);
+      const ley = Math.min(oy - (ay + slope * (lex - ax)), oy + 5);
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1;
+      ctx.globalAlpha = Math.min(p1 * 2, 1) * 0.6; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(ox + lsx, lsy); ctx.lineTo(ox + lex, ley);
+      ctx.stroke(); ctx.restore();
+    }
+
+    // Phase 2 (14-20s): Tangent — the limit
+    const p2 = phase(t, 14, 4);
+    if (p2 > 0) {
+      const aScreenX = ox + ax, aScreenY = oy - ay;
+      Organic.point(ctx, aScreenX, aScreenY, { r: 4, color: highlight });
+
+      const slope = this.curveDeriv(ax);
+      const lsx = 40, lex = 300;
+      const lsy = Math.max(oy - (ay + slope * (lsx - ax)), zones.top + 30);
+      const ley = Math.min(oy - (ay + slope * (lex - ax)), oy + 5);
+      Organic.structural(ctx, ox + lsx, lsy, ox + lex, ley,
+        { progress: p2, seed: 960, color: highlight, width: 2 });
+    }
+  }
+}
+
 // ══════════════════════════════════════════════════════════
 // ── V1 Constructions (kept for reference during migration) ──
 // These will be replaced one by one as V2 versions are built.
@@ -2842,18 +3525,18 @@ class FajrCall {
 // ── Construction Registry ──
 // Maps island IDs to their construction animation class
 const constructions = {
-  '00-prologue': ImpossibleSum,
-  '01-equality': BalanceBeam,
-  '02-counting': ShepherdsGate,
-  '03-multiplication': FarmersGrain,
-  '04-zero-negatives': DebtorsPosition,
-  '05-fractions': InheritanceFulfilled,
-  '06-variables': MerchantsUnknown,
+  '00-prologue': ImpossibleSumV2,
+  '01-equality': BalanceBeamV2,
+  '02-counting': ShepherdsGateV2,
+  '03-multiplication': FarmersGrainV2,
+  '04-zero-negatives': DebtorsPositionV2,
+  '05-fractions': InheritanceFulfilledV2,
+  '06-variables': MerchantsUnknownV2,
   '07-quadratics': CompletingTheSquareV2,
-  '08-irrationals': BuildersDiagonal,
-  '09-functions': MuezzinsRule,
-  '10-limits': TravelersApproach,
-  '11-derivatives': FajrCall,
+  '08-irrationals': BuildersDiagonalV2,
+  '09-functions': MuezzinsRuleV2,
+  '10-limits': TravelersApproachV2,
+  '11-derivatives': FajrCallV2,
 };
 
 // ── Inject Construction ──
