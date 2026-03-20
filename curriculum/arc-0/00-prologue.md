@@ -19,14 +19,11 @@ The shares are exact. Not counsel. Not suggestion. Fractions cut by revelation:
 
 I take a common denominator. Twenty-four.
 
-```
-Wife:        3/24
-Daughters:  16/24
-Father:      4/24
-Mother:      4/24
-```
+<!-- diagram: heir-shares -->
 
-I add them.
+> *Three heirs fill the estate. Twenty-three parts out of twenty-four. It fits. Barely.*
+
+I add the mother's share. Four more twenty-fourths.
 
 ```
 3 + 16 + 4 + 4 = 27
@@ -34,11 +31,13 @@ I add them.
 
 I stop.
 
-27/24.
+<!-- diagram: overflow -->
 
-That is greater than 1.
+> *Twenty-seven twenty-fourths. The shares demand more than the estate contains.*
 
-The shares demand more than the estate contains. Each fraction is correct — I have checked each against the Book. Together they exceed what exists. The mathematics does not close. There is no rounding error. There is no misreading. Four commands from Allah, and they sum to more than the whole.
+27/24. That is greater than 1.
+
+Each fraction is correct — I have checked each against the Book. Together they exceed what exists. The mathematics does not close. There is no rounding error. There is no misreading. Four commands from Allah, and they sum to more than the whole.
 
 The wife is watching me. She does not read mathematics, but she reads faces, and she has read mine.
 
@@ -50,8 +49,12 @@ I set the paper on the table. I look at the family. The younger daughter has not
 
 I know one thing that I did not learn and cannot doubt:
 
-**1 = 1**
+<!-- diagram: ground -->
+
+> *A thing is itself. From this I will build what they need.*
 
 A thing is itself. From this I will build what they need. Fractions. Equations. A method to restore the impossible sum to balance. Every tool, from the ground, from the only fact that needs no proof.
 
 The family is waiting. The mathematics is not ready. I will make it ready.
+
+*1 = 1 has not been lost.*

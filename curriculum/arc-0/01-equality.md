@@ -6,268 +6,296 @@
 
 ## ١. The Ayah
 
-> وَنَضَعُ الْمَوَازِينَ الْقِسْطَ لِيَوْمِ الْقِيَامَةِ فَلَا تُظْلَمُ نَفْسٌ شَيْئًا ۖ وَإِن كَانَ مِثْقَالَ حَبَّةٍ مِّنْ خَرْدَلٍ أَتَيْنَا بِهَا ۗ وَكَفَىٰ بِنَا حَاسِبِينَ
->
-> "And We place the scales of justice for the Day of Resurrection, so no soul will be treated unjustly at all. And if there is even the weight of a mustard seed, We will bring it forth. And sufficient are We as accountant."
+> وَنَضَعُ الْمَوَازِينَ الْقِسْطَ لِيَوْمِ الْقِيَامَةِ فَلَا تُظْلَمُ نَفْسٌ شَيْئًا
+> "And We place the scales of justice for the Day of Resurrection,
+> so no soul will be treated unjustly at all."
 > *— Surah Al-Anbiya (21:47)*
 
-**Connection grade: SAHIH** — the verse is about scales and just measure. The mathematical concept of equality — what makes a scale true — is the verse's direct content. Remove the mathematics of weighing and the verse loses its command.
+**Connection grade: Hasan** — The verse is about divine justice on
+the Day of Judgement. Its primary meaning is theological, not
+mathematical. But the STRUCTURE of a just scale — what makes it
+true, what makes it false — genuinely maps to the axioms of
+equality. The verse is not about mathematics. The mathematics
+is in the verse's structure.
 
-**The problem this ayah creates:** A scale measures justice. But what makes a scale *true*? If the scale is false, the justice is false. Before I write a single equation for the inheritance, I need to know what "=" means — and what it demands.
+**The problem this ayah creates:** If God promises scales of
+justice, then a scale must be either true or false. What makes
+a scale TRUE? What properties must it have so that no soul is
+wronged? Answer that, and you have defined equality.
 
 ---
 
-## ٢. Al-Khwarizmi Thinks
+## ٢. Al-Khwarizmi Discovers
 
-I write: "Wife's share = 1/8."
+I have written it.
 
-I stop. I stare at the mark between the words and the fraction. This "=" — I wrote it as if I know what it means. I do not. If this mark is wrong, if I do not understand what makes equality true, then every equation I build for the inheritance is built on sand. The family is waiting and I cannot even begin.
+"Wife's share = 1/8."
 
-I leave the house. I need to see equality. Not as a mark on paper — as a thing in the world.
+I stop. The ink is still wet on the paper. I stare at the mark
+between "share" and "1/8." The two small lines, one on top of
+the other.
 
-The souk. A merchant stands behind a balance scale. A buyer faces him across it. Saffron on the left pan, brass weights on the right. The beam tilts left — saffron side heavy. The buyer has his arms folded. He has not paid.
+What does that mark mean?
 
-"Your weights are light," the buyer says.
+I have used it. I have always used it. Every scribe uses it.
+But I cannot tell you what it IS. If a man asked me — "what
+does it mean for two things to be equal?" — I would point at
+a scale. Everyone would point at a scale.
 
-The merchant says nothing. He takes the brass off the right pan. He takes the saffron off the left. He puts the brass on the left. He puts the saffron on the right. The beam tilts right — saffron side heavy again.
+Fine. I will go to the souk and look at one.
 
-"The weights are true," the merchant says. "Your saffron is heavy. You are getting more than you paid for."
+---
 
-The buyer does not unfold his arms.
+The saffron merchant has the best scale in the souk. Polished
+brass pans, a beam of dark wood, a fulcrum filed to a point
+so fine you could prick your finger on it. He is proud of this
+scale. He should be. His customers trust it more than they
+trust him.
 
-> *Margin note: حَاسِبِينَ — "accountant," from hisab, computation. The divine accounting is sufficient because the divine scales are true. What makes a human scale true?*
+But today there is a problem. A buyer stands with his arms
+crossed. He has purchased saffron — three dirhams' worth — and
+he does not believe the weight is honest.
 
-I watch them. The buyer does not trust the merchant. The merchant does not trust the buyer. But both of them keep looking at the scale. They are not arguing about each other anymore. They are arguing about the instrument.
+"Your weights are false," the buyer says.
 
-What would make the buyer trust it?
+"My weights are certified by the muhtasib," the merchant says.
 
-I think about this. If the scale is broken — if the beam is warped, if one arm is longer than the other — then swapping pans changes the result. The merchant swapped. The saffron was still heavier. That means the instrument, at least, is not lying about direction. But is that enough?
+They both stare at the scale.
 
-I pick up a stone from the ground. I place it on the left pan. Nothing on the right. The beam tilts left. I take the stone off the left and put it on the right. The beam tilts right. I put the stone on the left AND the right — but there is only one stone. I cannot weigh a thing against itself. Except: I know the answer already. A stone weighs what it weighs. It cannot disagree with itself.
+I stare at the scale.
 
-1 = 1.
+<!-- diagram: empty-scale -->
 
-A thing is itself. I did not prove this. I cannot. To prove something I need prior truths to reason from. This IS the prior truth. Every proof I will ever write begins here.
+> *An empty scale. The beam is level. Nothing is being weighed.
+> But the argument is already here: what makes this scale TRUE?*
 
-But knowing that a stone equals itself does not resolve the argument at the merchant's stall. The buyer does not doubt that saffron is saffron. He doubts that the brass is a fair stand-in for a known weight. He doubts the comparison.
+Neither man can answer the question. The buyer says the weights
+are wrong. The merchant says they are right. They are arguing
+about the ANSWER. I am staring at the INSTRUMENT.
 
-I go back to the scale. The merchant has placed the saffron on the left pan and the brass on the right. The beam is level. Saffron equals brass. I ask the merchant: swap them. He shrugs. Saffron goes right, brass goes left. The beam levels again.
+What must be true about this scale — about ANY scale — for it
+to deserve the trust these men place in it?
 
-This matters. If the saffron equals the brass, then the brass equals the saffron. The relationship does not change when I reverse it. The "=" has no arrow. It does not point from one side to the other. It holds both ways, like a beam holds both pans.
+---
 
-The buyer is watching me. He does not care about my reasoning. He cares about his money.
+I take a brass weight from the merchant's set. It is cold and
+heavy in my palm. I place it on the left pan. The beam tilts.
+Obviously. One side is loaded, the other empty.
 
-"Try this," I say. I take the brass off the pan. I put the saffron on the left. I place a different set of weights — iron — on the right. The beam levels. Saffron equals iron.
+Now I take an identical weight — same brass, same stamp, same
+muhtasib's mark — and place it on the right pan.
 
-Now I take the saffron off. I place the brass on the left and the iron on the right. If the saffron equalled the brass, and the saffron equalled the iron, then the brass must equal the iron. I am predicting a weighing I have not done. The beam levels.
+The beam levels.
 
-The buyer unfolds one arm.
+<!-- diagram: reflexive -->
 
-> *Margin note: الْمَوَازِينَ — al-mawazin, plural. Not one scale. Scales. Every equation I write will be a scale.*
+> *The same weight on both sides. The beam is level.*
 
-I have been testing this instrument for several minutes and I have not named what I am testing. But it is becoming clear. The buyer stares at me. "Is the scale true or not?"
+This is not a discovery. A child knows this. But I write it
+down because I am trying to build from nothing, and even
+obvious things must be said once.
 
-I do not answer yet. I want to try one more thing.
+> `a = a`
+>
+> A thing is equal to itself.
 
-The merchant has 3 brass units on each pan. The beam is level. 3 = 3. A customer walks up and wants to add to the order. The merchant places 2 more brass units on the left pan. The beam tilts. He places 2 more on the right. The beam levels again. 5 = 5.
+This is reflexive. The weight is what it is. The number 3 is 3.
+The wife's share is the wife's share. I cannot build anything
+if this is not solid ground.
 
-He did not reweigh from the start. He added the same amount to both sides, and the balance held.
+> *Margin note: 1 = 1. This is where the ground was laid.
+> Everything I build will stand on this.*
 
-I try to break it. I add 2 to the left and 3 to the right. The beam tilts. Equal amounts keep equality. Unequal amounts destroy it.
+---
 
-Now I can answer the buyer.
+Now I try something. I reach across the scale and swap the
+pans — I lift the left weight and set it on the right, lift
+the right weight and set it on the left.
 
-A true scale does four things. I count them on my fingers.
+The beam tilts during the swap. For a moment, everything is
+wrong. Then I place the second weight, and—
 
-**First.** Anything placed against itself balances. A thing is itself. `a = a`.
+The beam levels again.
 
-**Second.** If the left balances the right, swap them: it still balances. `a = b` means `b = a`.
+<!-- diagram: symmetric -->
 
-**Third.** If A balances B, and B balances C, then A balances C — without a new weighing. The comparison chains through a bridge. `a = b` and `b = c` means `a = c`.
+> *The weights swapped sides. The beam returns to level.
+> The NAMES changed. The TRUTH did not.*
 
-**Fourth.** If both pans balance, adding the same weight to both pans keeps them balanced. What I do to one side, I must do to the other. `a = b` means `a ⊕ c = b ⊕ c`.
+Why should this work? Because the scale does not know which
+side is "left" and which is "right." The scale knows only
+weight. If the left pan holds the same weight as the right,
+then the right holds the same weight as the left.
 
-A scale that violates any one of these is a false scale. A scale that satisfies all four is true. This is what the buyer needed. Not trust in the merchant. Trust in the instrument.
+> `if a = b, then b = a`
+>
+> Equality is symmetric.
 
-I think of the inheritance. When I write "Wife's share = 1/8," I am placing two things on a scale. The four properties tell me what I can do with that equation. I can read it in either direction. I can chain it through a common denominator. I can add the same quantity to both sides. Every manipulation of the inheritance equation will be a move that keeps the balance beam level.
+This is the property the buyer is relying on. He says: "if
+your weight equals my saffron, then my saffron equals your
+weight." He wants to put the saffron on the OTHER pan and
+check. The merchant cannot refuse — symmetry is not a
+courtesy. It is a law.
 
-The buyer counts coins from his purse. The merchant wraps the saffron. They did not agree with each other. They agreed with the scale.
+---
 
-> *Margin note: "So no soul will be treated unjustly at all" — no side altered without the other. Justice is preservation of equality.*
+The buyer's neighbor has been watching. He leans in. "I bought
+from the same merchant yesterday. My saffron weighed the same
+as yours."
+
+Now there are three quantities. The buyer's saffron. The
+neighbor's saffron. And the merchant's weight.
+
+The merchant's weight balanced the buyer's saffron. The
+neighbor says his saffron balanced the buyer's. So the
+merchant's weight should balance the neighbor's saffron too.
+
+Should it?
+
+I try. I place the merchant's weight on the left. The
+neighbor's saffron on the right.
+
+<!-- diagram: transitive -->
+
+> *If A equals B, and B equals C, does A equal C?*
+
+The beam levels.
+
+> `if a = b and b = c, then a = c`
+>
+> Equality is transitive.
+
+This is the property that lets chains of reasoning WORK. If I
+know my weight equals the standard, and the standard equals
+yours, then my weight equals yours — without us ever
+comparing them directly. The chain carries the truth.
+
+If this property failed, every transaction in the souk would
+require starting from scratch. No standard could be trusted
+past one use. Commerce would be impossible. Justice would be
+impossible.
+
+---
+
+One more. The buyer says: "Add one dirham to each side."
+
+He places a small coin on the left pan. I place an identical
+coin on the right.
+
+<!-- diagram: preservation -->
+
+> *Equal weight added to both sides. The beam does not move.*
+
+> `if a = b, then a + c = b + c`
+>
+> Equality is preserved under equal operations.
+
+This is the most powerful of the four. It means I can DO things
+to both sides of an equation — add, subtract, multiply, divide
+— and if I do the SAME thing to both sides, the equality holds.
+
+This is how equations will be solved. Not today. But soon. The
+merchant with ships at sea will need this. The patron with his
+garden will need this. Every equation I will ever write depends
+on this property.
+
+The buyer nods. The merchant nods. They have not resolved their
+dispute about the saffron. But they have agreed on something
+deeper: the scale itself is true.
 
 ---
 
 ## ٣. The Derivation
 
-### Axiom
+Four properties define equality. I state them now without
+story, for the student who wants them clean.
+
+**Definition.** A relation `=` on a set S is an *equality*
+if and only if it satisfies:
+
+**Property 1 — Reflexive**
 
 ```
-AXIOM (Identity):
-    1 = 1
-    A thing is itself.
+For all a in S:  a = a
 ```
 
-This axiom cannot be derived from anything simpler. It is the starting point. Everything that follows depends on it.
+A thing is itself.
 
-### Property 1: Reflexivity
+<!-- diagram: formal-reflexive -->
 
-```
-THEOREM (Reflexive Property):
-    For any quantity a: a = a.
-
-DERIVATION:
-    Let a be any quantity.
-    a is itself.                          [The same recognition as 1 = 1]
-    ∴ a = a.                             ∎
-
-NOTE:
-    This extends the axiom 1 = 1 to any object. If 1 is itself,
-    then any quantity is itself. The axiom generalises immediately.
-```
-
-### Property 2: Symmetry
+**Property 2 — Symmetric**
 
 ```
-THEOREM (Symmetric Property):
-    If a = b, then b = a.
-
-DERIVATION:
-    Suppose a = b.
-    "a = b" means: a and b are the same quantity.     [Definition of =]
-    If they are the same quantity, then b and a
-    are the same quantity.                              [Order is irrelevant
-                                                        to identity]
-    ∴ b = a.                                           ∎
-
-NOTE:
-    The "=" symbol has no direction. It is a beam, not an arrow.
-    The merchant's saffron = the brass. The brass = the saffron.
-    Swapping pans changes nothing.
+For all a, b in S:  if a = b then b = a
 ```
 
-### Property 3: Transitivity
+Direction does not matter.
+
+<!-- diagram: formal-symmetric -->
+
+**Property 3 — Transitive**
 
 ```
-THEOREM (Transitive Property):
-    If a = b and b = c, then a = c.
-
-DERIVATION:
-    Suppose a = b.
-    Then a and b are the same quantity.                [Definition of =]
-    Suppose b = c.
-    Then b and c are the same quantity.                [Definition of =]
-    Since a is the same as b, and b is the same
-    as c, a is the same as c.                          [Substitution]
-    ∴ a = c.                                           ∎
-
-NOTE:
-    The brass weights served as a bridge. Saffron = brass,
-    brass = iron, therefore saffron = iron. The bridge
-    quantity disappears but the equality remains.
+For all a, b, c in S:  if a = b and b = c then a = c
 ```
 
-### The Preservation Principle
+Chains carry truth.
+
+<!-- diagram: formal-transitive -->
+
+**Property 4 — Preservation (Substitution)**
 
 ```
-THEOREM (Equality Preserved Under Operations):
-    If a = b, then for any operation ⊕ and any quantity c:
-        a ⊕ c = b ⊕ c
-
-DERIVATION:
-    Suppose a = b.
-    Then a and b are the same quantity.                [Definition of =]
-    Applying ⊕ c to a yields a ⊕ c.
-    Applying ⊕ c to b yields b ⊕ c.
-    Same input, same operation → same output.
-    ∴ a ⊕ c = b ⊕ c.                                 ∎
-
-COROLLARY:
-    What I do to the left, I must do to the right.
-    Adding 2 brass to each pan kept the beam level.
-    Adding 2 to one and 3 to the other broke it.
-    This holds for addition, multiplication, and every
-    operation yet to come.
+For all a, b, c in S:  if a = b then a + c = b + c
 ```
 
-### The Chain from 1 = 1
+Equal operations on equal quantities yield equal results.
 
-```
-1 = 1                        Axiom (Identity)
-  │
-  ├──→ a = a                 Reflexive Property (generalisation)
-  │
-  ├──→ a = b → b = a         Symmetric Property (no preferred side)
-  │
-  ├──→ a = b, b = c → a = c  Transitive Property (chaining through a bridge)
-  │
-  └──→ a = b → a⊕c = b⊕c    Preservation (do the same to both sides)
+<!-- diagram: formal-preservation -->
 
-These four results are CONSEQUENCES of the axiom.
-They are the properties of a true scale.
-```
+> **The chain from 1 = 1:**
+> 1 = 1 (axiom) → reflexive (a thing is itself) →
+> symmetric (direction doesn't matter) → transitive
+> (chains work) → preservation (operations are safe)
+
+**Geometry spec for Layer (Mode A):**
+Five frames. Empty tilted beam → reflexive (same weights,
+level) → symmetric (swap, still level) → transitive (chain
+verified) → preservation (add to both, still level). Final
+frame: fulcrum glows gold. The scale is true.
 
 ---
 
 ## ٤. Al-Khwarizmi Solves
 
-### Example 1: The Buyer's Test (the souk problem)
+**Example 1: The buyer's saffron**
 
-The buyer wants to verify the merchant's brass weights. He borrows a set of certified iron weights from the weights-master. He tests:
+The buyer purchased 3 dirhams of saffron. He wants to verify
+the weight. The merchant's certified weight is on the left.
 
-```
-Brass set = Iron set          (first weighing: beam levels)
-```
+<!-- diagram: example-saffron -->
 
-The merchant's saffron was weighed against the brass:
+**Example 2: The inheritance equation**
 
-```
-Saffron = Brass set           (the original transaction)
-```
+From the prologue: wife's share = 1/8 of the estate.
 
-Does the saffron equal the iron set?
+<!-- diagram: example-inheritance -->
 
-```
-Saffron = Brass set           (given)
-Brass set = Iron set          (buyer's test)
-By transitivity: Saffron = Iron set
-```
+> *Margin note: I cannot solve this yet. I need fractions
+> (Island 0.5). But I can WRITE it, because equality lets
+> me. The tool to write came before the tool to compute.*
 
-The buyer can verify the transaction without re-weighing the saffron. The brass was a true bridge. The buyer pays.
+**Example 3: Checking your own work**
 
-### Example 2: Testing Inheritance Shares
+A student writes:  `7 + 5 = 13`
 
-The wife's share is 1/8. The mother's share is 1/6. Are they equal?
+Test with Property 1 (reflexive):
 
-Suppose 1/8 = 1/6. By the preservation principle, multiply both sides by 24:
+<!-- diagram: example-check -->
 
-```
-24 × (1/8) = 24 × (1/6)
-3 = 4
-```
-
-But 3 ≠ 4. The supposition is false. The wife's share does not equal the mother's share. The scale tilts.
-
-I used preservation to *test* equality, not just maintain it. If the conclusion is false, the premise must be false.
-
-### Example 3: Adding to Both Sides
-
-The merchant has two customers. The first bought saffron weighing 5 brass units. The second bought saffron weighing 5 brass units. Both want 3 more units of saffron added to their order.
-
-```
-Customer 1's saffron = 5 units       (first weighing)
-Customer 2's saffron = 5 units       (second weighing)
-
-By symmetry:  5 units = Customer 2's saffron
-By transitivity: Customer 1's saffron = Customer 2's saffron
-
-After adding 3 units to each:
-By preservation: Customer 1's total = Customer 2's total
-                 8 units = 8 units
-```
-
-Verify: `8 = 8` ✓ (reflexive property)
-
-Every step kept the beam level. No step required re-weighing from scratch.
+The student's claim fails. The scale tilts. This is how
+every "check your answer" works — compute both sides, test
+if they are the same number (reflexive).
 
 ---
 
@@ -275,219 +303,144 @@ Every step kept the beam level. No step required re-weighing from scratch.
 
 ### Da'if (Guided)
 
-**Problem D1.** A merchant weighs his saffron against 8 brass units. The beam levels. He then weighs the same saffron against a sack of almonds. The beam levels.
+**1.** The merchant has three sets of weights: A, B, and C.
+He knows A = B (they balance on the scale). He knows
+B = C (they also balance). Does A = C? Which property
+guarantees this?
 
-(a) What can you conclude about the almonds and the brass units? Name the property you used.
+<!-- diagram: ex-daif-1 -->
 
-(b) A second buyer arrives with his own sack of almonds. He weighs it against 8 brass units and the beam levels. What can you conclude about the two sacks of almonds? Name every property in your reasoning.
+*Hint: This is the chain property.*
 
-*Hint: Two things equal to the same thing are...*
+**2.** If `x = 5`, what is `x + 3`? Which property of
+equality lets you compute this?
 
-**Problem D2.** The buyer places 6 brass units on the left pan and 6 iron units on the right. The beam levels. He adds 4 brass units to the left. What must he add to the right pan to keep the beam level? Name the property.
+<!-- diagram: ex-daif-2 -->
 
-*Hint: What I do to the left...*
+*Hint: You are doing the same thing (+3) to both sides
+of x = 5.*
 
-**Problem D3.** Suppose a = b, b = c, and c = d. Show that a = d. How many applications of transitivity are needed?
-
-*Hint: First use a = b and b = c to get a = c. Then use a = c with c = d.*
+**3.** A student writes `a = b`. Another student writes
+`b = a`. Are both correct? Why?
 
 ### Hasan (Exam-level)
 
-**Problem H1.** [4 marks]
+**4.** Prove that if `a = b` and `c = d`, then
+`a + c = b + d`. [3 marks]
 
-The merchant claims: "My saffron weighs the same as 10 gold coins, and 10 gold coins weigh the same as 50 silver coins, and 50 silver coins weigh the same as this iron block."
+*Use Property 4 twice.*
 
-(a) What can the merchant conclude about his saffron and the iron block? State the property used and how many times it is applied. [2 marks]
+**5.** The muhtasib tests scales by placing a 100-dirham
+standard weight on both sides. If the beam levels, the
+scale is certified. Which property is he testing, and
+why is this test necessary but not sufficient? [4 marks]
 
-(b) The buyer responds: "Then the iron block weighs the same as your saffron." Is the buyer correct? State the property used. [1 mark]
+**6.** Given that `2x + 1 = 9`, find `x` by applying
+Property 4 (preservation) at each step. Show each
+application explicitly. [3 marks]
 
-(c) A second merchant's saffron also balances against the same iron block. What can you conclude about the two merchants' saffron? State all properties used in order. [1 mark]
-
-**Problem H2.** [4 marks]
-
-Given that `2x + 1 = 9`, find the value of x. Justify each step by naming the property of equality used.
-
-```
-Step 1:  2x + 1 = 9
-Step 2:  ______ = ______    Justification: _______________   [1 mark]
-Step 3:  ______ = ______    Justification: _______________   [1 mark]
-Answer:  x = ______                                          [1 mark]
-Verification: ______                                         [1 mark]
-```
-
-**Problem H3.** [4 marks]
-
-A buyer suspects the merchant's scale is false — one arm longer than the other. He proposes a test:
-
-- Weigh the saffron against the brass. Record the result.
-- Swap the saffron and brass to opposite pans. Record the result.
-
-(a) If the scale is true, what does the symmetric property predict about the two weighings? [1 mark]
-
-(b) If the two weighings give different results, which property of equality has the scale violated? [1 mark]
-
-(c) The buyer goes further. He weighs the brass against iron (they balance) and then the saffron against iron (they do not balance). What does this tell him? Which property is he using? [2 marks]
-
-**Problem H4.** [4 marks]
-
-Explain why the following "proof" is invalid:
-
-```
-Suppose:    a = b
-Multiply both sides by a:    a² = ab
-Subtract b² from both sides: a² - b² = ab - b²
-Factor:                       (a + b)(a - b) = b(a - b)
-Divide both sides by (a - b): a + b = b
-Since a = b, substitute:      b + b = b
-Therefore:                     2b = b
-Divide by b:                   2 = 1
-```
-
-Identify the exact step where the reasoning fails and explain which condition of the preservation principle was violated.
+<!-- diagram: ex-hasan-6 -->
 
 ### Sahih (Proof and extension)
 
-**Problem S1.** [5 marks]
+**7.** The four properties of equality are sometimes
+called an "equivalence relation" (Properties 1-3) plus
+"congruence" (Property 4). Prove that if `=` is an
+equivalence relation, then for any `a`: the set
+`{x : x = a}` contains at least one element. [3 marks]
 
-The preservation principle states: if a = b, then a + c = b + c.
+*Hint: Which property guarantees `a` is in its own
+equivalence class?*
 
-(a) Using only this principle and the properties from this island, prove the *cancellation law*: if a + c = b + c, then a = b. [3 marks]
+**8.** A broken scale always tilts left by 1 unit. That
+is, when you place weight `a` on the left and weight `b`
+on the right, the scale reads `a + 1 = b` instead of
+`a = b`. Which properties of equality does this broken
+scale violate? Prove your answer. [5 marks]
 
-*You may assume that for any quantity c, there exists a quantity -c such that c + (-c) = 0, and that a + 0 = a for all a.*
-
-(b) Explain why cancellation fails for multiplication when the cancelled quantity is 0. Connect this to Problem H4. [2 marks]
-
-**Problem S2.** [6 marks]
-
-The three properties — reflexive, symmetric, transitive — define an *equivalence relation*. Not every relation has all three.
-
-Consider the relation "is a factor of" on the natural numbers (a is a factor of b means b = k × a for some natural number k).
-
-(a) Is "is a factor of" reflexive? Prove or disprove. [2 marks]
-
-(b) Is "is a factor of" symmetric? Prove or disprove. [2 marks]
-
-(c) Is "is a factor of" transitive? Prove or disprove. [2 marks]
+<!-- diagram: ex-sahih-8 -->
 
 ---
 
 ## ٦. Exam Technique
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     THE BALANCE PRINCIPLE                       │
-│                                                                 │
-│  Every equation is a scale. Every step must keep it level.      │
-│                                                                 │
-│  1. SHOW every operation on both sides.                         │
-│     Do not write "move the 3 over." Write "add -3              │
-│     to both sides." The logic IS the operation.                 │
-│     Mark schemes award method marks for visible steps,          │
-│     not for correct answers with no working.                    │
-│                                                                 │
-│  2. JUSTIFY each step when asked. Name the property:            │
-│     reflexive, symmetric, transitive, or preservation.          │
-│     In later work the justification can be implicit,            │
-│     but you must be ABLE to name it if the question             │
-│     asks you to.                                                │
-│                                                                 │
-│  3. VERIFY your answer. Substitute back into the original       │
-│     equation. If left side = right side, the answer is          │
-│     confirmed by the reflexive property. This takes 30          │
-│     seconds and catches errors that cost entire questions.      │
-│                                                                 │
-│  4. NEVER divide by an expression that might equal zero.        │
-│     This is the single most common invalid step in              │
-│     algebraic proof. If you cannot guarantee a ≠ 0,             │
-│     you cannot divide by a. (See Problem H4.)                   │
-│                                                                 │
-│  Common mistake: writing "3x = 9, x = 3" with no middle        │
-│  step. The mark scheme wants to see "divide both sides by 3."   │
-│  One line of working = one method mark saved.                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+> **What mark schemes want for "prove" questions:**
+>
+> 1. State what you assume (1 mark)
+> 2. Apply a known property or theorem (1 mark)
+> 3. Conclude with what you've shown (1 mark)
+>
+> **Common mistake:** Assuming what you're trying to prove.
+> "Let a = b. Then a = b." This proves nothing — it uses
+> reflexive where you needed to DERIVE the result.
+>
+> **The equality chain trick:** When asked to show that
+> `expression₁ = expression₄`, build a chain:
+> `expression₁ = expression₂ = expression₃ = expression₄`
+> Each step uses one property. Markers award one mark per
+> valid step. More steps = more marks, IF each step is correct.
 
 ---
 
 ## ٧. Log Pose
 
 ```
-                        ┌──────────────┐
-                        │   PROLOGUE   │
-                        │  27/24 > 1   │
-                        └──────┬───────┘
-                               │
-                               ▼
-                    ╔══════════════════════╗
-                    ║   0.1  EQUALITY      ║  ◄── YOU ARE HERE
-                    ║   The Scales         ║
-                    ║   1 = 1              ║
-                    ╚══════════╤═══════════╝
-                               │
-                               │  "I have equality. Now I need
-                               │   things to be equal WITH."
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   0.2  COUNTING      │
-                    │   The Shepherd's     │
-                    │   Gate               │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   0.3  MULTIPLY      │
-                    │   The Farmer's       │
-                    │   Grain              │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                           ... │ ...
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   0.5  FRACTIONS     │
-                    │   The Inheritance    │
-                    │   Fulfilled          │
-                    └──────────────────────┘
-
-
-This island unlocks: 0.2 (Counting)
-
-Equality underpins EVERY island that follows:
-  × 0.3: Multiplication uses preservation (both sides)
-  × 0.5: Common denominators use transitivity (the bridge)
-  × 0.6: Solving for x IS repeated application of preservation
-  × 0.7: Completing the square = adding the same to both sides
-  × Every equation you solve is a scale. This island is why.
-
-Forward to FP1:
-  × Equivalence relations appear in group theory and set theory.
-  × The preservation principle becomes "well-defined operations"
-    on equivalence classes.
-  × Every proof by contradiction (Island 0.8 onward) relies on:
-    if a = b leads to falsehood, then a ≠ b.
+                    ┌──────────┐
+                    │ Prologue │
+                    │ 1 = 1    │
+                    └────┬─────┘
+                         │
+                    ┌────▼─────┐
+              ┌─────┤ 0.1 ═══ ├─────┐
+              │     │ Equality │     │
+              │     └────┬─────┘     │
+              │          │           │
+         ┌────▼───┐ ┌───▼────┐ ┌───▼────┐
+         │  0.2   │ │  0.6   │ │  FP1   │
+         │ Count  │ │ Vars   │ │ Ch.1   │
+         └────────┘ │ (uses  │ │ proof  │
+                    │  = to  │ │ by =)  │
+                    │ solve) │ └────────┘
+                    └────────┘
 ```
+
+**This island unlocks:**
+- 0.2 (Counting) — needs equality to define "the same number"
+- 0.6 (Variables) — solving equations uses Property 4 repeatedly
+- FP1 Chapter 1 (Proof) — proof by equality chains
 
 ---
 
 ## ٨. Reflection
 
-I came to the souk because a dead man's family needs justice and I could not start. I wrote "=" and did not know what the mark demanded. Now I know. Four properties. A thing is itself. The relation has no direction. Comparison chains through a bridge. What is done to one side must be done to the other.
+The buyer paid for his saffron. Three dirhams. He was satisfied
+— not because the merchant was honest, but because the scale was
+true. A true scale does not take sides.
 
-The buyer counted his coins. The merchant wrapped the saffron. Neither man trusted the other. Both trusted the scale — because the scale was true.
+I sit in my workshop and write the four properties on a clean
+sheet. Reflexive. Symmetric. Transitive. Preservation. Four
+words. But they carry the weight of every transaction in the
+souk, every contract before the qadi, every equation I will
+ever write.
 
-The Quran places scales of justice for the Day of Resurrection — no soul treated unjustly at all, not even by the weight of a mustard seed. A true scale is not generous or harsh. It reads what is there. That is what "=" does. It does not choose a side. It reads what is equal.
+And they rest on one line:
 
-I have my first tool. But I have nothing to place on the scale. I can write `a = b`, but what are `a` and `b`? I need numbers — and before numbers, I need counting.
+`1 = 1`
 
-At the city gate, a shepherd is bringing his flock home. Staff in hand, he touches each animal as it passes. One, then another. His dog limps beside him, injured, unable to chase strays. If one animal is missing, the shepherd must know. But what guarantees that counting works? What guarantees that after 47 there is a 48, and that no animal is skipped or counted twice?
+A thing is itself. This cannot be denied without using it. It
+is the ground.
 
-The scale is ready. I need something to weigh.
+Tomorrow a shepherd will come through the gate with his flock.
+He will touch each animal as it passes. One, then another, then
+another. He will count.
 
----
+But what IS counting? I have equality — I know what it means
+for two things to be the same. But I have nothing to BE equal.
+No numbers. No "one." No "two." I need something to count WITH.
 
-> وَنَضَعُ الْمَوَازِينَ الْقِسْطَ
-> *"And We place the scales of justice..."*
+I watch the gate from my window. The shepherd is already there.
+His dog limps beside him. The sun is going down.
 
 *1 = 1 has not been lost.*
+
+---

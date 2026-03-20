@@ -417,6 +417,40 @@
       opacity: 0.5;
     }
 
+    /* ── Inline Diagrams ── */
+    .inline-diagram {
+      margin: 24px 0;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f8f0e0;
+      position: relative;
+    }
+
+    .inline-diagram canvas {
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: auto;
+    }
+
+    .inline-diagram-hint {
+      position: absolute;
+      bottom: 6px;
+      right: 10px;
+      font-size: 10px;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .inline-diagram:hover .inline-diagram-hint,
+    .inline-diagram.finished .inline-diagram-hint {
+      opacity: 0.4;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       nav { width: 220px; }
@@ -559,6 +593,7 @@ async function loadIsland(index) {
     content.innerHTML = marked.parse(markdown);
     classifyCodeBlocks();
     injectConstruction(island.id);
+    injectDiagrams(island.id);
     window.scrollTo(0, 0);
   } catch (err) {
     content.innerHTML = `<div class="error">
@@ -832,6 +867,3026 @@ function phase(t, start, dur) {
 }
 
 // ══════════════════════════════════════════════════════════
+// ── Unified Layer Registry ──
+// Each island is ONE Layer with two render modes:
+//   Mode A (construction): deterministic, subject→verb→object, 9:16
+//   Mode B (simulator):    audio-reactive, continuous, fullscreen
+// Same class, same palette, same geometric DNA.
+// "Hold firmly to the rope of Allah all together" (3:103)
+// ══════════════════════════════════════════════════════════
+
+class Layer {
+  get id() { return ''; }
+  get islandNumber() { return ''; }
+  get name() { return ''; }
+  get arabicName() { return ''; }
+  get scholar() { return ''; }
+  get era() { return ''; }
+  get city() { return ''; }
+  get ayah() { return ''; }
+  get surah() { return ''; }
+  get constructionDuration() { return 28; }
+
+  // Shared palette — visual DNA connecting both modes
+  get palette() {
+    return {
+      structural: '#3a2510',
+      accent: '#c9a84c',
+      subtle: '#7a6e5d',
+      highlight: '#6a9e8f',
+    };
+  }
+
+  // End card data derived from layer metadata
+  get endCard() {
+    if (!this.scholar) return null;
+    return {
+      line1: `${this.name} — ${this.arabicName}`,
+      line2: `${this.scholar} — ${this.era} — ${this.city}`,
+      line3: `${this.ayah} — ${this.surah}`,
+    };
+  }
+
+  // Mode A: Construction (9:16 portrait, deterministic)
+  // Override in subclass. t = seconds, ctx = canvas context, zones = zone boundaries.
+  drawConstruction(t, ctx, zones) {}
+
+  // Mode B: Simulator (fullscreen, audio-reactive)
+  // Override in subclass. activation = 0-1 layer strength, feat = audio features.
+  drawReactive(ctx, activation, feat, cx, cy, sR) {}
+}
+
+// ── Layer: 0.0 Monad (Prologue) ──
+class MonadLayer extends Layer {
+  get id() { return 'monad'; }
+  get islandNumber() { return '0.0'; }
+  get name() { return 'The Impossible Sum'; }
+  get arabicName() { return 'المسألة المنبرية'; }
+  get scholar() { return 'Al-Khwarizmi'; }
+  get era() { return '780–850 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"Allah instructs you concerning your children"'; }
+  get surah() { return 'An-Nisa (4:11)'; }
+  get constructionDuration() { return 24; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820';
+    const barW = zones.contentW - 20, barH = 40;
+    const barX = zones.left + 10, barY = zones.midY - barH / 2;
+    const segW = barW / 24;
+
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, barX, barY, barW, barH, { progress: p0, seed: 50, color: ink });
+      if (p0 > 0.7) Organic.structural(ctx, barX + barW, barY - 4, barX + barW, barY + barH + 4,
+        { progress: (p0 - 0.7) / 0.3, seed: 54, color: ink, width: 2 });
+    }
+    const p1 = phase(t, 3.5, 2);
+    if (p1 > 0) Organic.fill(ctx, barX, barY, 3 * segW * p1, barH, '#6a9e8f', 0.6);
+    const p2 = phase(t, 6.5, 2.5);
+    if (p2 > 0) Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW * p2, barH, '#d4a843', 0.55);
+    const p3 = phase(t, 10.5, 2);
+    if (p3 > 0) Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW * p3, barH, '#b07050', 0.55);
+    const p4 = phase(t, 13.5, 3);
+    if (p4 > 0) {
+      Organic.fill(ctx, barX + 23 * segW, barY, segW * Math.min(p4 * 4, 1), barH, '#b07050', 0.5);
+      if (p4 > 0.3) {
+        const overP = (p4 - 0.3) / 0.7;
+        const ovX = barX + 24 * segW;
+        Organic.fill(ctx, ovX, barY, 3 * segW * overP, barH, '#c0392b', 0.3);
+        if (overP > 0.4) {
+          ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 4]); ctx.globalAlpha = (overP - 0.4) / 0.6;
+          ctx.strokeRect(ovX, barY, 3 * segW, barH); ctx.restore();
+        }
+      }
+      if (p4 > 0.2) {
+        const pulse = 0.4 + 0.3 * Math.sin(t * 5);
+        ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5;
+        ctx.globalAlpha = pulse * Math.min((p4 - 0.2) * 3, 1);
+        ctx.beginPath(); ctx.moveTo(barX + barW, barY - 6); ctx.lineTo(barX + barW, barY + barH + 6);
+        ctx.stroke(); ctx.restore();
+      }
+    }
+  }
+
+  // Mode B: The Monad — a single luminous point at the center. Always present. (112:1)
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    const brightness = 0.3 + activation * 0.7;
+    const r = 2 + activation * 3;
+    ctx.save();
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 8);
+    grad.addColorStop(0, `rgba(220, 210, 190, ${brightness})`);
+    grad.addColorStop(0.3, `rgba(200, 190, 160, ${brightness * 0.5})`);
+    grad.addColorStop(1, 'rgba(200, 190, 160, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(cx - r * 8, cy - r * 8, r * 16, r * 16);
+    ctx.fillStyle = `rgba(255, 250, 240, ${brightness})`;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+}
+
+// ── Layer: 0.1 Equality ──
+class EqualityLayer extends Layer {
+  get id() { return 'equality'; }
+  get islandNumber() { return '0.1'; }
+  get name() { return 'Equality'; }
+  get arabicName() { return 'المساواة'; }
+  get scholar() { return 'Al-Khwarizmi'; }
+  get era() { return '780–850 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"We place the scales of justice"'; }
+  get surah() { return 'Al-Anbiya (21:47)'; }
+  get constructionDuration() { return 28; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, inkLight = p.subtle, teal = p.highlight;
+    const cx = zones.midX, fy = zones.midY + 10;
+    const beamLen = 130, fulcrumH = 55, panDrop = 28, panW = 22;
+
+    const drawBeam = (tilt, progress) => {
+      Organic.structural(ctx, cx, fy, cx - 18, fy + fulcrumH, { seed: 200, color: ink, progress });
+      Organic.structural(ctx, cx, fy, cx + 18, fy + fulcrumH, { seed: 201, color: ink, progress });
+      Organic.structural(ctx, cx - 18, fy + fulcrumH, cx + 18, fy + fulcrumH, { seed: 202, color: ink, progress });
+      const lx = cx - Math.cos(tilt) * beamLen, ly = fy + Math.sin(tilt) * beamLen;
+      const rx = cx + Math.cos(tilt) * beamLen, ry = fy - Math.sin(tilt) * beamLen;
+      Organic.structural(ctx, lx, ly, rx, ry, { seed: 203, color: ink, width: 2.2, progress });
+      if (progress > 0.6) {
+        const cordP = (progress - 0.6) / 0.4;
+        Organic.annotation(ctx, lx, ly, lx, ly + panDrop, { seed: 204, color: ink, progress: cordP });
+        Organic.annotation(ctx, rx, ry, rx, ry + panDrop, { seed: 205, color: ink, progress: cordP });
+        Organic.structural(ctx, lx - panW, ly + panDrop, lx + panW, ly + panDrop, { seed: 206, color: ink, width: 1.4, progress: cordP });
+        Organic.structural(ctx, rx - panW, ry + panDrop, rx + panW, ry + panDrop, { seed: 207, color: ink, width: 1.4, progress: cordP });
+      }
+      return { lx, ly: ly + panDrop, rx, ry: ry + panDrop };
+    };
+    const settle = (prog, amp) => amp * Math.sin(prog * Math.PI * 3) * Math.exp(-prog * 4);
+
+    const p0 = phase(t, 0, 3);
+    if (t < 4) { if (p0 > 0) drawBeam(0.06 * (1 - phase(t, 2.5, 1)), p0); return; }
+    if (t < 10) {
+      const dropL = phase(t, 4, 1), dropR = phase(t, 6, 1), settleP = phase(t, 7, 2);
+      let tilt = dropR < 0.01 ? dropL * 0.15 : 0.15 * (1 - dropR) + settle(settleP, 0.08);
+      const pans = drawBeam(tilt, 1);
+      if (dropL > 0) Organic.point(ctx, pans.lx, pans.ly - 14 - (1 - dropL) * 40, { r: 8, color: '#8a7a6a', opacity: dropL * 0.8 });
+      if (dropR > 0) Organic.point(ctx, pans.rx, pans.ry - 14 - (1 - dropR) * 40, { r: 8, color: '#8a7a6a', opacity: dropR * 0.8 });
+      return;
+    }
+    if (t < 17) {
+      const swapP = phase(t, 10.5, 3), settleP = phase(t, 14, 2);
+      const tilt = settle(swapP, 0.12) + settle(settleP, 0.04);
+      const pans = drawBeam(tilt, 1);
+      if (swapP < 1) {
+        const arc = swapP * Math.PI;
+        Organic.point(ctx, pans.lx + (pans.rx - pans.lx) * swapP, (pans.ly + pans.ry) / 2 - 14 - Math.sin(arc) * 60, { r: 8, color: '#8a7a6a', opacity: 0.8 });
+        Organic.point(ctx, pans.rx + (pans.lx - pans.rx) * swapP, (pans.ly + pans.ry) / 2 - 14 - Math.sin(arc) * 60, { r: 8, color: gold, opacity: 0.8 });
+      } else {
+        Organic.point(ctx, pans.lx, pans.ly - 14, { r: 8, color: gold, opacity: 0.8 });
+        Organic.point(ctx, pans.rx, pans.ry - 14, { r: 8, color: '#8a7a6a', opacity: 0.8 });
+      }
+      return;
+    }
+    if (t < 23) {
+      const addP = phase(t, 18, 1.5), finalSettle = phase(t, 20, 2);
+      const tilt = settle(addP, 0.03) + settle(finalSettle, 0.02);
+      const pans = drawBeam(tilt, 1);
+      Organic.point(ctx, pans.lx - 6, pans.ly - 14, { r: 8, color: gold, opacity: 0.8 });
+      Organic.point(ctx, pans.rx + 6, pans.ry - 14, { r: 8, color: '#8a7a6a', opacity: 0.8 });
+      if (addP > 0) {
+        Organic.point(ctx, pans.lx + 6, pans.ly - 14 - (1 - addP) * 50, { r: 6, color: teal, opacity: addP * 0.7 });
+        Organic.point(ctx, pans.rx - 6, pans.ry - 14 - (1 - addP) * 50, { r: 6, color: teal, opacity: addP * 0.7 });
+      }
+      if (finalSettle > 0.5) Organic.point(ctx, cx, fy, { r: 6 + (finalSettle - 0.5) * 8, color: gold, opacity: (finalSettle - 0.5) * 0.4 });
+      return;
+    }
+    const pans = drawBeam(0, 1);
+    Organic.point(ctx, pans.lx - 6, pans.ly - 14, { r: 8, color: gold, opacity: 0.8 });
+    Organic.point(ctx, pans.rx + 6, pans.ry - 14, { r: 8, color: '#8a7a6a', opacity: 0.8 });
+    Organic.point(ctx, pans.lx + 6, pans.ly - 14, { r: 6, color: teal, opacity: 0.7 });
+    Organic.point(ctx, pans.rx - 6, pans.ry - 14, { r: 6, color: teal, opacity: 0.7 });
+    const pulseP = (Math.sin(t * 1.5) + 1) / 2;
+    Organic.point(ctx, cx, fy, { r: 8 + pulseP * 3, color: gold, opacity: 0.15 + pulseP * 0.1 });
+  }
+
+  // Mode B: Cross-axes — bilateral symmetry establishing coordinate space
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const alpha = activation * 0.5;
+    ctx.lineWidth = 0.8;
+    const hGrad = ctx.createLinearGradient(cx - sR, cy, cx + sR, cy);
+    hGrad.addColorStop(0, 'rgba(40, 50, 80, 0)');
+    hGrad.addColorStop(0.3, `rgba(40, 50, 80, ${alpha})`);
+    hGrad.addColorStop(0.5, `rgba(60, 70, 100, ${alpha * 1.5})`);
+    hGrad.addColorStop(0.7, `rgba(40, 50, 80, ${alpha})`);
+    hGrad.addColorStop(1, 'rgba(40, 50, 80, 0)');
+    ctx.strokeStyle = hGrad;
+    ctx.beginPath(); ctx.moveTo(cx - sR, cy); ctx.lineTo(cx + sR, cy); ctx.stroke();
+    const vGrad = ctx.createLinearGradient(cx, cy - sR, cx, cy + sR);
+    vGrad.addColorStop(0, 'rgba(40, 50, 80, 0)');
+    vGrad.addColorStop(0.3, `rgba(40, 50, 80, ${alpha})`);
+    vGrad.addColorStop(0.5, `rgba(60, 70, 100, ${alpha * 1.5})`);
+    vGrad.addColorStop(0.7, `rgba(40, 50, 80, ${alpha})`);
+    vGrad.addColorStop(1, 'rgba(40, 50, 80, 0)');
+    ctx.strokeStyle = vGrad;
+    ctx.beginPath(); ctx.moveTo(cx, cy - sR); ctx.lineTo(cx, cy + sR); ctx.stroke();
+  }
+}
+
+// ── Layer: 0.2 Counting ──
+class CountingLayer extends Layer {
+  get id() { return 'counting'; }
+  get islandNumber() { return '0.2'; }
+  get name() { return 'Counting'; }
+  get arabicName() { return 'العدّ'; }
+  get scholar() { return 'Al-Kindi'; }
+  get era() { return '801–873 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"He has counted them and numbered them"'; }
+  get surah() { return 'Maryam (19:94)'; }
+  get constructionDuration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent;
+    const lineY = zones.midY, startX = zones.left + 10, gap = 30;
+    const count = 10;
+
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      const endX = startX + count * gap + 30;
+      Organic.structural(ctx, startX, lineY, startX + (endX - startX) * p0, lineY, { seed: 300, color: ink });
+      if (p0 > 0.8) {
+        const ax = endX;
+        Organic.structural(ctx, ax - 8, lineY - 5, ax, lineY, { seed: 301, color: ink, width: 1.3 });
+        Organic.structural(ctx, ax - 8, lineY + 5, ax, lineY, { seed: 302, color: ink, width: 1.3 });
+      }
+    }
+    for (let i = 1; i <= count; i++) {
+      const delay = 3 + (i - 1) * 1.0;
+      const pp = phase(t, delay, 0.6);
+      if (pp > 0) {
+        const x = startX + i * gap;
+        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 310 + i, color: ink, width: 1.2, progress: pp });
+        Organic.point(ctx, x, lineY, { r: 3, color: ink, opacity: pp });
+        if (i < count && pp > 0.5) {
+          const nx = x + gap;
+          ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 0.8; ctx.globalAlpha = (pp - 0.5) * 0.8;
+          ctx.beginPath(); ctx.moveTo(x + 4, lineY - 10);
+          ctx.quadraticCurveTo((x + nx) / 2, lineY - 22, nx - 4, lineY - 10);
+          ctx.stroke(); ctx.restore();
+        }
+      }
+    }
+    const p2 = phase(t, 14, 2);
+    if (p2 > 0) {
+      const dotsX = startX + (count + 1) * gap;
+      for (let i = 0; i < 3; i++) {
+        Organic.point(ctx, dotsX + i * 12, lineY, { r: 2, color: gold, opacity: p2 * (0.8 - i * 0.2) });
+      }
+    }
+  }
+
+  // Mode B: Beat-synchronized stars appearing — discrete objects born from rhythm (19:94)
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    if (!this._stars) this._stars = [];
+    // Spawn star on beat
+    if (feat.beat > 0.5 && this._stars.length < 60) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = sR * 0.2 + Math.random() * sR * 0.7;
+      this._stars.push({ x: cx + Math.cos(angle) * dist, y: cy + Math.sin(angle) * dist,
+        r: 1 + Math.random() * 2, age: 0, maxAge: 180 + Math.random() * 120 });
+    }
+    for (let i = this._stars.length - 1; i >= 0; i--) {
+      const s = this._stars[i]; s.age++;
+      if (s.age > s.maxAge) { this._stars.splice(i, 1); continue; }
+      const life = 1 - s.age / s.maxAge;
+      const twinkle = 0.6 + 0.4 * Math.sin(s.age * 0.15 + s.x);
+      ctx.save(); ctx.fillStyle = `rgba(200, 210, 230, ${life * activation * twinkle})`;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    }
+  }
+}
+
+// ── Layer: 0.3 Multiplication ──
+class MultiplicationLayer extends Layer {
+  get id() { return 'multiplication'; }
+  get islandNumber() { return '0.3'; }
+  get name() { return 'Multiplication'; }
+  get arabicName() { return 'الضرب'; }
+  get scholar() { return 'Al-Khwarizmi'; }
+  get era() { return '780–850 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"Like a seed which grows seven ears"'; }
+  get surah() { return 'Al-Baqarah (2:261)'; }
+  get constructionDuration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent;
+    const rows = 4, cols = 3, dotR = 5, gapX = 36, gapY = 36;
+    const gridW = (cols - 1) * gapX, gridH = (rows - 1) * gapY;
+    const ox = zones.midX - gridW / 2, oy = zones.midY - gridH / 2 - 40;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const idx = r * cols + c;
+        const delay = 0.5 + idx * 0.3;
+        const pp = phase(t, delay, 0.3);
+        if (pp > 0) Organic.point(ctx, ox + c * gapX, oy + r * gapY, { r: dotR * pp, color: '#6a5a4a', opacity: 0.8 });
+      }
+    }
+    const p1 = phase(t, 6, 3);
+    if (p1 > 0) {
+      for (let r = 0; r < rows; r++) {
+        const lo = Math.min(Math.max((p1 - r * 0.15) * 3, 0), 1);
+        if (lo > 0) {
+          ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1; ctx.globalAlpha = lo * 0.5;
+          ctx.setLineDash([3, 3]);
+          ctx.strokeRect(ox - dotR - 6, oy + r * gapY - dotR - 4, gridW + dotR * 2 + 12, dotR * 2 + 8);
+          ctx.restore();
+        }
+      }
+    }
+    const p2 = phase(t, 11, 3);
+    if (p2 > 0) {
+      for (let c = 0; c < cols; c++) {
+        const lo = Math.min(Math.max((p2 - c * 0.15) * 3, 0), 1);
+        if (lo > 0) {
+          ctx.save(); ctx.strokeStyle = '#6a9e8f'; ctx.lineWidth = 1; ctx.globalAlpha = lo * 0.5;
+          ctx.setLineDash([3, 3]);
+          ctx.strokeRect(ox + c * gapX - dotR - 4, oy - dotR - 6, dotR * 2 + 8, gridH + dotR * 2 + 12);
+          ctx.restore();
+        }
+      }
+    }
+    const p3 = phase(t, 16, 2);
+    if (p3 > 0) {
+      Organic.structural(ctx, zones.midX - 15, oy + gridH + 40, zones.midX + 15, oy + gridH + 40,
+        { seed: 350, color: gold, width: 2, progress: p3 });
+      Organic.structural(ctx, zones.midX - 15, oy + gridH + 48, zones.midX + 15, oy + gridH + 48,
+        { seed: 351, color: gold, width: 2, progress: p3 });
+    }
+  }
+
+  // Mode B: Star grid — structural scaffolding, harmonic multiplication
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const gridN = 7; // 7×7 grid — "seven ears"
+    const spacing = sR * 1.4 / gridN;
+    const ox = cx - spacing * (gridN - 1) / 2;
+    const oy = cy - spacing * (gridN - 1) / 2;
+    const harmonics = feat.harmonics || 0;
+    for (let r = 0; r < gridN; r++) {
+      for (let c = 0; c < gridN; c++) {
+        const dist = Math.sqrt((r - 3) * (r - 3) + (c - 3) * (c - 3)) / 4.24;
+        const a = activation * (1 - dist * 0.5) * (0.3 + harmonics * 0.7);
+        if (a > 0.02) {
+          const sz = 1 + harmonics * 1.5;
+          ctx.save(); ctx.fillStyle = `rgba(180, 190, 210, ${a * 0.6})`;
+          ctx.beginPath(); ctx.arc(ox + c * spacing, oy + r * spacing, sz, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
+  }
+}
+
+// ── Layer: 0.4 Zero & Negatives ──
+class ZeroLayer extends Layer {
+  get id() { return 'zero'; }
+  get islandNumber() { return '0.4'; }
+  get name() { return 'Zero & Negatives'; }
+  get arabicName() { return 'الصفر والسالب'; }
+  get scholar() { return 'Al-Khwarizmi + Brahmagupta'; }
+  get era() { return '598–850 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"When you contract a debt, write it down"'; }
+  get surah() { return 'Al-Baqarah (2:282)'; }
+  get constructionDuration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent;
+    const lineY = zones.midY, zeroX = zones.midX, gap = 35;
+
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.structural(ctx, zones.left, lineY, zones.right, lineY, { seed: 400, color: ink, progress: p0 });
+      if (p0 > 0.5) Organic.structural(ctx, zeroX, lineY - 10, zeroX, lineY + 10,
+        { progress: (p0 - 0.5) * 2, seed: 401, color: ink, width: 2 });
+    }
+    const p1 = phase(t, 3.5, 2.5);
+    if (p1 > 0) {
+      for (let i = 1; i <= 4; i++) {
+        const lo = Math.min(Math.max((p1 - (i - 1) * 0.15) * 4, 0), 1);
+        const x = zeroX + i * gap;
+        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 410 + i, color: '#2d6a4f', width: 1.2, progress: lo });
+        Organic.point(ctx, x, lineY, { r: 2.5, color: '#2d6a4f', opacity: lo });
+      }
+    }
+    const p2 = phase(t, 7.5, 2.5);
+    if (p2 > 0) {
+      for (let i = 1; i <= 4; i++) {
+        const lo = Math.min(Math.max((p2 - (i - 1) * 0.15) * 4, 0), 1);
+        const x = zeroX - i * gap;
+        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 420 + i, color: '#c0392b', width: 1.2, progress: lo });
+        Organic.point(ctx, x, lineY, { r: 2.5, color: '#c0392b', opacity: lo });
+      }
+    }
+    const p3 = phase(t, 12, 3);
+    if (p3 > 0) {
+      const debtorX = zeroX - 2 * gap;
+      const pulse = 0.7 + 0.3 * Math.sin(t * 3);
+      Organic.point(ctx, debtorX, lineY, { r: 6 * p3, color: '#c0392b', opacity: p3 * pulse });
+      if (p3 > 0.4) {
+        ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1;
+        ctx.setLineDash([4, 3]); ctx.globalAlpha = (p3 - 0.4) * 0.4;
+        ctx.beginPath(); ctx.moveTo(zeroX, lineY + 16); ctx.lineTo(debtorX, lineY + 16); ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+
+  // Mode B: Void gradient — the darkness between stars, negative space
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const grad = ctx.createRadialGradient(cx, cy, sR * 0.1, cx, cy, sR * 0.8);
+    grad.addColorStop(0, `rgba(5, 5, 15, ${activation * 0.4})`);
+    grad.addColorStop(0.5, `rgba(10, 10, 25, ${activation * 0.2})`);
+    grad.addColorStop(1, 'rgba(10, 10, 25, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(cx - sR, cy - sR, sR * 2, sR * 2);
+  }
+}
+
+// ── Layer: 0.5 Fractions ──
+class FractionsLayer extends Layer {
+  get id() { return 'fractions'; }
+  get islandNumber() { return '0.5'; }
+  get name() { return 'Fractions'; }
+  get arabicName() { return 'الكسور'; }
+  get scholar() { return 'Al-Khwarizmi + Abu\'l-Wafa'; }
+  get era() { return '780–998 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"Allah instructs you concerning your children"'; }
+  get surah() { return 'An-Nisa (4:11)'; }
+  get constructionDuration() { return 26; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent;
+    const sq = Math.min(zones.contentW - 40, 260);
+    const ox = zones.midX - sq / 2, oy = zones.midY - sq / 2 - 20;
+    const cellH = sq / 27;
+
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, ox, oy, sq, sq, { progress: p0, seed: 500, color: ink });
+    }
+    const p1 = phase(t, 3.5, 2);
+    if (p1 > 0) Organic.fill(ctx, ox, oy, sq, 3 * cellH * p1, '#6a9e8f', 0.55);
+    const p2 = phase(t, 6.5, 2.5);
+    if (p2 > 0) Organic.fill(ctx, ox, oy + 3 * cellH, sq, 16 * cellH * p2, '#d4a843', 0.5);
+    const p3 = phase(t, 10.5, 2);
+    if (p3 > 0) Organic.fill(ctx, ox, oy + 19 * cellH, sq, 4 * cellH * p3, '#b07050', 0.5);
+    const p4 = phase(t, 13.5, 2.5);
+    if (p4 > 0) {
+      Organic.fill(ctx, ox, oy + 23 * cellH, sq, 4 * cellH * p4, '#b07050', 0.45);
+      if (p4 > 0.7) Organic.structural(ctx, ox, oy + sq, ox + sq, oy + sq,
+        { progress: (p4 - 0.7) / 0.3, seed: 530, color: gold, width: 2 });
+    }
+  }
+
+  // Mode B: Nebula particles — finer fractional structure from gas clouds
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    if (!this._particles) this._particles = [];
+    const tonality = 1 - (feat.flatness || 0);
+    // Spawn particles when tonal
+    if (tonality > 0.3 && this._particles.length < 80) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = sR * 0.15 + Math.random() * sR * 0.6;
+      this._particles.push({
+        x: cx + Math.cos(angle) * dist, y: cy + Math.sin(angle) * dist,
+        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+        r: 1 + Math.random() * 3, age: 0, maxAge: 200 + Math.random() * 200,
+        hue: 30 + Math.random() * 30
+      });
+    }
+    for (let i = this._particles.length - 1; i >= 0; i--) {
+      const pt = this._particles[i]; pt.age++; pt.x += pt.vx; pt.y += pt.vy;
+      if (pt.age > pt.maxAge) { this._particles.splice(i, 1); continue; }
+      const life = 1 - pt.age / pt.maxAge;
+      const a = life * activation * 0.4;
+      ctx.save(); ctx.fillStyle = `hsla(${pt.hue}, 40%, 65%, ${a})`;
+      ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    }
+  }
+}
+
+// ── Layer: 0.6 Variables ──
+class VariablesLayer extends Layer {
+  get id() { return 'variables'; }
+  get islandNumber() { return '0.6'; }
+  get name() { return 'The Variable'; }
+  get arabicName() { return 'المتغيّر'; }
+  get scholar() { return 'Al-Khwarizmi'; }
+  get era() { return '780–850 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"There is not a thing (shay\') but with Us are its depositories"'; }
+  get surah() { return 'Al-Hijr (15:21)'; }
+  get constructionDuration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820';
+    const ccx = zones.midX, fy = zones.midY - 20;
+    const beamLen = 120;
+
+    const p0 = phase(t, 0, 3);
+    if (p0 > 0) {
+      Organic.structural(ctx, ccx, fy, ccx - 14, fy + 40, { seed: 600, color: ink, progress: p0 });
+      Organic.structural(ctx, ccx, fy, ccx + 14, fy + 40, { seed: 601, color: ink, progress: p0 });
+      Organic.structural(ctx, ccx - beamLen, fy, ccx + beamLen, fy, { seed: 602, color: ink, width: 2, progress: p0 });
+    }
+    const p1 = phase(t, 4.5, 2.5);
+    if (p1 > 0) {
+      const lx = ccx - beamLen;
+      for (let i = 0; i < 5; i++) {
+        const delay = i * 0.12;
+        if (p1 > delay) {
+          const lo = Math.min((p1 - delay) * 4, 1);
+          Organic.point(ctx, lx - 12 + i * 6, fy - 14, { r: 4, color: '#8a7a6a', opacity: lo * 0.7 });
+        }
+      }
+    }
+    const p2 = phase(t, 9, 3.5);
+    if (p2 > 0) {
+      const rx = ccx + beamLen;
+      const boxSize = 24;
+      Organic.fill(ctx, rx - boxSize / 2, fy - boxSize - 4, boxSize, boxSize, gold, p2 * 0.3);
+      Organic.structRect(ctx, rx - boxSize / 2, fy - boxSize - 4, boxSize, boxSize,
+        { progress: p2, seed: 610, color: gold, width: 1.5 });
+    }
+    const p3 = phase(t, 15, 3);
+    if (p3 > 0) {
+      Organic.structural(ctx, ccx - beamLen, fy, ccx + beamLen, fy, { seed: 602, color: ink, width: 2 });
+      if (p3 > 0.5) Organic.point(ctx, ccx, fy, { r: 4, color: gold, opacity: (p3 - 0.5) * 0.6 });
+    }
+  }
+
+  // Mode B: Comet — first moving object with trajectory (unknown position resolving)
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    if (!this._cometAngle) this._cometAngle = 0;
+    const centroid = feat.centroid || 0.5;
+    this._cometAngle += 0.008 + centroid * 0.02;
+    const dist = sR * (0.3 + centroid * 0.4);
+    const x = cx + Math.cos(this._cometAngle) * dist;
+    const y = cy + Math.sin(this._cometAngle * 0.7) * dist * 0.6;
+    // Comet head
+    ctx.save();
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, 6 + activation * 4);
+    grad.addColorStop(0, `rgba(200, 170, 80, ${activation * 0.9})`);
+    grad.addColorStop(1, 'rgba(200, 170, 80, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(x, y, 6 + activation * 4, 0, Math.PI * 2); ctx.fill();
+    // Tail
+    const tailLen = 20 + activation * 30;
+    const tailAngle = this._cometAngle + Math.PI;
+    const tx = x + Math.cos(tailAngle) * tailLen;
+    const ty = y + Math.sin(tailAngle * 0.7) * tailLen * 0.6;
+    ctx.strokeStyle = `rgba(200, 170, 80, ${activation * 0.3})`;
+    ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+// ── Layer: 0.7 Quadratics ──
+class QuadraticsLayer extends Layer {
+  get id() { return 'quadratics'; }
+  get islandNumber() { return '0.7'; }
+  get name() { return 'Completing the Square'; }
+  get arabicName() { return 'إكمال المربع'; }
+  get scholar() { return 'Al-Khwarizmi + Thabit ibn Qurra'; }
+  get era() { return '780–901 CE'; }
+  get city() { return 'Baghdad'; }
+  get ayah() { return '"Read! In the name of your Lord"'; }
+  get surah() { return 'Al-Alaq (96:1)'; }
+  get constructionDuration() { return 28; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820';
+    const unit = 18;
+    const S = 10, X = 4.14;
+    const sw = S * unit, xw = X * unit;
+    const totalW = sw + xw;
+    const ox = zones.midX - totalW / 2;
+    const totalH = sw + xw;
+    const oy = zones.midY - totalH / 2;
+
+    const p0 = phase(t, 0, 4);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sw, sw, '#efe0c0', p0 * 0.5);
+      Organic.structRect(ctx, ox, oy, sw, sw, { progress: p0, seed: 42, color: ink });
+    }
+    const p1 = phase(t, 6, 3);
+    if (p1 > 0) {
+      Organic.fill(ctx, ox + sw, oy, xw * p1, sw, '#e4d4a8', 0.45);
+      Organic.structural(ctx, ox + sw + xw, oy, ox + sw + xw, oy + sw, { progress: p1, seed: 100, color: ink });
+      Organic.structural(ctx, ox + sw, oy, ox + sw + xw, oy, { progress: p1, seed: 101, color: ink });
+    }
+    const p2 = phase(t, 10.5, 3);
+    if (p2 > 0) {
+      Organic.fill(ctx, ox, oy + sw, sw, xw * p2, '#e4d4a8', 0.45);
+      Organic.structural(ctx, ox, oy + sw + xw, ox + sw, oy + sw + xw, { progress: p2, seed: 110, color: ink });
+      Organic.structural(ctx, ox, oy + sw, ox, oy + sw + xw, { progress: p2, seed: 111, color: ink });
+    }
+    const p3 = phase(t, 15, 2.5);
+    if (p3 > 0) {
+      const pulse = 0.25 + 0.35 * Math.sin(t * 3);
+      ctx.save(); ctx.strokeStyle = highlight; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+      ctx.globalAlpha = p3 * pulse; ctx.strokeRect(ox + sw + 1, oy + sw + 1, xw - 2, xw - 2);
+      ctx.restore();
+    }
+    const p4 = phase(t, 19, 3);
+    if (p4 > 0) {
+      Organic.fill(ctx, ox + sw, oy + sw, xw, xw, '#d4b878', p4 * 0.7);
+      Organic.structural(ctx, ox + sw + xw, oy + sw, ox + sw + xw, oy + sw + xw, { progress: p4, seed: 130, color: ink });
+      Organic.structural(ctx, ox + sw, oy + sw + xw, ox + sw + xw, oy + sw + xw, { progress: p4, seed: 131, color: ink });
+      if (p4 > 0.5) {
+        const bo = (p4 - 0.5) / 0.5;
+        Organic.guide(ctx, ox, oy - 14, ox + sw + xw, oy - 14, { progress: bo, seed: 140, color: gold });
+        Organic.guide(ctx, ox - 14, oy, ox - 14, oy + sw + xw, { progress: bo, seed: 141, color: gold });
+      }
+    }
+    const p5 = phase(t, 23.5, 2);
+    if (p5 > 0) {
+      Organic.structural(ctx, ox + sw, oy - 5, ox + sw + xw, oy - 5, { progress: p5, seed: 150, color: gold, width: 2.5 });
+      if (p5 > 0.5) Organic.point(ctx, ox + sw + xw / 2, oy - 5, { r: 3, color: gold, opacity: (p5 - 0.5) * 2 });
+    }
+  }
+
+  // Mode B: Paired bezier arcs — quadratic curves responding to spectral curvature
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const curv = feat.curvature || 0;
+    const n = 6;
+    ctx.save();
+    for (let i = 0; i < n; i++) {
+      const angle = (i / n) * Math.PI * 2 + curv * 2;
+      const r = sR * (0.3 + curv * 0.4);
+      const x1 = cx + Math.cos(angle) * r;
+      const y1 = cy + Math.sin(angle) * r;
+      const x2 = cx + Math.cos(angle + Math.PI) * r;
+      const y2 = cy + Math.sin(angle + Math.PI) * r;
+      const cpx = cx + Math.cos(angle + Math.PI / 2) * r * curv * 2;
+      const cpy = cy + Math.sin(angle + Math.PI / 2) * r * curv * 2;
+      ctx.strokeStyle = `rgba(180, 160, 100, ${activation * 0.3})`;
+      ctx.lineWidth = 0.8; ctx.beginPath();
+      ctx.moveTo(x1, y1); ctx.quadraticCurveTo(cpx, cpy, x2, y2); ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+// ── Layer: 0.8 Irrationals ──
+class IrrationalsLayer extends Layer {
+  get id() { return 'irrationals'; }
+  get islandNumber() { return '0.8'; }
+  get name() { return 'The Irrational Diagonal'; }
+  get arabicName() { return 'الأعداد غير النسبية'; }
+  get scholar() { return 'Omar Khayyam'; }
+  get era() { return '1048–1131 CE'; }
+  get city() { return 'Nishapur'; }
+  get ayah() { return '"Do they not look at how it is created?"'; }
+  get surah() { return 'Al-Ghashiyah (88:17)'; }
+  get constructionDuration() { return 24; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820';
+    const sq = Math.min(zones.contentW - 60, 200);
+    const ox = zones.midX - sq / 2, oy = zones.midY - sq / 2 - 40;
+
+    const p0 = phase(t, 0, 3);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.35);
+      Organic.structRect(ctx, ox, oy, sq, sq, { progress: p0, seed: 700, color: ink });
+    }
+    const p1 = phase(t, 5, 3);
+    if (p1 > 0) {
+      Organic.structural(ctx, ox, oy + sq, ox + sq, oy, { progress: p1, seed: 710, color: gold, width: 2.2 });
+      if (p1 > 0.3) {
+        Organic.point(ctx, ox, oy + sq, { r: 3, color: gold, opacity: (p1 - 0.3) / 0.7 });
+        Organic.point(ctx, ox + sq, oy, { r: 3, color: gold, opacity: (p1 - 0.3) / 0.7 });
+      }
+    }
+    const p2 = phase(t, 10, 4);
+    if (p2 > 0) {
+      const diagLen = sq * Math.SQRT2;
+      Organic.arc(ctx, ox, oy + sq, diagLen, -Math.PI / 4, Math.PI / 12, { seed: 720, color: gold, width: 1.5, progress: p2 });
+    }
+    const p3 = phase(t, 16, 3);
+    if (p3 > 0) {
+      const nlY = oy + sq + 80;
+      Organic.structural(ctx, zones.left + 10, nlY, zones.right - 10, nlY, { seed: 730, color: ink, width: 1.2, progress: p3 });
+      const nlLeft = zones.left + 30, nlW = zones.contentW - 40;
+      if (p3 > 0.3) {
+        [0, 0.5, 1].forEach(frac => {
+          const x = nlLeft + frac * nlW;
+          Organic.structural(ctx, x, nlY - 5, x, nlY + 5, { seed: 740 + Math.floor(frac * 10), color: ink, width: 1 });
+        });
+        const sqrtX = nlLeft + (Math.SQRT2 / 2) * nlW;
+        Organic.point(ctx, sqrtX, nlY, { r: 4, color: gold, opacity: (p3 - 0.3) / 0.7 });
+      }
+    }
+  }
+
+  // Mode B: Irrational fog — purple haze filling spaces between discrete objects
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const flatness = feat.flatness || 0;
+    const r = sR * (0.4 + flatness * 0.5);
+    const grad = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r);
+    const a = activation * 0.15;
+    grad.addColorStop(0, `rgba(80, 40, 120, ${a})`);
+    grad.addColorStop(0.5, `rgba(60, 30, 100, ${a * 0.6})`);
+    grad.addColorStop(1, 'rgba(40, 20, 80, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+  }
+}
+
+// ── Layer: 0.9 Functions ──
+class FunctionsLayer extends Layer {
+  get id() { return 'functions'; }
+  get islandNumber() { return '0.9'; }
+  get name() { return 'The Function'; }
+  get arabicName() { return 'الدالّة'; }
+  get scholar() { return 'Al-Biruni'; }
+  get era() { return '973–1048 CE'; }
+  get city() { return 'Khwarezm'; }
+  get ayah() { return '"Determined for it phases, that you may know"'; }
+  get surah() { return 'Yunus (10:5)'; }
+  get constructionDuration() { return 22; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820';
+    const boxW = 70, boxH = 50;
+    const boxX = zones.midX - boxW / 2, boxY = zones.midY - boxH / 2 - 20;
+    const inputs = [boxY - 60, boxY, boxY + 60];
+    const inX = zones.left + 30, outX = zones.right - 30;
+
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, boxX, boxY, boxW, boxH, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, boxX, boxY, boxW, boxH, { progress: p0, seed: 800, color: ink });
+    }
+    for (let i = 0; i < 3; i++) {
+      const delay = 3.5 + i * 2.5;
+      const pp = phase(t, delay, 2);
+      if (pp > 0) {
+        const iy = inputs[i];
+        Organic.point(ctx, inX, iy, { r: 5, color: ink, opacity: Math.min(pp * 3, 1) });
+        if (pp > 0.15) Organic.guide(ctx, inX + 8, iy, boxX - 4, boxY + boxH / 2,
+          { progress: Math.min((pp - 0.15) * 2.5, 1), seed: 810 + i, color: gold });
+        if (pp > 0.5) Organic.guide(ctx, boxX + boxW + 4, boxY + boxH / 2, outX - 8, iy,
+          { progress: (pp - 0.5) * 2, seed: 820 + i, color: gold });
+        if (pp > 0.7) Organic.point(ctx, outX, iy, { r: 5, color: p.highlight, opacity: (pp - 0.7) / 0.3 });
+      }
+    }
+    const p2 = phase(t, 13, 3.5);
+    if (p2 > 0) {
+      const cy = boxY + boxH + 80;
+      const b1x = zones.midX - 60, b2x = zones.midX + 20;
+      const bw = 40, bh = 30;
+      Organic.fill(ctx, b1x, cy, bw, bh, '#efe0c0', p2 * 0.3);
+      Organic.structRect(ctx, b1x, cy, bw, bh, { progress: p2, seed: 850, color: ink, width: 1.2 });
+      if (p2 > 0.3) {
+        Organic.fill(ctx, b2x, cy, bw, bh, '#efe0c0', (p2 - 0.3) / 0.7 * 0.3);
+        Organic.structRect(ctx, b2x, cy, bw, bh, { progress: (p2 - 0.3) / 0.7, seed: 855, color: ink, width: 1.2 });
+        Organic.guide(ctx, b1x + bw + 3, cy + bh / 2, b2x - 3, cy + bh / 2,
+          { progress: (p2 - 0.3) / 0.7, seed: 860, color: gold });
+      }
+      if (p2 > 0.1) Organic.guide(ctx, b1x - 20, cy + bh / 2, b1x - 3, cy + bh / 2, { seed: 865, color: ink, progress: p2 });
+      if (p2 > 0.5) Organic.guide(ctx, b2x + bw + 3, cy + bh / 2, b2x + bw + 20, cy + bh / 2, { seed: 866, color: gold, progress: (p2 - 0.5) * 2 });
+    }
+  }
+
+  // Mode B: Pitch contour — continuous curves mapping frequency to time
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    if (!this._pitchHistory) this._pitchHistory = [];
+    this._pitchHistory.push(feat.centroid || 0.5);
+    if (this._pitchHistory.length > 120) this._pitchHistory.shift();
+    const h = this._pitchHistory;
+    ctx.save();
+    ctx.strokeStyle = `rgba(140, 180, 160, ${activation * 0.5})`;
+    ctx.lineWidth = 1.2; ctx.beginPath();
+    for (let i = 0; i < h.length; i++) {
+      const x = cx - sR * 0.8 + (i / 120) * sR * 1.6;
+      const y = cy + (0.5 - h[i]) * sR * 0.5;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+}
+
+// ── Layer: 0.10 Limits ──
+class LimitsLayer extends Layer {
+  get id() { return 'limits'; }
+  get islandNumber() { return '0.10'; }
+  get name() { return 'The Limit'; }
+  get arabicName() { return 'النهاية'; }
+  get scholar() { return 'Ibn al-Haytham'; }
+  get era() { return '965–1040 CE'; }
+  get city() { return 'Basra'; }
+  get ayah() { return '"To your Lord is the final destination"'; }
+  get surah() { return 'An-Najm (53:42)'; }
+  get constructionDuration() { return 24; }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820', teal = p.highlight;
+    const lineY = zones.midY, nlLeft = zones.left + 10, nlRight = zones.right - 10;
+    const targetX = nlRight - 30;
+
+    const p0 = phase(t, 0, 2);
+    if (p0 > 0) {
+      Organic.structural(ctx, nlLeft, lineY, nlRight, lineY, { seed: 900, color: ink, progress: p0 });
+      if (p0 > 0.6) Organic.point(ctx, targetX, lineY, { r: 5, color: teal, opacity: (p0 - 0.6) / 0.4 });
+    }
+    const sequence = [0, 0.5, 0.75, 0.875, 0.9375, 0.96875, 0.984375, 0.992];
+    const startX = nlLeft + 20;
+    const range = targetX - startX;
+    for (let i = 0; i < sequence.length; i++) {
+      const delay = 3 + i * 1.5;
+      const pp = phase(t, delay, 1);
+      if (pp > 0) {
+        const x = startX + sequence[i] * range;
+        Organic.point(ctx, x, lineY, { r: Math.max(3.5 - i * 0.3, 1.5), color: gold, opacity: pp * 0.8 });
+        if (i < sequence.length - 1 && pp > 0.5) {
+          const nx = startX + sequence[i + 1] * range;
+          ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 0.7; ctx.globalAlpha = (pp - 0.5) * 0.5;
+          ctx.beginPath(); ctx.moveTo(x + 3, lineY - 8);
+          ctx.quadraticCurveTo((x + nx) / 2, lineY - 16 + i * 1.5, nx - 2, lineY - 8);
+          ctx.stroke(); ctx.restore();
+        }
+      }
+    }
+    const p2 = phase(t, 17, 3);
+    if (p2 > 0) {
+      const eps = 25 * (1 - p2 * 0.75);
+      ctx.save(); ctx.fillStyle = teal; ctx.globalAlpha = 0.1;
+      ctx.fillRect(targetX - eps, lineY - 18, eps * 2, 36); ctx.restore();
+      ctx.save(); ctx.strokeStyle = teal; ctx.lineWidth = 1; ctx.globalAlpha = p2 * 0.4;
+      ctx.setLineDash([3, 3]); ctx.strokeRect(targetX - eps, lineY - 18, eps * 2, 36);
+      ctx.restore();
+    }
+  }
+
+  // Mode B: Convergent rings — complex structure collapsing toward attractors
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const rms = feat.rms || 0;
+    const n = 5 + Math.floor(rms * 5);
+    ctx.save();
+    for (let i = 0; i < n; i++) {
+      const r = sR * (0.1 + (i / n) * 0.7) * (0.8 + rms * 0.4);
+      const a = activation * (1 - i / n) * 0.25;
+      ctx.strokeStyle = `rgba(100, 160, 140, ${a})`;
+      ctx.lineWidth = 0.6; ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+// ── Layer: 0.11 Derivatives ──
+class DerivativesLayer extends Layer {
+  get id() { return 'derivatives'; }
+  get islandNumber() { return '0.11'; }
+  get name() { return 'The Derivative'; }
+  get arabicName() { return 'المشتقّة'; }
+  get scholar() { return 'Sharaf al-Din al-Tusi'; }
+  get era() { return '1135–1213 CE'; }
+  get city() { return 'Tus'; }
+  get ayah() { return '"Establish prayer at the decline of the sun"'; }
+  get surah() { return 'Al-Isra (17:78)'; }
+  get constructionDuration() { return 28; }
+
+  _curve(x) { return -0.004 * (x - 195) * (x - 195) + 180; }
+  _curveDeriv(x) { return -0.008 * (x - 195); }
+
+  drawConstruction(t, ctx, zones) {
+    const p = this.palette;
+    const ink = p.structural, gold = p.accent, highlight = '#c48820', teal = p.highlight;
+    const ox = zones.left + 10, oy = zones.bottom - 30;
+
+    const p0 = phase(t, 0, 3.5);
+    if (p0 > 0) {
+      Organic.structural(ctx, ox, oy, zones.right - 10, oy, { seed: 950, color: ink, width: 1.2, progress: p0 });
+      Organic.structural(ctx, ox, oy, ox, zones.top + 20, { seed: 951, color: ink, width: 1.2, progress: p0 });
+      if (p0 > 0.3) {
+        const cp = (p0 - 0.3) / 0.7;
+        ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 1.8; ctx.globalAlpha = cp;
+        ctx.beginPath();
+        const maxPx = 50 + 280 * cp;
+        for (let px = 50; px <= maxPx; px += 2) {
+          const py = oy - this._curve(px);
+          if (px === 50) ctx.moveTo(ox + px, py); else ctx.lineTo(ox + px, py);
+        }
+        ctx.stroke(); ctx.restore();
+      }
+    }
+
+    const ax = 120, ay = this._curve(ax);
+
+    const p1 = phase(t, 5, 8);
+    if (p1 > 0) {
+      const aScreenX = ox + ax, aScreenY = oy - ay;
+      Organic.point(ctx, aScreenX, aScreenY, { r: 4, color: teal, opacity: Math.min(p1 * 3, 1) });
+      const bStart = 300, bEnd = 130;
+      const bx = bStart + (bEnd - bStart) * p1;
+      const by = this._curve(bx);
+      const bScreenX = ox + bx, bScreenY = oy - by;
+      Organic.point(ctx, bScreenX, bScreenY, { r: 3, color: gold, opacity: Math.min(p1 * 2, 1) });
+      const slope = (by - ay) / (bx - ax);
+      const lsx = 30, lex = 340;
+      const lsy = Math.max(oy - (ay + slope * (lsx - ax)), zones.top + 30);
+      const ley = Math.min(oy - (ay + slope * (lex - ax)), oy + 5);
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1;
+      ctx.globalAlpha = Math.min(p1 * 2, 1) * 0.6; ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(ox + lsx, lsy); ctx.lineTo(ox + lex, ley);
+      ctx.stroke(); ctx.restore();
+    }
+
+    const p2 = phase(t, 14, 4);
+    if (p2 > 0) {
+      const aScreenX = ox + ax, aScreenY = oy - ay;
+      Organic.point(ctx, aScreenX, aScreenY, { r: 4, color: teal });
+      const slope = this._curveDeriv(ax);
+      const lsx = 40, lex = 300;
+      const lsy = Math.max(oy - (ay + slope * (lsx - ax)), zones.top + 30);
+      const ley = Math.min(oy - (ay + slope * (lex - ax)), oy + 5);
+      Organic.structural(ctx, ox + lsx, lsy, ox + lex, ley,
+        { progress: p2, seed: 960, color: teal, width: 2 });
+    }
+  }
+
+  // Mode B: Tangent lines — rate of change responding to spectral derivatives
+  drawReactive(ctx, activation, feat, cx, cy, sR) {
+    if (activation < 0.05) return;
+    const flux = feat.flux || 0;
+    const n = 4 + Math.floor(flux * 6);
+    ctx.save();
+    for (let i = 0; i < n; i++) {
+      const angle = (i / n) * Math.PI * 2 + flux * 3;
+      const r = sR * 0.3;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      const tangentAngle = angle + Math.PI / 2 + flux * 0.5;
+      const len = 15 + flux * sR * 0.3;
+      const x1 = x - Math.cos(tangentAngle) * len;
+      const y1 = y - Math.sin(tangentAngle) * len;
+      const x2 = x + Math.cos(tangentAngle) * len;
+      const y2 = y + Math.sin(tangentAngle) * len;
+      ctx.strokeStyle = `rgba(100, 160, 140, ${activation * 0.4})`;
+      ctx.lineWidth = 0.8; ctx.beginPath();
+      ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+// ── Layer Registry ──
+const LayerRegistry = {
+  layers: {},
+  ordered: [],
+  register(layer) { this.layers[layer.id] = layer; this.ordered.push(layer); },
+  get(id) { return this.layers[id]; },
+  all() { return this.ordered; },
+};
+
+// Register all layers in cosmological order
+LayerRegistry.register(new MonadLayer());
+LayerRegistry.register(new EqualityLayer());
+LayerRegistry.register(new CountingLayer());
+LayerRegistry.register(new MultiplicationLayer());
+LayerRegistry.register(new ZeroLayer());
+LayerRegistry.register(new FractionsLayer());
+LayerRegistry.register(new VariablesLayer());
+LayerRegistry.register(new QuadraticsLayer());
+LayerRegistry.register(new IrrationalsLayer());
+LayerRegistry.register(new FunctionsLayer());
+LayerRegistry.register(new LimitsLayer());
+LayerRegistry.register(new DerivativesLayer());
+
+// ══════════════════════════════════════════════════════════
+// ── Inline Diagram Registry ──
+// Each mathematical concept gets its own short animated diagram.
+// Diagrams are injected inline where <!-- diagram: name --> appears
+// in the markdown. Auto-play on scroll, freeze on final frame.
+// ══════════════════════════════════════════════════════════
+
+const DiagramRegistry = {
+  diagrams: {},
+  register(islandId, conceptName, def) {
+    this.diagrams[`${islandId}:${conceptName}`] = def;
+  },
+  get(islandId, conceptName) {
+    return this.diagrams[`${islandId}:${conceptName}`];
+  },
+  getForIsland(islandId) {
+    return Object.entries(this.diagrams)
+      .filter(([k]) => k.startsWith(islandId + ':'))
+      .map(([k, v]) => ({ key: k, concept: k.split(':')[1], ...v }));
+  }
+};
+
+// ── Inline Diagram Player ──
+function initInlineDiagram(canvas, diagramDef) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = 780;
+  const H = Math.round(W / (diagramDef.aspectRatio || 1.5));
+
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = '100%';
+  canvas.style.height = 'auto';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const zones = {
+    top: 20, bottom: H - 20,
+    left: 30, right: W - 30,
+    w: W, h: H,
+    contentW: W - 60,
+    midY: H / 2, midX: W / 2,
+  };
+
+  let startTime = null;
+  let animating = false;
+  const container = canvas.parentElement;
+
+  // Draw initial frozen frame (so canvas isn't blank before scroll)
+  ctx.fillStyle = '#f8f0e0';
+  ctx.fillRect(0, 0, W, H);
+  if (diagramDef.frozenFrame) {
+    diagramDef.frozenFrame(ctx, zones);
+  }
+
+  function frame() {
+    if (!animating) return;
+    const t = (performance.now() - startTime) / 1000;
+    ctx.fillStyle = '#f8f0e0';
+    ctx.fillRect(0, 0, W, H);
+
+    if (t < diagramDef.duration) {
+      diagramDef.draw(t, ctx, zones);
+      requestAnimationFrame(frame);
+    } else {
+      // Done — show final state
+      if (diagramDef.frozenFrame) {
+        diagramDef.frozenFrame(ctx, zones);
+      } else {
+        diagramDef.draw(diagramDef.duration, ctx, zones);
+      }
+      animating = false;
+      container.classList.add('finished');
+    }
+  }
+
+  function play() {
+    startTime = performance.now();
+    animating = true;
+    container.classList.remove('finished');
+    frame();
+  }
+
+  // Auto-play when 50% visible
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        play();
+        observer.unobserve(container);
+      }
+    });
+  }, { threshold: 0.5 });
+  observer.observe(container);
+
+  // Click to replay
+  canvas.addEventListener('click', play);
+}
+
+// ── Inject Diagrams into Rendered Content ──
+function injectDiagrams(islandId) {
+  const content = document.getElementById('content');
+  const walker = document.createTreeWalker(content, NodeFilter.SHOW_COMMENT, null, false);
+
+  const diagramComments = [];
+  let node;
+  while (node = walker.nextNode()) {
+    const match = node.textContent.trim().match(/^diagram:\s*(\S+)$/);
+    if (match) diagramComments.push({ node, conceptName: match[1] });
+  }
+
+  diagramComments.forEach(({ node, conceptName }) => {
+    const diagramDef = DiagramRegistry.get(islandId, conceptName);
+    if (!diagramDef) return; // No diagram built yet — comment stays invisible
+
+    const container = document.createElement('div');
+    container.className = 'inline-diagram';
+
+    const canvas = document.createElement('canvas');
+    container.appendChild(canvas);
+
+    const hint = document.createElement('div');
+    hint.className = 'inline-diagram-hint';
+    hint.textContent = 'tap to replay';
+    container.appendChild(hint);
+
+    node.parentNode.replaceChild(container, node);
+    initInlineDiagram(canvas, diagramDef);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ── Island 0.0: Prologue Diagrams (3 inline) ──
+// The impossible sum. Four heirs. 27/24 > 1.
+// ══════════════════════════════════════════════════════════
+
+// Diagram 1: Heir shares filling a bar — one by one, fits fine (at first)
+DiagramRegistry.register('00-prologue', 'heir-shares', {
+  duration: 10,
+  aspectRatio: 2.2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c';
+    const barW = zones.contentW - 40, barH = 44;
+    const barX = zones.left + 20, barY = zones.midY - barH / 2;
+    const segW = barW / 24;
+
+    // Estate bar
+    const p0 = phase(t, 0, 1.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', p0 * 0.4);
+      Organic.structRect(ctx, barX, barY, barW, barH, { progress: p0, seed: 50, color: ink });
+    }
+    // Wife 3/24 — teal
+    const p1 = phase(t, 2, 1.5);
+    if (p1 > 0) {
+      Organic.fill(ctx, barX, barY, 3 * segW * p1, barH, '#6a9e8f', 0.6);
+      if (p1 > 0.8) Organic.text(ctx, '3/24', barX + 1.5 * segW, barY - 14,
+        { opacity: (p1 - 0.8) * 5, font: '12px Menlo, monospace', color: '#6a9e8f' });
+    }
+    // Daughters 16/24 — gold
+    const p2 = phase(t, 4, 2);
+    if (p2 > 0) {
+      Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW * p2, barH, '#d4a843', 0.5);
+      if (p2 > 0.8) Organic.text(ctx, '16/24', barX + 11 * segW, barY - 14,
+        { opacity: (p2 - 0.8) * 5, font: '12px Menlo, monospace', color: '#d4a843' });
+    }
+    // Father 4/24 — brown
+    const p3 = phase(t, 6.5, 1.5);
+    if (p3 > 0) {
+      Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW * p3, barH, '#b07050', 0.5);
+      if (p3 > 0.8) Organic.text(ctx, '4/24', barX + 21 * segW, barY - 14,
+        { opacity: (p3 - 0.8) * 5, font: '12px Menlo, monospace', color: '#b07050' });
+    }
+    // Label: 23/24 so far — fits
+    const p4 = phase(t, 8.5, 1);
+    if (p4 > 0) {
+      Organic.text(ctx, '23/24', barX + barW / 2, barY + barH + 20,
+        { opacity: p4, font: '14px Menlo, monospace', color: ink });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510';
+    const barW = zones.contentW - 40, barH = 44;
+    const barX = zones.left + 20, barY = zones.midY - barH / 2;
+    const segW = barW / 24;
+    Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', 0.4);
+    Organic.structRect(ctx, barX, barY, barW, barH, { seed: 50, color: ink });
+    Organic.fill(ctx, barX, barY, 3 * segW, barH, '#6a9e8f', 0.6);
+    Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW, barH, '#d4a843', 0.5);
+    Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW, barH, '#b07050', 0.5);
+    Organic.text(ctx, '23/24', barX + barW / 2, barY + barH + 20, { font: '14px Menlo, monospace', color: ink });
+  }
+});
+
+// Diagram 2: The overflow — mother's share pushes past 1
+DiagramRegistry.register('00-prologue', 'overflow', {
+  duration: 8,
+  aspectRatio: 2.2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', red = '#c0392b', gold = '#c9a84c';
+    const barW = zones.contentW - 40, barH = 44;
+    const barX = zones.left + 20, barY = zones.midY - barH / 2;
+    const segW = barW / 24;
+
+    // Estate bar + existing heirs (instant)
+    Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', 0.4);
+    Organic.structRect(ctx, barX, barY, barW, barH, { seed: 50, color: ink });
+    Organic.fill(ctx, barX, barY, 3 * segW, barH, '#6a9e8f', 0.6);
+    Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW, barH, '#d4a843', 0.5);
+    Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW, barH, '#b07050', 0.5);
+
+    // Mother's share — 1 fits, 3 overflow
+    const p1 = phase(t, 1, 3);
+    if (p1 > 0) {
+      // The 1 that fits
+      Organic.fill(ctx, barX + 23 * segW, barY, segW * Math.min(p1 * 4, 1), barH, '#8a5a40', 0.5);
+      // Overflow — 3 segments beyond the boundary
+      if (p1 > 0.3) {
+        const overP = (p1 - 0.3) / 0.7;
+        const ovX = barX + 24 * segW;
+        Organic.fill(ctx, ovX, barY, 3 * segW * overP, barH, red, 0.3);
+        if (overP > 0.4) {
+          ctx.save(); ctx.strokeStyle = red; ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 4]); ctx.globalAlpha = (overP - 0.4) / 0.6;
+          ctx.strokeRect(ovX, barY, 3 * segW, barH); ctx.restore();
+        }
+      }
+      // Right boundary pulses red
+      if (p1 > 0.2) {
+        const pulse = 0.4 + 0.3 * Math.sin(t * 5);
+        ctx.save(); ctx.strokeStyle = red; ctx.lineWidth = 2.5;
+        ctx.globalAlpha = pulse * Math.min((p1 - 0.2) * 3, 1);
+        ctx.beginPath(); ctx.moveTo(barX + barW, barY - 6); ctx.lineTo(barX + barW, barY + barH + 6);
+        ctx.stroke(); ctx.restore();
+      }
+    }
+    // "27/24 > 1" text
+    const p2 = phase(t, 5, 2);
+    if (p2 > 0) {
+      Organic.text(ctx, '27/24 > 1', barX + barW / 2, barY + barH + 24,
+        { opacity: p2, font: 'bold 18px Menlo, monospace', color: red });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', red = '#c0392b';
+    const barW = zones.contentW - 40, barH = 44;
+    const barX = zones.left + 20, barY = zones.midY - barH / 2;
+    const segW = barW / 24;
+    Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', 0.4);
+    Organic.structRect(ctx, barX, barY, barW, barH, { seed: 50, color: ink });
+    Organic.fill(ctx, barX, barY, 3 * segW, barH, '#6a9e8f', 0.6);
+    Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW, barH, '#d4a843', 0.5);
+    Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW, barH, '#b07050', 0.5);
+    Organic.fill(ctx, barX + 23 * segW, barY, segW, barH, '#8a5a40', 0.5);
+    Organic.fill(ctx, barX + 24 * segW, barY, 3 * segW, barH, red, 0.3);
+    ctx.save(); ctx.strokeStyle = red; ctx.lineWidth = 2.5; ctx.globalAlpha = 0.6;
+    ctx.beginPath(); ctx.moveTo(barX + barW, barY - 6); ctx.lineTo(barX + barW, barY + barH + 6);
+    ctx.stroke(); ctx.restore();
+    Organic.text(ctx, '27/24 > 1', barX + barW / 2, barY + barH + 24,
+      { font: 'bold 18px Menlo, monospace', color: red });
+  }
+});
+
+// Diagram 3: The ground — 1 = 1 emerging from darkness
+DiagramRegistry.register('00-prologue', 'ground', {
+  duration: 5,
+  aspectRatio: 3,
+  draw(t, ctx, zones) {
+    const gold = '#c9a84c';
+    const p1 = phase(t, 1, 2.5);
+    if (p1 > 0) {
+      const glow = p1 * 0.15;
+      const grad = ctx.createRadialGradient(zones.midX, zones.midY, 0, zones.midX, zones.midY, 120);
+      grad.addColorStop(0, `rgba(201, 168, 76, ${glow})`);
+      grad.addColorStop(1, 'rgba(201, 168, 76, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, zones.w, zones.h);
+      Organic.text(ctx, '1 = 1', zones.midX, zones.midY,
+        { opacity: p1, font: 'bold 28px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const gold = '#c9a84c';
+    const grad = ctx.createRadialGradient(zones.midX, zones.midY, 0, zones.midX, zones.midY, 120);
+    grad.addColorStop(0, 'rgba(201, 168, 76, 0.15)');
+    grad.addColorStop(1, 'rgba(201, 168, 76, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, zones.w, zones.h);
+    Organic.text(ctx, '1 = 1', zones.midX, zones.midY,
+      { font: 'bold 28px Menlo, monospace', color: gold });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// ── Island 0.1: Equality Diagrams (9 inline) ──
+// 5 narrative (§2) + 4 formal (§3). Each ~6-8 seconds.
+// ══════════════════════════════════════════════════════════
+
+// Shared beam drawing helper for equality diagrams
+function _drawScale(ctx, cx, fy, tilt, progress, opts = {}) {
+  const ink = '#3a2510', beamLen = opts.beamLen || 220, fulcrumH = 50, panDrop = 24, panW = 28;
+  // Fulcrum
+  Organic.structural(ctx, cx, fy, cx - 16, fy + fulcrumH, { seed: 200, color: ink, progress });
+  Organic.structural(ctx, cx, fy, cx + 16, fy + fulcrumH, { seed: 201, color: ink, progress });
+  Organic.structural(ctx, cx - 16, fy + fulcrumH, cx + 16, fy + fulcrumH, { seed: 202, color: ink, progress });
+  // Beam
+  const lx = cx - Math.cos(tilt) * beamLen, ly = fy + Math.sin(tilt) * beamLen;
+  const rx = cx + Math.cos(tilt) * beamLen, ry = fy - Math.sin(tilt) * beamLen;
+  Organic.structural(ctx, lx, ly, rx, ry, { seed: 203, color: ink, width: 2.2, progress });
+  // Pans
+  if (progress > 0.6) {
+    const cp = (progress - 0.6) / 0.4;
+    Organic.annotation(ctx, lx, ly, lx, ly + panDrop, { seed: 204, color: ink, progress: cp });
+    Organic.annotation(ctx, rx, ry, rx, ry + panDrop, { seed: 205, color: ink, progress: cp });
+    Organic.structural(ctx, lx - panW, ly + panDrop, lx + panW, ly + panDrop, { seed: 206, color: ink, width: 1.4, progress: cp });
+    Organic.structural(ctx, rx - panW, ry + panDrop, rx + panW, ry + panDrop, { seed: 207, color: ink, width: 1.4, progress: cp });
+  }
+  return { lx, ly: ly + panDrop, rx, ry: ry + panDrop };
+}
+
+const _settle = (prog, amp) => amp * Math.sin(prog * Math.PI * 3) * Math.exp(-prog * 4);
+
+// §2 Diagram 1: Empty scale — the instrument
+DiagramRegistry.register('01-equality', 'empty-scale', {
+  duration: 5,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY + 5;
+    const p0 = phase(t, 0, 3);
+    if (p0 > 0) _drawScale(ctx, cx, fy, 0.05 * (1 - phase(t, 2, 2)), p0);
+  },
+  frozenFrame(ctx, zones) {
+    _drawScale(ctx, zones.midX, zones.midY + 5, 0, 1);
+  }
+});
+
+// §2 Diagram 2: Reflexive — same weight both sides, beam levels
+DiagramRegistry.register('01-equality', 'reflexive', {
+  duration: 7,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY + 5;
+    const gold = '#c9a84c';
+    const dropL = phase(t, 0.5, 0.8), dropR = phase(t, 2.5, 0.8), settleP = phase(t, 3.5, 2);
+    let tilt = dropR < 0.01 ? dropL * 0.15 : 0.15 * (1 - dropR) + _settle(settleP, 0.08);
+    const pans = _drawScale(ctx, cx, fy, tilt, 1);
+    if (dropL > 0) Organic.point(ctx, pans.lx, pans.ly - 14 - (1 - dropL) * 40, { r: 9, color: '#8a7a6a', opacity: dropL * 0.8 });
+    if (dropR > 0) Organic.point(ctx, pans.rx, pans.ry - 14 - (1 - dropR) * 40, { r: 9, color: '#8a7a6a', opacity: dropR * 0.8 });
+    // "a = a" text after settle
+    if (settleP > 0.5) {
+      Organic.text(ctx, 'a = a', cx, pans.ly + 40, { opacity: (settleP - 0.5) * 2, font: '18px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY + 5;
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+    Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+    Organic.text(ctx, 'a = a', cx, pans.ly + 40, { font: '18px Menlo, monospace', color: '#c9a84c' });
+  }
+});
+
+// §2 Diagram 3: Symmetric — swap sides, still level
+DiagramRegistry.register('01-equality', 'symmetric', {
+  duration: 8,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY + 5;
+    const gold = '#c9a84c';
+    const swapP = phase(t, 1, 3), settleP = phase(t, 4.5, 2);
+    const tilt = _settle(swapP, 0.12) + _settle(settleP, 0.04);
+    const pans = _drawScale(ctx, cx, fy, tilt, 1);
+    if (swapP < 1) {
+      const arc = swapP * Math.PI;
+      const midY = (pans.ly + pans.ry) / 2;
+      Organic.point(ctx, pans.lx + (pans.rx - pans.lx) * swapP, midY - 14 - Math.sin(arc) * 60, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+      Organic.point(ctx, pans.rx + (pans.lx - pans.rx) * swapP, midY - 14 - Math.sin(arc) * 60, { r: 9, color: gold, opacity: 0.8 });
+    } else {
+      Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: gold, opacity: 0.8 });
+      Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+    }
+    if (settleP > 0.5) {
+      Organic.text(ctx, 'if a = b, then b = a', cx, pans.ly + 40,
+        { opacity: (settleP - 0.5) * 2, font: '16px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY + 5;
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#c9a84c', opacity: 0.8 });
+    Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+    Organic.text(ctx, 'if a = b, then b = a', cx, pans.ly + 40, { font: '16px Menlo, monospace', color: '#c9a84c' });
+  }
+});
+
+// §2 Diagram 4: Transitive — three weighings on the scale, chain carries truth
+DiagramRegistry.register('01-equality', 'transitive', {
+  duration: 10,
+  aspectRatio: 1.6,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 30;
+    const gold = '#c9a84c', teal = '#6a9e8f', ink = '#3a2510';
+
+    // Phase 1: Scale with weight ● and saffron s₁ — they balance (a = b)
+    const p1 = phase(t, 0.3, 2);
+    if (p1 > 0) {
+      const pans = _drawScale(ctx, cx, fy, _settle(p1, 0.06), p1);
+      Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#8a7a6a', opacity: p1 });
+      Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: gold, opacity: p1 });
+      if (p1 > 0.6) {
+        Organic.text(ctx, '●', pans.lx, pans.ly - 34, { opacity: (p1 - 0.6) * 2.5, font: '13px Georgia', color: ink });
+        Organic.text(ctx, 's₁', pans.rx, pans.ry - 34, { opacity: (p1 - 0.6) * 2.5, font: '13px Georgia', color: ink });
+      }
+    }
+    // Label: ● = s₁
+    const l1 = phase(t, 2.5, 1);
+    if (l1 > 0) Organic.text(ctx, '● = s₁  ✓', cx, fy + 100, { opacity: l1, font: '15px Menlo, monospace', color: gold });
+
+    // Phase 2: Neighbor claims s₁ = s₂
+    const p2 = phase(t, 4, 1);
+    if (p2 > 0) Organic.text(ctx, 's₁ = s₂  (neighbor)', cx, fy + 125, { opacity: p2, font: '15px Menlo, monospace', color: gold });
+
+    // Phase 3: Therefore ● = s₂ — the chain
+    const p3 = phase(t, 6, 1);
+    if (p3 > 0) Organic.text(ctx, '● = s₂  ?', cx, fy + 150, { opacity: p3, font: '15px Menlo, monospace', color: teal });
+
+    // Phase 4: Verification — beam levels with ● and s₂
+    const p4 = phase(t, 7.5, 2);
+    if (p4 > 0.3) {
+      const checkP = (p4 - 0.3) / 0.7;
+      // Redraw scale settling
+      ctx.save(); ctx.globalAlpha = checkP;
+      const tilt = _settle(checkP, 0.05);
+      const pans = _drawScale(ctx, cx, fy, tilt, 1);
+      Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#8a7a6a' });
+      Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: teal });
+      ctx.restore();
+      if (checkP > 0.7) {
+        Organic.text(ctx, '● = s₂  ✓  transitive', cx, fy + 175, { opacity: (checkP - 0.7) * 3.3, font: 'bold 15px Menlo, monospace', color: teal });
+      }
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 30;
+    const gold = '#c9a84c', teal = '#6a9e8f';
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#8a7a6a' });
+    Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: teal });
+    Organic.text(ctx, '● = s₁  ✓', cx, fy + 100, { font: '15px Menlo, monospace', color: gold });
+    Organic.text(ctx, 's₁ = s₂  (neighbor)', cx, fy + 125, { font: '15px Menlo, monospace', color: gold });
+    Organic.text(ctx, '● = s₂  ✓  transitive', cx, fy + 175, { font: 'bold 15px Menlo, monospace', color: teal });
+  }
+});
+
+// §2 Diagram 5: Preservation — add equal weight to both sides
+DiagramRegistry.register('01-equality', 'preservation', {
+  duration: 7,
+  aspectRatio: 1.8,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 20;
+    const gold = '#c9a84c', teal = '#6a9e8f';
+    const addP = phase(t, 1.5, 1.5), settleP = phase(t, 3.5, 2);
+    const tilt = _settle(addP, 0.03) + _settle(settleP, 0.02);
+    const pans = _drawScale(ctx, cx, fy, tilt, 1);
+    // Original weights
+    Organic.point(ctx, pans.lx - 7, pans.ly - 14, { r: 9, color: gold, opacity: 0.8 });
+    Organic.point(ctx, pans.rx + 7, pans.ry - 14, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+    // New weights dropping in
+    if (addP > 0) {
+      Organic.point(ctx, pans.lx + 7, pans.ly - 14 - (1 - addP) * 50, { r: 7, color: teal, opacity: addP * 0.8 });
+      Organic.point(ctx, pans.rx - 7, pans.ry - 14 - (1 - addP) * 50, { r: 7, color: teal, opacity: addP * 0.8 });
+    }
+    if (settleP > 0.5) {
+      Organic.text(ctx, 'if a = b, then a + c = b + c', cx, pans.ly + 40,
+        { opacity: (settleP - 0.5) * 2, font: '15px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 20;
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.point(ctx, pans.lx - 7, pans.ly - 14, { r: 9, color: '#c9a84c', opacity: 0.8 });
+    Organic.point(ctx, pans.rx + 7, pans.ry - 14, { r: 9, color: '#8a7a6a', opacity: 0.8 });
+    Organic.point(ctx, pans.lx + 7, pans.ly - 14, { r: 7, color: '#6a9e8f', opacity: 0.8 });
+    Organic.point(ctx, pans.rx - 7, pans.ry - 14, { r: 7, color: '#6a9e8f', opacity: 0.8 });
+    Organic.text(ctx, 'if a = b, then a + c = b + c', cx, pans.ly + 40, { font: '15px Menlo, monospace', color: '#c9a84c' });
+  }
+});
+
+// §3 Formal diagrams — abstract register (no scale, just notation + geometry)
+
+// §3 Diagram: Reflexive (formal) — point with self-loop arrow
+DiagramRegistry.register('01-equality', 'formal-reflexive', {
+  duration: 4,
+  aspectRatio: 2.5,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY - 10;
+    const gold = '#c9a84c';
+    const p = phase(t, 0.3, 2);
+    if (p > 0) {
+      Organic.point(ctx, cx, cy + 10, { r: 12, color: '#8a7a6a', opacity: p });
+      Organic.text(ctx, 'a', cx, cy - 14, { opacity: p, font: '20px Georgia', color: '#3a2510' });
+      // Self-loop: curved arrow above the point
+      if (p > 0.3) {
+        const lp = (p - 0.3) / 0.7;
+        ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 2; ctx.globalAlpha = lp;
+        ctx.beginPath();
+        // Draw a loop: start right of point, arc above, return to left of point
+        const r = 28;
+        const startAngle = 0.15 * Math.PI; // right side
+        const endAngle = startAngle + 1.7 * Math.PI * lp; // sweep ~270°
+        ctx.arc(cx, cy - 12, r, startAngle, endAngle);
+        ctx.stroke();
+        // Arrowhead at end
+        if (lp > 0.85) {
+          const ea = endAngle;
+          const tipX = cx + Math.cos(ea) * r, tipY = cy - 12 + Math.sin(ea) * r;
+          const tangent = ea + Math.PI / 2;
+          ctx.fillStyle = gold;
+          ctx.beginPath();
+          ctx.moveTo(tipX, tipY);
+          ctx.lineTo(tipX + Math.cos(tangent + 0.4) * 8, tipY + Math.sin(tangent + 0.4) * 8);
+          ctx.lineTo(tipX + Math.cos(tangent - 0.4) * 8, tipY + Math.sin(tangent - 0.4) * 8);
+          ctx.closePath(); ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+    const tp = phase(t, 2.8, 0.8);
+    if (tp > 0) Organic.text(ctx, 'a = a', cx, cy + 52, { opacity: tp, font: '20px Menlo, monospace', color: gold });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY - 10;
+    const gold = '#c9a84c';
+    Organic.point(ctx, cx, cy + 10, { r: 12, color: '#8a7a6a' });
+    Organic.text(ctx, 'a', cx, cy - 14, { font: '20px Georgia', color: '#3a2510' });
+    ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy - 12, 28, 0.15 * Math.PI, 1.85 * Math.PI); ctx.stroke(); ctx.restore();
+    Organic.text(ctx, 'a = a', cx, cy + 52, { font: '20px Menlo, monospace', color: gold });
+  }
+});
+
+// §3 Diagram: Symmetric (formal) — two points, bidirectional arrow
+DiagramRegistry.register('01-equality', 'formal-symmetric', {
+  duration: 5,
+  aspectRatio: 2.5,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY, gap = 120;
+    const gold = '#c9a84c';
+    const p1 = phase(t, 0.3, 1.5), p2 = phase(t, 2, 1.5), p3 = phase(t, 3.8, 1);
+    if (p1 > 0) {
+      Organic.point(ctx, cx - gap, cy, { r: 12, color: '#8a7a6a', opacity: p1 });
+      Organic.point(ctx, cx + gap, cy, { r: 12, color: '#8a7a6a', opacity: p1 });
+      Organic.text(ctx, 'a', cx - gap, cy - 24, { opacity: p1, font: '18px Georgia', color: '#3a2510' });
+      Organic.text(ctx, 'b', cx + gap, cy - 24, { opacity: p1, font: '18px Georgia', color: '#3a2510' });
+    }
+    if (p2 > 0) {
+      // Forward arrow a → b
+      Organic.guide(ctx, cx - gap + 16, cy - 8, cx + gap - 16, cy - 8, { progress: p2, seed: 300, color: gold });
+      // Reverse arrow b → a
+      if (p2 > 0.3) Organic.guide(ctx, cx + gap - 16, cy + 8, cx - gap + 16, cy + 8, { progress: (p2 - 0.3) / 0.7, seed: 310, color: gold });
+    }
+    if (p3 > 0) Organic.text(ctx, 'if a = b, then b = a', cx, cy + 40, { opacity: p3, font: '16px Menlo, monospace', color: gold });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY, gap = 120, gold = '#c9a84c';
+    Organic.point(ctx, cx - gap, cy, { r: 12, color: '#8a7a6a' });
+    Organic.point(ctx, cx + gap, cy, { r: 12, color: '#8a7a6a' });
+    Organic.text(ctx, 'a', cx - gap, cy - 24, { font: '18px Georgia', color: '#3a2510' });
+    Organic.text(ctx, 'b', cx + gap, cy - 24, { font: '18px Georgia', color: '#3a2510' });
+    Organic.guide(ctx, cx - gap + 16, cy - 8, cx + gap - 16, cy - 8, { seed: 300, color: gold });
+    Organic.guide(ctx, cx + gap - 16, cy + 8, cx - gap + 16, cy + 8, { seed: 310, color: gold });
+    Organic.text(ctx, 'if a = b, then b = a', cx, cy + 40, { font: '16px Menlo, monospace', color: gold });
+  }
+});
+
+// §3 Diagram: Transitive (formal) — logical deduction steps, NOT the scale
+DiagramRegistry.register('01-equality', 'formal-transitive', {
+  duration: 6,
+  aspectRatio: 2.2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY - 10;
+    const gold = '#c9a84c', teal = '#6a9e8f', ink = '#3a2510';
+    // Step 1: premise a = b
+    const p1 = phase(t, 0.3, 1.2);
+    if (p1 > 0) Organic.text(ctx, 'a = b', cx, cy - 30, { opacity: p1, font: '20px Menlo, monospace', color: ink });
+    // Step 2: premise b = c
+    const p2 = phase(t, 1.8, 1.2);
+    if (p2 > 0) Organic.text(ctx, 'b = c', cx, cy, { opacity: p2, font: '20px Menlo, monospace', color: ink });
+    // Horizontal rule
+    const p3 = phase(t, 3.3, 0.8);
+    if (p3 > 0) {
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1.5; ctx.globalAlpha = p3;
+      ctx.beginPath(); ctx.moveTo(cx - 60, cy + 20); ctx.lineTo(cx + 60, cy + 20); ctx.stroke(); ctx.restore();
+    }
+    // Step 3: conclusion a = c
+    const p4 = phase(t, 4.3, 1.2);
+    if (p4 > 0) Organic.text(ctx, 'a = c', cx, cy + 48, { opacity: p4, font: 'bold 22px Menlo, monospace', color: teal });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY - 10;
+    const gold = '#c9a84c', teal = '#6a9e8f', ink = '#3a2510';
+    Organic.text(ctx, 'a = b', cx, cy - 30, { font: '20px Menlo, monospace', color: ink });
+    Organic.text(ctx, 'b = c', cx, cy, { font: '20px Menlo, monospace', color: ink });
+    ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(cx - 60, cy + 20); ctx.lineTo(cx + 60, cy + 20); ctx.stroke(); ctx.restore();
+    Organic.text(ctx, 'a = c', cx, cy + 48, { font: 'bold 22px Menlo, monospace', color: teal });
+  }
+});
+
+// §3 Diagram: Preservation (formal) — equation transformation
+DiagramRegistry.register('01-equality', 'formal-preservation', {
+  duration: 6,
+  aspectRatio: 2.5,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const gold = '#c9a84c', teal = '#6a9e8f';
+    const p1 = phase(t, 0.3, 1.5); // a = b
+    const p2 = phase(t, 2.3, 1.5); // +c to both
+    const p3 = phase(t, 4.3, 1.2); // a+c = b+c
+
+    if (p1 > 0) {
+      Organic.text(ctx, 'a = b', cx, cy - 20, { opacity: p1, font: '22px Menlo, monospace', color: '#3a2510' });
+    }
+    if (p2 > 0) {
+      Organic.text(ctx, '+ c', cx - 100, cy + 15, { opacity: p2, font: '18px Menlo, monospace', color: teal });
+      Organic.text(ctx, '+ c', cx + 100, cy + 15, { opacity: p2, font: '18px Menlo, monospace', color: teal });
+      // Arrows pointing down
+      Organic.guide(ctx, cx - 100, cy + 28, cx - 100, cy + 45, { progress: p2, seed: 500, color: teal });
+      Organic.guide(ctx, cx + 100, cy + 28, cx + 100, cy + 45, { progress: p2, seed: 510, color: teal });
+    }
+    if (p3 > 0) {
+      Organic.text(ctx, 'a + c = b + c', cx, cy + 60, { opacity: p3, font: 'bold 22px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY, gold = '#c9a84c', teal = '#6a9e8f';
+    Organic.text(ctx, 'a = b', cx, cy - 20, { font: '22px Menlo, monospace', color: '#3a2510' });
+    Organic.text(ctx, '+ c', cx - 100, cy + 15, { font: '18px Menlo, monospace', color: teal });
+    Organic.text(ctx, '+ c', cx + 100, cy + 15, { font: '18px Menlo, monospace', color: teal });
+    Organic.text(ctx, 'a + c = b + c', cx, cy + 60, { font: 'bold 22px Menlo, monospace', color: gold });
+  }
+});
+
+// ── §4 Diagrams: Worked examples ──
+
+// Example 1: Buyer's saffron — verify with scale (symmetric test)
+DiagramRegistry.register('01-equality', 'example-saffron', {
+  duration: 7,
+  aspectRatio: 1.8,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 20;
+    const gold = '#c9a84c', ink = '#3a2510', teal = '#6a9e8f';
+    // Scale with weight left, saffron right
+    const p0 = phase(t, 0.3, 1.5);
+    const pans = _drawScale(ctx, cx, fy, _settle(p0, 0.04), p0);
+    if (p0 > 0.5) {
+      Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#8a7a6a', opacity: (p0 - 0.5) * 2 });
+      Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: gold, opacity: (p0 - 0.5) * 2 });
+    }
+    // Labels
+    const p1 = phase(t, 2, 1);
+    if (p1 > 0) {
+      Organic.text(ctx, 'weight', pans.lx, fy + 90, { opacity: p1, font: '13px Georgia', color: ink });
+      Organic.text(ctx, 'saffron', pans.rx, fy + 90, { opacity: p1, font: '13px Georgia', color: ink });
+    }
+    // Equation: weight = saffron ✓
+    const p2 = phase(t, 3.5, 1.5);
+    if (p2 > 0) Organic.text(ctx, 'weight = saffron  ✓', cx, fy + 115, { opacity: p2, font: '16px Menlo, monospace', color: gold });
+    // Symmetric: saffron = weight (reverse the test)
+    const p3 = phase(t, 5.5, 1.2);
+    if (p3 > 0) Organic.text(ctx, 'saffron = weight  ✓  (symmetric)', cx, fy + 140, { opacity: p3, font: '14px Menlo, monospace', color: teal });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 20;
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.point(ctx, pans.lx, pans.ly - 14, { r: 9, color: '#8a7a6a' });
+    Organic.point(ctx, pans.rx, pans.ry - 14, { r: 9, color: '#c9a84c' });
+    Organic.text(ctx, 'weight = saffron  ✓', cx, fy + 115, { font: '16px Menlo, monospace', color: '#c9a84c' });
+    Organic.text(ctx, 'saffron = weight  ✓  (symmetric)', cx, fy + 140, { font: '14px Menlo, monospace', color: '#6a9e8f' });
+  }
+});
+
+// Example 2: Inheritance equation — SHOW the estate bar being sliced
+DiagramRegistry.register('01-equality', 'example-inheritance', {
+  duration: 8,
+  aspectRatio: 1.6,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const barW = zones.contentW - 60, barH = 36;
+    const barX = zones.left + 30, barY = zones.midY - 50;
+
+    // Full estate bar
+    const p0 = phase(t, 0.3, 1.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, barX, barY, barW * p0, barH, '#efe0c0', 0.5);
+      Organic.structRect(ctx, barX, barY, barW, barH, { progress: p0, seed: 700, color: ink });
+      if (p0 > 0.6) Organic.text(ctx, 'Estate = 2700 dinars', cx, barY - 14,
+        { opacity: (p0 - 0.6) * 2.5, font: '14px Georgia', color: ink });
+    }
+    // Slice off 1/8 — a strip on the left
+    const p1 = phase(t, 2.5, 2);
+    if (p1 > 0) {
+      const sliceW = barW / 8;
+      // Dividing line
+      Organic.structural(ctx, barX + sliceW, barY, barX + sliceW, barY + barH,
+        { progress: p1, seed: 710, color: gold, width: 2 });
+      // Fill the wife's portion
+      if (p1 > 0.3) Organic.fill(ctx, barX, barY, sliceW, barH, '#6a9e8f', (p1 - 0.3) * 0.7);
+      // Label
+      if (p1 > 0.6) {
+        Organic.text(ctx, '1/8', barX + sliceW / 2, barY + barH + 18,
+          { opacity: (p1 - 0.6) * 2.5, font: '14px Menlo, monospace', color: teal });
+        Organic.text(ctx, 'wife', barX + sliceW / 2, barY + barH + 36,
+          { opacity: (p1 - 0.6) * 2.5, font: '12px Georgia', color: '#7a6e5d' });
+      }
+    }
+    // The equation — what preservation guarantees
+    const p2 = phase(t, 5.5, 1.5);
+    if (p2 > 0) {
+      Organic.text(ctx, 'E = 2700  →  (1/8) × E = (1/8) × 2700', cx, barY + barH + 70,
+        { opacity: p2, font: '14px Menlo, monospace', color: gold });
+    }
+    const p3 = phase(t, 7, 0.8);
+    if (p3 > 0) Organic.text(ctx, 'same operation to both sides — preservation ✓', cx, barY + barH + 94,
+      { opacity: p3, font: '13px Georgia', color: teal });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const barW = zones.contentW - 60, barH = 36;
+    const barX = zones.left + 30, barY = zones.midY - 50;
+    const sliceW = barW / 8;
+    Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', 0.5);
+    Organic.structRect(ctx, barX, barY, barW, barH, { seed: 700, color: ink });
+    Organic.structural(ctx, barX + sliceW, barY, barX + sliceW, barY + barH, { seed: 710, color: gold, width: 2 });
+    Organic.fill(ctx, barX, barY, sliceW, barH, '#6a9e8f', 0.5);
+    Organic.text(ctx, 'Estate = 2700 dinars', cx, barY - 14, { font: '14px Georgia', color: ink });
+    Organic.text(ctx, '1/8', barX + sliceW / 2, barY + barH + 18, { font: '14px Menlo, monospace', color: teal });
+    Organic.text(ctx, 'wife', barX + sliceW / 2, barY + barH + 36, { font: '12px Georgia', color: '#7a6e5d' });
+    Organic.text(ctx, 'E = 2700  →  (1/8) × E = (1/8) × 2700', cx, barY + barH + 70, { font: '14px Menlo, monospace', color: gold });
+    Organic.text(ctx, 'same operation to both sides — preservation ✓', cx, barY + barH + 94, { font: '13px Georgia', color: teal });
+  }
+});
+
+// Example 3: Checking your work — 7+5 ≠ 13
+DiagramRegistry.register('01-equality', 'example-check', {
+  duration: 6,
+  aspectRatio: 2.5,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const red = '#c0392b', gold = '#c9a84c', ink = '#3a2510';
+    const p1 = phase(t, 0.3, 1);
+    if (p1 > 0) Organic.text(ctx, '7 + 5 = 13  ?', cx, cy - 20, { opacity: p1, font: '22px Menlo, monospace', color: ink });
+    const p2 = phase(t, 1.8, 1.2);
+    if (p2 > 0) {
+      Organic.text(ctx, '12', cx - 90, cy + 15, { opacity: p2, font: '18px Menlo, monospace', color: gold });
+      Organic.text(ctx, '13', cx + 90, cy + 15, { opacity: p2, font: '18px Menlo, monospace', color: gold });
+    }
+    const p3 = phase(t, 3.5, 1);
+    if (p3 > 0) Organic.text(ctx, '12 ≠ 13', cx, cy + 45, { opacity: p3, font: 'bold 22px Menlo, monospace', color: red });
+    const p4 = phase(t, 4.8, 0.8);
+    if (p4 > 0) Organic.text(ctx, 'the scale tilts', cx, cy + 72, { opacity: p4, font: 'italic 15px Georgia', color: '#7a6e5d' });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    Organic.text(ctx, '7 + 5 = 13  ?', cx, cy - 20, { font: '22px Menlo, monospace', color: '#3a2510' });
+    Organic.text(ctx, '12 ≠ 13', cx, cy + 45, { font: 'bold 22px Menlo, monospace', color: '#c0392b' });
+    Organic.text(ctx, 'the scale tilts', cx, cy + 72, { font: 'italic 15px Georgia', color: '#7a6e5d' });
+  }
+});
+
+// ── §5 Diagrams: Exercise visualisations ──
+// Every exercise gets a visual so students learn to SEE the problem
+
+// Da'if Q1: Three weights A=B, B=C → A=C? (transitive on the scale)
+DiagramRegistry.register('01-equality', 'ex-daif-1', {
+  duration: 6,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY - 10;
+    const gold = '#c9a84c', ink = '#3a2510';
+    // Three weights labeled A, B, C
+    const gap = 120, y = cy + 10;
+    const ax = cx - gap, bx = cx, ccx = cx + gap;
+    const p1 = phase(t, 0.3, 1.2);
+    if (p1 > 0) {
+      Organic.point(ctx, ax, y, { r: 14, color: '#8a7a6a', opacity: p1 });
+      Organic.point(ctx, bx, y, { r: 14, color: '#8a7a6a', opacity: p1 });
+      Organic.point(ctx, ccx, y, { r: 14, color: '#8a7a6a', opacity: p1 });
+      Organic.text(ctx, 'A', ax, y, { opacity: p1, font: 'bold 14px Georgia', color: '#fff' });
+      Organic.text(ctx, 'B', bx, y, { opacity: p1, font: 'bold 14px Georgia', color: '#fff' });
+      Organic.text(ctx, 'C', ccx, y, { opacity: p1, font: 'bold 14px Georgia', color: '#fff' });
+    }
+    // A = B line
+    const p2 = phase(t, 1.8, 1);
+    if (p2 > 0) {
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 2; ctx.globalAlpha = p2;
+      ctx.beginPath(); ctx.moveTo(ax + 16, y); ctx.lineTo(bx - 16, y); ctx.stroke(); ctx.restore();
+      Organic.text(ctx, '=', (ax + bx) / 2, y - 24, { opacity: p2, font: '16px Menlo, monospace', color: gold });
+    }
+    // B = C line
+    const p3 = phase(t, 3, 1);
+    if (p3 > 0) {
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 2; ctx.globalAlpha = p3;
+      ctx.beginPath(); ctx.moveTo(bx + 16, y); ctx.lineTo(ccx - 16, y); ctx.stroke(); ctx.restore();
+      Organic.text(ctx, '=', (bx + ccx) / 2, y - 24, { opacity: p3, font: '16px Menlo, monospace', color: gold });
+    }
+    // A = C? — dashed arc with question mark
+    const p4 = phase(t, 4.3, 1.5);
+    if (p4 > 0) {
+      ctx.save(); ctx.strokeStyle = '#6a9e8f'; ctx.lineWidth = 2; ctx.globalAlpha = p4;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(ax + 14, y - 18);
+      ctx.quadraticCurveTo(cx, y - 65, ccx - 14, y - 18); ctx.stroke(); ctx.restore();
+      Organic.text(ctx, 'A = C  ?', cx, y - 60, { opacity: p4, font: 'bold 16px Menlo, monospace', color: '#6a9e8f' });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY - 10, gap = 120, y = cy + 10;
+    const ax = cx - gap, bx = cx, ccx = cx + gap;
+    [ax, bx, ccx].forEach((x, i) => {
+      Organic.point(ctx, x, y, { r: 14, color: '#8a7a6a' });
+      Organic.text(ctx, ['A','B','C'][i], x, y, { font: 'bold 14px Georgia', color: '#fff' });
+    });
+    ctx.save(); ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(ax + 16, y); ctx.lineTo(ccx - 16, y); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = '#6a9e8f'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(ax + 14, y - 18);
+    ctx.quadraticCurveTo(cx, y - 65, ccx - 14, y - 18); ctx.stroke(); ctx.restore();
+    Organic.text(ctx, 'A = C  ?', cx, y - 60, { font: 'bold 16px Menlo, monospace', color: '#6a9e8f' });
+  }
+});
+
+// Da'if Q2: If x = 5, what is x + 3? (preservation on the scale)
+DiagramRegistry.register('01-equality', 'ex-daif-2', {
+  duration: 7,
+  aspectRatio: 1.8,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 15;
+    const gold = '#c9a84c', teal = '#6a9e8f';
+    // Scale with x=5 on both sides
+    const p0 = phase(t, 0.3, 1.5);
+    const pans = _drawScale(ctx, cx, fy, 0, p0);
+    if (p0 > 0.5) {
+      Organic.text(ctx, 'x', pans.lx, pans.ly - 20, { opacity: (p0 - 0.5) * 2, font: 'bold 16px Georgia', color: '#3a2510' });
+      Organic.text(ctx, '5', pans.rx, pans.ry - 20, { opacity: (p0 - 0.5) * 2, font: 'bold 16px Georgia', color: '#3a2510' });
+    }
+    // +3 drops onto both sides
+    const p1 = phase(t, 2.5, 2);
+    if (p1 > 0) {
+      const dropY = (1 - p1) * 40;
+      Organic.text(ctx, '+3', pans.lx + 20, pans.ly - 20 - dropY,
+        { opacity: p1, font: 'bold 14px Menlo, monospace', color: teal });
+      Organic.text(ctx, '+3', pans.rx + 20, pans.ry - 20 - dropY,
+        { opacity: p1, font: 'bold 14px Menlo, monospace', color: teal });
+    }
+    // Result
+    const p2 = phase(t, 5, 1.5);
+    if (p2 > 0) {
+      Organic.text(ctx, 'x + 3 = 5 + 3 = 8', cx, fy + 100,
+        { opacity: p2, font: '16px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 15;
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.text(ctx, 'x', pans.lx, pans.ly - 20, { font: 'bold 16px Georgia', color: '#3a2510' });
+    Organic.text(ctx, '5', pans.rx, pans.ry - 20, { font: 'bold 16px Georgia', color: '#3a2510' });
+    Organic.text(ctx, '+3', pans.lx + 20, pans.ly - 20, { font: 'bold 14px Menlo, monospace', color: '#6a9e8f' });
+    Organic.text(ctx, '+3', pans.rx + 20, pans.ry - 20, { font: 'bold 14px Menlo, monospace', color: '#6a9e8f' });
+    Organic.text(ctx, 'x + 3 = 5 + 3 = 8', cx, fy + 100, { font: '16px Menlo, monospace', color: '#c9a84c' });
+  }
+});
+
+// Hasan Q6: Solve 2x + 1 = 9 using preservation (scale step by step)
+DiagramRegistry.register('01-equality', 'ex-hasan-6', {
+  duration: 10,
+  aspectRatio: 1.5,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 40;
+    const gold = '#c9a84c', teal = '#6a9e8f', ink = '#3a2510', red = '#c0392b';
+    // Scale with 2x+1 on left, 9 on right
+    const p0 = phase(t, 0.3, 1.5);
+    const pans = _drawScale(ctx, cx, fy, _settle(p0, 0.03), p0);
+    if (p0 > 0.5) {
+      Organic.text(ctx, '2x + 1', pans.lx, pans.ly - 22, { opacity: (p0 - 0.5) * 2, font: 'bold 14px Menlo, monospace', color: ink });
+      Organic.text(ctx, '9', pans.rx, pans.ry - 22, { opacity: (p0 - 0.5) * 2, font: 'bold 14px Menlo, monospace', color: ink });
+    }
+    // Step 1: subtract 1 from both sides
+    const p1 = phase(t, 2.5, 1.5);
+    if (p1 > 0) {
+      Organic.text(ctx, '−1', pans.lx - 30, pans.ly - 44, { opacity: p1, font: 'bold 13px Menlo, monospace', color: red });
+      Organic.text(ctx, '−1', pans.rx + 30, pans.ry - 44, { opacity: p1, font: 'bold 13px Menlo, monospace', color: red });
+    }
+    const p1b = phase(t, 4.2, 1);
+    if (p1b > 0) Organic.text(ctx, '2x = 8', cx, fy + 100, { opacity: p1b, font: '16px Menlo, monospace', color: gold });
+    // Step 2: divide by 2
+    const p2 = phase(t, 5.5, 1.5);
+    if (p2 > 0) {
+      Organic.text(ctx, '÷2', cx - 100, fy + 125, { opacity: p2, font: 'bold 13px Menlo, monospace', color: teal });
+      Organic.text(ctx, '÷2', cx + 100, fy + 125, { opacity: p2, font: 'bold 13px Menlo, monospace', color: teal });
+    }
+    const p3 = phase(t, 7.5, 1.5);
+    if (p3 > 0) Organic.text(ctx, 'x = 4', cx, fy + 155, { opacity: p3, font: 'bold 20px Menlo, monospace', color: gold });
+    const p4 = phase(t, 9, 0.8);
+    if (p4 > 0) Organic.text(ctx, 'two applications of preservation', cx, fy + 182, { opacity: p4, font: '13px Georgia', color: '#7a6e5d' });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 40;
+    const pans = _drawScale(ctx, cx, fy, 0, 1);
+    Organic.text(ctx, '2x + 1', pans.lx, pans.ly - 22, { font: 'bold 14px Menlo, monospace', color: '#3a2510' });
+    Organic.text(ctx, '9', pans.rx, pans.ry - 22, { font: 'bold 14px Menlo, monospace', color: '#3a2510' });
+    Organic.text(ctx, '2x = 8', cx, fy + 100, { font: '16px Menlo, monospace', color: '#c9a84c' });
+    Organic.text(ctx, 'x = 4', cx, fy + 155, { font: 'bold 20px Menlo, monospace', color: '#c9a84c' });
+    Organic.text(ctx, 'two applications of preservation', cx, fy + 182, { font: '13px Georgia', color: '#7a6e5d' });
+  }
+});
+
+// Sahih Q8: Broken scale (tilts left by 1) — which properties violated?
+DiagramRegistry.register('01-equality', 'ex-sahih-8', {
+  duration: 7,
+  aspectRatio: 1.8,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 15;
+    const ink = '#3a2510', red = '#c0392b';
+    // Broken scale — always tilted left
+    const p0 = phase(t, 0.3, 1.5);
+    const tilt = -0.08; // always tilted
+    const pans = _drawScale(ctx, cx, fy, tilt, p0);
+    if (p0 > 0.5) {
+      Organic.text(ctx, 'a', pans.lx, pans.ly - 20, { opacity: (p0 - 0.5) * 2, font: 'bold 16px Georgia', color: ink });
+      Organic.text(ctx, 'b', pans.rx, pans.ry - 20, { opacity: (p0 - 0.5) * 2, font: 'bold 16px Georgia', color: ink });
+    }
+    // The bias: reads a+1 = b instead of a = b
+    const p1 = phase(t, 2.5, 1.5);
+    if (p1 > 0) {
+      Organic.text(ctx, 'reads:  a + 1 = b', cx, fy + 95, { opacity: p1, font: '16px Menlo, monospace', color: red });
+      Organic.text(ctx, 'truth:  a = b', cx, fy + 120, { opacity: p1, font: '16px Menlo, monospace', color: '#7a6e5d' });
+    }
+    // Question: which properties break?
+    const p2 = phase(t, 5, 1.5);
+    if (p2 > 0) {
+      Organic.text(ctx, 'reflexive?   symmetric?   transitive?', cx, fy + 155,
+        { opacity: p2, font: '14px Menlo, monospace', color: red });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, fy = zones.midY - 15;
+    const pans = _drawScale(ctx, cx, fy, -0.08, 1);
+    Organic.text(ctx, 'a', pans.lx, pans.ly - 20, { font: 'bold 16px Georgia', color: '#3a2510' });
+    Organic.text(ctx, 'b', pans.rx, pans.ry - 20, { font: 'bold 16px Georgia', color: '#3a2510' });
+    Organic.text(ctx, 'reads:  a + 1 = b', cx, fy + 95, { font: '16px Menlo, monospace', color: '#c0392b' });
+    Organic.text(ctx, 'truth:  a = b', cx, fy + 120, { font: '16px Menlo, monospace', color: '#7a6e5d' });
+    Organic.text(ctx, 'reflexive?   symmetric?   transitive?', cx, fy + 155, { font: '14px Menlo, monospace', color: '#c0392b' });
+  }
+});
+
+
+// ══════════════════════════════════════════════════════════
+// ── Island 0.2: Counting Diagrams ──
+// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// Island 0.2: Counting — The Shepherd's Gate
+// Diagram definitions for DiagramRegistry
+//
+// Palette: ink '#3a2510', gold '#c9a84c', subtle '#7a6e5d', teal '#6a9e8f'
+// Primitives: Organic.structural, Organic.point, Organic.text,
+//             Organic.fill, Organic.guide, Organic.structRect, Organic.annotation
+// Timing: phase(t, start, dur) → eased 0-1
+// ══════════════════════════════════════════════════════════
+
+
+// ── §2 Diagram 1: Successor ──
+// An animal passes through the gate. Counter increments.
+DiagramRegistry.register('02-counting', 'successor', {
+  duration: 8,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', subtle = '#7a6e5d', teal = '#6a9e8f';
+    const gateX = zones.midX, gateTop = zones.top + 30, gateBot = zones.bottom - 40;
+    const gateW = 30;
+
+    // Gate posts
+    Organic.structural(ctx, gateX - gateW, gateTop, gateX - gateW, gateBot, { seed: 100, color: ink, width: 2.5 });
+    Organic.structural(ctx, gateX + gateW, gateTop, gateX + gateW, gateBot, { seed: 101, color: ink, width: 2.5 });
+    Organic.structural(ctx, gateX - gateW, gateTop, gateX + gateW, gateTop, { seed: 102, color: ink, width: 2 });
+
+    // Animals passing through — 5 sheep in sequence
+    const sheepCount = 5;
+    for (let i = 0; i < sheepCount; i++) {
+      const sp = phase(t, i * 1.2, 1.0);
+      if (sp <= 0) continue;
+      // Sheep moves from left to right through the gate
+      const startX = gateX - 120;
+      const endX = gateX + 120;
+      const sx = startX + (endX - startX) * sp;
+      const sy = zones.midY + 10;
+      const throughGate = sp > 0.5;
+      const opacity = sp < 0.1 ? sp * 10 : (sp > 0.9 ? (1 - sp) * 10 : 1);
+      Organic.point(ctx, sx, sy, { r: 10, color: throughGate ? teal : subtle, opacity });
+    }
+
+    // Counter display
+    const counterX = gateX + 160, counterY = zones.midY - 30;
+    Organic.text(ctx, 'S(n)', counterX, counterY - 25, { font: '13px Menlo, monospace', color: subtle, opacity: 0.6 });
+    for (let i = 0; i < sheepCount; i++) {
+      const cp = phase(t, i * 1.2 + 0.6, 0.4);
+      if (cp <= 0) continue;
+      // Show current count
+      if (i === sheepCount - 1 || t < (i + 1) * 1.2 + 0.6) {
+        Organic.text(ctx, String(i + 1), counterX, counterY, { font: '28px Georgia', color: gold, opacity: cp });
+      }
+    }
+
+    // Staff touch indicator
+    for (let i = 0; i < sheepCount; i++) {
+      const tp = phase(t, i * 1.2 + 0.4, 0.2);
+      if (tp > 0 && tp < 1) {
+        Organic.point(ctx, gateX, zones.midY + 10, { r: 14, color: gold, opacity: tp * 0.3 });
+      }
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const gateX = zones.midX, gateTop = zones.top + 30, gateBot = zones.bottom - 40;
+    const gateW = 30;
+    Organic.structural(ctx, gateX - gateW, gateTop, gateX - gateW, gateBot, { seed: 100, color: ink, width: 2.5 });
+    Organic.structural(ctx, gateX + gateW, gateTop, gateX + gateW, gateBot, { seed: 101, color: ink, width: 2.5 });
+    Organic.structural(ctx, gateX - gateW, gateTop, gateX + gateW, gateTop, { seed: 102, color: ink, width: 2 });
+    // 5 sheep have passed
+    for (let i = 0; i < 5; i++) {
+      Organic.point(ctx, gateX + 60 + i * 22, zones.midY + 10, { r: 10, color: teal, opacity: 0.7 });
+    }
+    Organic.text(ctx, '5', gateX + 160, zones.midY - 30, { font: '28px Georgia', color: gold });
+  }
+});
+
+
+// ── §2 Diagram 2: Number Line ──
+// Points appearing in sequence along a horizontal line. Each "the next."
+DiagramRegistry.register('02-counting', 'number-line', {
+  duration: 7,
+  aspectRatio: 2.2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', subtle = '#7a6e5d', teal = '#6a9e8f';
+    const lineY = zones.midY;
+    const startX = zones.left + 40, endX = zones.right - 40;
+
+    // Draw line with arrow
+    const lineP = phase(t, 0, 2);
+    Organic.structural(ctx, startX, lineY, startX + (endX - startX) * lineP, lineY, { seed: 200, color: ink });
+    if (lineP > 0.9) {
+      Organic.structural(ctx, endX - 10, lineY - 6, endX, lineY, { seed: 201, color: ink, width: 1.5 });
+      Organic.structural(ctx, endX - 10, lineY + 6, endX, lineY, { seed: 202, color: ink, width: 1.5 });
+    }
+
+    // Points appearing: 1 through 8, then trailing dots
+    const numPoints = 8;
+    const spacing = (endX - startX - 60) / (numPoints + 1);
+    for (let i = 0; i < numPoints; i++) {
+      const pp = phase(t, 1.5 + i * 0.5, 0.4);
+      if (pp <= 0) continue;
+      const px = startX + 30 + spacing * (i + 1);
+      Organic.structural(ctx, px, lineY - 8, px, lineY + 8, { seed: 210 + i, color: ink, width: 1.2, progress: pp });
+      Organic.point(ctx, px, lineY, { r: 4, color: gold, opacity: pp });
+      Organic.text(ctx, String(i + 1), px, lineY + 22, { font: '14px Georgia', color: ink, opacity: pp });
+
+      // Arrow from previous point
+      if (i > 0) {
+        const prevX = startX + 30 + spacing * i;
+        const arrowP = phase(t, 1.5 + i * 0.5 - 0.1, 0.3);
+        if (arrowP > 0) {
+          Organic.guide(ctx, prevX + 8, lineY - 16, px - 8, lineY - 16, { seed: 230 + i, color: teal, progress: arrowP });
+        }
+      }
+    }
+
+    // Trailing dots
+    const dotsP = phase(t, 5.5, 1);
+    if (dotsP > 0) {
+      const lastX = startX + 30 + spacing * numPoints;
+      for (let d = 0; d < 3; d++) {
+        const dp = Math.min(dotsP * 3 - d, 1);
+        if (dp > 0) Organic.point(ctx, lastX + 18 + d * 14, lineY, { r: 2.5, color: subtle, opacity: dp * 0.7 });
+      }
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', subtle = '#7a6e5d', teal = '#6a9e8f';
+    const lineY = zones.midY;
+    const startX = zones.left + 40, endX = zones.right - 40;
+    Organic.structural(ctx, startX, lineY, endX, lineY, { seed: 200, color: ink });
+    Organic.structural(ctx, endX - 10, lineY - 6, endX, lineY, { seed: 201, color: ink, width: 1.5 });
+    Organic.structural(ctx, endX - 10, lineY + 6, endX, lineY, { seed: 202, color: ink, width: 1.5 });
+    const numPoints = 8;
+    const spacing = (endX - startX - 60) / (numPoints + 1);
+    for (let i = 0; i < numPoints; i++) {
+      const px = startX + 30 + spacing * (i + 1);
+      Organic.structural(ctx, px, lineY - 8, px, lineY + 8, { seed: 210 + i, color: ink, width: 1.2 });
+      Organic.point(ctx, px, lineY, { r: 4, color: gold });
+      Organic.text(ctx, String(i + 1), px, lineY + 22, { font: '14px Georgia', color: ink });
+      if (i > 0) {
+        const prevX = startX + 30 + spacing * i;
+        Organic.guide(ctx, prevX + 8, lineY - 16, px - 8, lineY - 16, { seed: 230 + i, color: teal });
+      }
+    }
+    const lastX = startX + 30 + spacing * numPoints;
+    for (let d = 0; d < 3; d++) {
+      Organic.point(ctx, lastX + 18 + d * 14, lineY, { r: 2.5, color: subtle, opacity: 0.7 });
+    }
+  }
+});
+
+
+// ── §2 Diagram 3: Induction ──
+// Domino cascade. First falls, each knocks the next.
+DiagramRegistry.register('02-counting', 'induction', {
+  duration: 7,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', subtle = '#7a6e5d', teal = '#6a9e8f';
+    const groundY = zones.bottom - 30;
+    const numDominoes = 10;
+    const spacing = (zones.right - zones.left - 100) / numDominoes;
+    const dominoW = 8, dominoH = 40;
+
+    // Ground line
+    Organic.structural(ctx, zones.left + 30, groundY, zones.right - 30, groundY, { seed: 300, color: subtle, width: 1 });
+
+    for (let i = 0; i < numDominoes; i++) {
+      const dx = zones.left + 60 + i * spacing;
+      const fallDelay = i * 0.45;
+      const fp = phase(t, 0.5 + fallDelay, 0.4);
+
+      // Angle: 0 = standing, PI/2 = fallen
+      const angle = fp * (Math.PI / 2.2);
+      const fallen = fp > 0.9;
+
+      ctx.save();
+      ctx.translate(dx, groundY);
+      ctx.rotate(angle);
+
+      // Domino rectangle
+      const color = fallen ? teal : (fp > 0 ? gold : ink);
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.7;
+      ctx.fillRect(-dominoW / 2, -dominoH, dominoW, dominoH);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(-dominoW / 2, -dominoH, dominoW, dominoH);
+
+      ctx.restore();
+
+      // Label under each
+      if (fp > 0.5) {
+        Organic.text(ctx, String(i + 1), dx, groundY + 18, { font: '12px Georgia', color: teal, opacity: (fp - 0.5) * 2 });
+      }
+    }
+
+    // "if true for n, true for n+1" label
+    const labelP = phase(t, 5.5, 1.2);
+    if (labelP > 0) {
+      Organic.text(ctx, 'true for 1 → true for n → true for n+1 → ...', zones.midX, zones.top + 25,
+        { font: '14px Menlo, monospace', color: gold, opacity: labelP });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', teal = '#6a9e8f', subtle = '#7a6e5d', gold = '#c9a84c';
+    const groundY = zones.bottom - 30;
+    const numDominoes = 10;
+    const spacing = (zones.right - zones.left - 100) / numDominoes;
+    const dominoW = 8, dominoH = 40;
+    Organic.structural(ctx, zones.left + 30, groundY, zones.right - 30, groundY, { seed: 300, color: subtle, width: 1 });
+    for (let i = 0; i < numDominoes; i++) {
+      const dx = zones.left + 60 + i * spacing;
+      ctx.save();
+      ctx.translate(dx, groundY);
+      ctx.rotate(Math.PI / 2.2);
+      ctx.fillStyle = teal; ctx.globalAlpha = 0.7;
+      ctx.fillRect(-dominoW / 2, -dominoH, dominoW, dominoH);
+      ctx.globalAlpha = 1; ctx.strokeStyle = teal; ctx.lineWidth = 1.2;
+      ctx.strokeRect(-dominoW / 2, -dominoH, dominoW, dominoH);
+      ctx.restore();
+      Organic.text(ctx, String(i + 1), dx, groundY + 18, { font: '12px Georgia', color: teal });
+    }
+    Organic.text(ctx, 'true for 1 → true for n → true for n+1 → ...', zones.midX, zones.top + 25,
+      { font: '14px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── §2 Diagram 4: Infinity ──
+// Points along a line trailing off. The chain does not end.
+DiagramRegistry.register('02-counting', 'infinity', {
+  duration: 6,
+  aspectRatio: 2.5,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', subtle = '#7a6e5d';
+    const lineY = zones.midY;
+    const startX = zones.left + 20, endX = zones.right - 20;
+
+    // Line grows
+    const lineP = phase(t, 0, 1.5);
+    Organic.structural(ctx, startX, lineY, startX + (endX - startX) * lineP, lineY, { seed: 400, color: ink, width: 1.2 });
+
+    // Points appear rapidly, 15 total, then fade into dots
+    const numPoints = 15;
+    const spacing = (endX - startX - 40) / (numPoints + 4);
+    for (let i = 0; i < numPoints; i++) {
+      const pp = phase(t, 0.8 + i * 0.25, 0.2);
+      if (pp <= 0) continue;
+      const px = startX + 20 + spacing * (i + 1);
+      Organic.point(ctx, px, lineY, { r: 3, color: gold, opacity: pp * (i < 10 ? 1 : 1 - (i - 10) * 0.15) });
+      if (i < 6) {
+        Organic.text(ctx, String(i + 1), px, lineY + 18, { font: '11px Georgia', color: ink, opacity: pp });
+      }
+    }
+
+    // Trailing dots fading
+    const fadeDots = phase(t, 4.5, 1);
+    if (fadeDots > 0) {
+      const lastPx = startX + 20 + spacing * (numPoints + 1);
+      for (let d = 0; d < 5; d++) {
+        const op = fadeDots * (1 - d * 0.18);
+        if (op > 0) Organic.point(ctx, lastPx + d * 12, lineY, { r: 2, color: subtle, opacity: op });
+      }
+      Organic.text(ctx, '...', lastPx + 70, lineY, { font: '18px Georgia', color: subtle, opacity: fadeDots * 0.6 });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', subtle = '#7a6e5d';
+    const lineY = zones.midY;
+    const startX = zones.left + 20, endX = zones.right - 20;
+    Organic.structural(ctx, startX, lineY, endX, lineY, { seed: 400, color: ink, width: 1.2 });
+    const numPoints = 15;
+    const spacing = (endX - startX - 40) / (numPoints + 4);
+    for (let i = 0; i < numPoints; i++) {
+      const px = startX + 20 + spacing * (i + 1);
+      Organic.point(ctx, px, lineY, { r: 3, color: gold, opacity: i < 10 ? 1 : 1 - (i - 10) * 0.15 });
+      if (i < 6) Organic.text(ctx, String(i + 1), px, lineY + 18, { font: '11px Georgia', color: ink });
+    }
+    const lastPx = startX + 20 + spacing * (numPoints + 1);
+    for (let d = 0; d < 5; d++) Organic.point(ctx, lastPx + d * 12, lineY, { r: 2, color: subtle, opacity: 1 - d * 0.18 });
+    Organic.text(ctx, '...', lastPx + 70, lineY, { font: '18px Georgia', color: subtle, opacity: 0.6 });
+  }
+});
+
+
+// ── §3 Diagram 1: Formal Successor ──
+// Abstract: a point, arrow, S(n) point. The axiom visualized.
+DiagramRegistry.register('02-counting', 'formal-successor', {
+  duration: 5,
+  aspectRatio: 2.5,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const cy = zones.midY;
+
+    // Point n
+    const p1 = phase(t, 0.3, 1);
+    const nx = zones.midX - 80;
+    if (p1 > 0) {
+      Organic.point(ctx, nx, cy, { r: 8, color: ink, opacity: p1 });
+      Organic.text(ctx, 'n', nx, cy + 24, { font: '16px Georgia', color: ink, opacity: p1 });
+    }
+
+    // Arrow n → S(n)
+    const p2 = phase(t, 1.5, 1.2);
+    const snx = zones.midX + 80;
+    if (p2 > 0) {
+      Organic.guide(ctx, nx + 14, cy, snx - 14, cy, { seed: 500, color: gold, progress: p2 });
+      // Arrowhead
+      if (p2 > 0.8) {
+        Organic.structural(ctx, snx - 22, cy - 6, snx - 12, cy, { seed: 501, color: gold, width: 1.3 });
+        Organic.structural(ctx, snx - 22, cy + 6, snx - 12, cy, { seed: 502, color: gold, width: 1.3 });
+      }
+    }
+
+    // Point S(n)
+    const p3 = phase(t, 3, 0.8);
+    if (p3 > 0) {
+      Organic.point(ctx, snx, cy, { r: 8, color: teal, opacity: p3 });
+      Organic.text(ctx, 'S(n)', snx, cy + 24, { font: '16px Menlo, monospace', color: teal, opacity: p3 });
+    }
+
+    // "Every n has a successor" label
+    const p4 = phase(t, 4, 0.8);
+    if (p4 > 0) {
+      Organic.text(ctx, 'Every n has a unique successor S(n)', zones.midX, zones.top + 20,
+        { font: '13px Menlo, monospace', color: gold, opacity: p4 });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const cy = zones.midY;
+    const nx = zones.midX - 80, snx = zones.midX + 80;
+    Organic.point(ctx, nx, cy, { r: 8, color: ink });
+    Organic.text(ctx, 'n', nx, cy + 24, { font: '16px Georgia', color: ink });
+    Organic.guide(ctx, nx + 14, cy, snx - 14, cy, { seed: 500, color: gold });
+    Organic.structural(ctx, snx - 22, cy - 6, snx - 12, cy, { seed: 501, color: gold, width: 1.3 });
+    Organic.structural(ctx, snx - 22, cy + 6, snx - 12, cy, { seed: 502, color: gold, width: 1.3 });
+    Organic.point(ctx, snx, cy, { r: 8, color: teal });
+    Organic.text(ctx, 'S(n)', snx, cy + 24, { font: '16px Menlo, monospace', color: teal });
+    Organic.text(ctx, 'Every n has a unique successor S(n)', zones.midX, zones.top + 20,
+      { font: '13px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── §3 Diagram 2: Formal Addition ──
+// Number line showing a + b = start at a, jump b times.
+DiagramRegistry.register('02-counting', 'formal-addition', {
+  duration: 8,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f', subtle = '#7a6e5d';
+    const lineY = zones.midY + 10;
+    const startX = zones.left + 50, endX = zones.right - 50;
+    const spacing = (endX - startX) / 9;
+
+    // Number line 1-8
+    Organic.structural(ctx, startX - 10, lineY, endX + 10, lineY, { seed: 600, color: ink, width: 1.2 });
+    for (let i = 1; i <= 8; i++) {
+      const px = startX + spacing * (i - 0.5);
+      Organic.structural(ctx, px, lineY - 6, px, lineY + 6, { seed: 610 + i, color: ink, width: 1 });
+      Organic.text(ctx, String(i), px, lineY + 20, { font: '13px Georgia', color: ink });
+    }
+
+    // Highlight "a = 3"
+    const p1 = phase(t, 0.5, 1);
+    const aX = startX + spacing * 2.5;
+    if (p1 > 0) {
+      Organic.point(ctx, aX, lineY, { r: 6, color: gold, opacity: p1 });
+      Organic.text(ctx, 'a = 3', aX, lineY - 20, { font: '13px Menlo, monospace', color: gold, opacity: p1 });
+    }
+
+    // Jump arcs for +1, +1, +1 (b = 3, so 3 jumps)
+    const jumps = 3;
+    for (let j = 0; j < jumps; j++) {
+      const jp = phase(t, 2 + j * 1.2, 0.8);
+      if (jp <= 0) continue;
+      const fromX = startX + spacing * (2.5 + j);
+      const toX = startX + spacing * (3.5 + j);
+      const midArcY = lineY - 30 - j * 4;
+
+      // Arc approximated with a guide line curving up
+      const arcX = fromX + (toX - fromX) * jp;
+      const arcY = lineY - Math.sin(jp * Math.PI) * 30;
+      Organic.guide(ctx, fromX, lineY - 8, arcX, arcY, { seed: 630 + j, color: teal, progress: jp });
+      if (jp > 0.8) {
+        Organic.guide(ctx, arcX, arcY, toX, lineY - 8, { seed: 640 + j, color: teal, progress: (jp - 0.8) * 5 });
+      }
+
+      // "+1" label
+      if (jp > 0.3) {
+        const labelX = (fromX + toX) / 2;
+        Organic.text(ctx, '+1', labelX, midArcY, { font: '11px Menlo, monospace', color: teal, opacity: (jp - 0.3) * 1.4 });
+      }
+    }
+
+    // Result point
+    const rp = phase(t, 5.5, 1);
+    const resultX = startX + spacing * 5.5;
+    if (rp > 0) {
+      Organic.point(ctx, resultX, lineY, { r: 6, color: teal, opacity: rp });
+      Organic.text(ctx, '3 + 3 = 6', zones.midX, zones.top + 20,
+        { font: '15px Menlo, monospace', color: gold, opacity: rp });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY = zones.midY + 10;
+    const startX = zones.left + 50, endX = zones.right - 50;
+    const spacing = (endX - startX) / 9;
+    Organic.structural(ctx, startX - 10, lineY, endX + 10, lineY, { seed: 600, color: ink, width: 1.2 });
+    for (let i = 1; i <= 8; i++) {
+      const px = startX + spacing * (i - 0.5);
+      Organic.structural(ctx, px, lineY - 6, px, lineY + 6, { seed: 610 + i, color: ink, width: 1 });
+      Organic.text(ctx, String(i), px, lineY + 20, { font: '13px Georgia', color: ink });
+    }
+    Organic.point(ctx, startX + spacing * 2.5, lineY, { r: 6, color: gold });
+    Organic.point(ctx, startX + spacing * 5.5, lineY, { r: 6, color: teal });
+    Organic.text(ctx, '3 + 3 = 6', zones.midX, zones.top + 20, { font: '15px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── §3 Diagram 3: Formal Induction ──
+// Abstract: base case (1) confirmed, step arrow, chain propagates.
+DiagramRegistry.register('02-counting', 'formal-induction', {
+  duration: 7,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f', subtle = '#7a6e5d';
+    const cy = zones.midY;
+    const startX = zones.left + 60;
+    const spacing = 70;
+
+    // Base case: circle with checkmark at position 1
+    const p0 = phase(t, 0.3, 1);
+    if (p0 > 0) {
+      Organic.point(ctx, startX, cy, { r: 16, color: gold, opacity: p0 * 0.3 });
+      Organic.point(ctx, startX, cy, { r: 8, color: gold, opacity: p0 });
+      Organic.text(ctx, '1', startX, cy + 28, { font: '14px Georgia', color: ink, opacity: p0 });
+      if (p0 > 0.6) Organic.text(ctx, '✓', startX, cy - 24, { font: '14px Georgia', color: teal, opacity: (p0 - 0.6) * 2.5 });
+    }
+
+    // Propagation: k → k+1 for k = 1..6
+    const steps = 6;
+    for (let i = 0; i < steps; i++) {
+      const sp = phase(t, 1.5 + i * 0.7, 0.5);
+      if (sp <= 0) continue;
+      const fromX = startX + spacing * i;
+      const toX = startX + spacing * (i + 1);
+
+      // Arrow
+      Organic.guide(ctx, fromX + 12, cy, toX - 12, cy, { seed: 700 + i, color: gold, progress: sp });
+
+      // New point
+      if (sp > 0.5) {
+        const np = (sp - 0.5) * 2;
+        Organic.point(ctx, toX, cy, { r: 8, color: teal, opacity: np });
+        Organic.text(ctx, String(i + 2), toX, cy + 28, { font: '14px Georgia', color: ink, opacity: np });
+        Organic.text(ctx, '✓', toX, cy - 24, { font: '14px Georgia', color: teal, opacity: np * 0.8 });
+      }
+    }
+
+    // "P(k) → P(k+1)" label
+    const labelP = phase(t, 5.5, 1);
+    if (labelP > 0) {
+      Organic.text(ctx, 'P(1) ✓   and   P(k) → P(k+1)   ⟹   P(n) for all n', zones.midX, zones.top + 20,
+        { font: '12px Menlo, monospace', color: gold, opacity: labelP });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const cy = zones.midY;
+    const startX = zones.left + 60;
+    const spacing = 70;
+    for (let i = 0; i <= 6; i++) {
+      const px = startX + spacing * i;
+      Organic.point(ctx, px, cy, { r: 8, color: i === 0 ? gold : teal });
+      Organic.text(ctx, String(i + 1), px, cy + 28, { font: '14px Georgia', color: ink });
+      Organic.text(ctx, '✓', px, cy - 24, { font: '14px Georgia', color: teal });
+      if (i > 0) {
+        Organic.guide(ctx, startX + spacing * (i - 1) + 12, cy, px - 12, cy, { seed: 700 + i - 1, color: gold });
+      }
+    }
+    Organic.text(ctx, 'P(1) ✓   and   P(k) → P(k+1)   ⟹   P(n) for all n', zones.midX, zones.top + 20,
+      { font: '12px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── §4 Diagram 1: Example Counting ──
+// 4 + 3 solved visually: start at 4, three successor jumps to 7.
+DiagramRegistry.register('02-counting', 'example-counting', {
+  duration: 8,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY = zones.midY + 15;
+    const startX = zones.left + 40, endX = zones.right - 40;
+    const spacing = (endX - startX) / 9;
+
+    // Number line 1-8
+    Organic.structural(ctx, startX, lineY, endX, lineY, { seed: 800, color: ink, width: 1.2 });
+    for (let i = 1; i <= 8; i++) {
+      const px = startX + spacing * i;
+      Organic.structural(ctx, px, lineY - 5, px, lineY + 5, { seed: 810 + i, color: ink, width: 1 });
+      Organic.text(ctx, String(i), px, lineY + 18, { font: '12px Georgia', color: ink });
+    }
+
+    // Start point at 4
+    const p0 = phase(t, 0.3, 0.8);
+    const fourX = startX + spacing * 4;
+    if (p0 > 0) {
+      Organic.point(ctx, fourX, lineY, { r: 6, color: gold, opacity: p0 });
+      Organic.text(ctx, '4', fourX, lineY - 20, { font: 'bold 14px Georgia', color: gold, opacity: p0 });
+    }
+
+    // Three jumps: 4→5, 5→6, 6→7
+    const labels = ['S(4)=5', 'S(5)=6', 'S(6)=7'];
+    for (let j = 0; j < 3; j++) {
+      const jp = phase(t, 1.5 + j * 1.5, 1);
+      if (jp <= 0) continue;
+      const fromX = startX + spacing * (4 + j);
+      const toX = startX + spacing * (5 + j);
+
+      // Arc
+      const arcMidY = lineY - 28;
+      ctx.save();
+      ctx.strokeStyle = teal;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = jp;
+      ctx.beginPath();
+      ctx.moveTo(fromX, lineY - 6);
+      ctx.quadraticCurveTo((fromX + toX) / 2, arcMidY, toX * jp + fromX * (1 - jp), lineY - 6 + (1 - jp) * 20);
+      ctx.stroke();
+      ctx.restore();
+
+      if (jp > 0.7) {
+        Organic.point(ctx, toX, lineY, { r: 5, color: teal, opacity: (jp - 0.7) * 3.3 });
+      }
+    }
+
+    // Final label
+    const fp = phase(t, 6.5, 1);
+    if (fp > 0) {
+      Organic.text(ctx, '4 + 3 = 7', zones.midX, zones.top + 18,
+        { font: '16px Menlo, monospace', color: gold, opacity: fp });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY = zones.midY + 15;
+    const startX = zones.left + 40, endX = zones.right - 40;
+    const spacing = (endX - startX) / 9;
+    Organic.structural(ctx, startX, lineY, endX, lineY, { seed: 800, color: ink, width: 1.2 });
+    for (let i = 1; i <= 8; i++) {
+      const px = startX + spacing * i;
+      Organic.structural(ctx, px, lineY - 5, px, lineY + 5, { seed: 810 + i, color: ink, width: 1 });
+      Organic.text(ctx, String(i), px, lineY + 18, { font: '12px Georgia', color: ink });
+    }
+    Organic.point(ctx, startX + spacing * 4, lineY, { r: 6, color: gold });
+    Organic.point(ctx, startX + spacing * 7, lineY, { r: 6, color: teal });
+    Organic.text(ctx, '4 + 3 = 7', zones.midX, zones.top + 18, { font: '16px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── §4 Diagram 2: Example Addition ──
+// Two flocks merging: 47 + 28, showing pebble rows that combine.
+DiagramRegistry.register('02-counting', 'example-addition', {
+  duration: 8,
+  aspectRatio: 1.8,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f', subtle = '#7a6e5d';
+    const rowY1 = zones.midY - 20, rowY2 = zones.midY + 20;
+    const barX = zones.left + 50, barMaxW = zones.right - zones.left - 100;
+
+    // Row 1: 47 sheep (proportional bar)
+    const p1 = phase(t, 0.3, 1.5);
+    const w47 = barMaxW * (47 / 75) * p1;
+    if (p1 > 0) {
+      Organic.fill(ctx, barX, rowY1 - 8, w47, 16, gold, p1 * 0.5);
+      Organic.structRect(ctx, barX, rowY1 - 8, w47, 16, { seed: 900, color: gold, progress: p1 });
+      Organic.text(ctx, '47', barX + w47 / 2, rowY1, { font: '14px Georgia', color: ink, opacity: p1 });
+    }
+
+    // Row 2: 28 sheep
+    const p2 = phase(t, 2, 1.5);
+    const w28 = barMaxW * (28 / 75) * p2;
+    if (p2 > 0) {
+      Organic.fill(ctx, barX, rowY2 - 8, w28, 16, teal, p2 * 0.5);
+      Organic.structRect(ctx, barX, rowY2 - 8, w28, 16, { seed: 910, color: teal, progress: p2 });
+      Organic.text(ctx, '28', barX + w28 / 2, rowY2, { font: '14px Georgia', color: ink, opacity: p2 });
+    }
+
+    // Merge: second bar slides next to first
+    const p3 = phase(t, 4, 2);
+    if (p3 > 0) {
+      const targetX = barX + barMaxW * (47 / 75);
+      const currentX = barX + (targetX - barX) * p3;
+      const finalW28 = barMaxW * (28 / 75);
+      // Moving bar
+      Organic.fill(ctx, currentX, rowY1 - 8, finalW28, 16, teal, p3 * 0.4);
+      Organic.structRect(ctx, currentX, rowY1 - 8, finalW28, 16, { seed: 920, color: teal, progress: p3 });
+    }
+
+    // Result
+    const p4 = phase(t, 6.5, 1);
+    if (p4 > 0) {
+      Organic.text(ctx, '47 + 28 = 75', zones.midX, zones.top + 20,
+        { font: '16px Menlo, monospace', color: gold, opacity: p4 });
+      // Bracket under combined bar
+      const totalW = barMaxW;
+      Organic.bracket(ctx, barX, rowY1 + 18, barX + totalW, rowY1 + 18, '75', { seed: 930, color: gold, progress: p4 });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const rowY = zones.midY - 20;
+    const barX = zones.left + 50, barMaxW = zones.right - zones.left - 100;
+    const w47 = barMaxW * (47 / 75), w28 = barMaxW * (28 / 75);
+    Organic.fill(ctx, barX, rowY - 8, w47, 16, gold, 0.5);
+    Organic.structRect(ctx, barX, rowY - 8, w47, 16, { seed: 900, color: gold });
+    Organic.text(ctx, '47', barX + w47 / 2, rowY, { font: '14px Georgia', color: ink });
+    Organic.fill(ctx, barX + w47, rowY - 8, w28, 16, teal, 0.4);
+    Organic.structRect(ctx, barX + w47, rowY - 8, w28, 16, { seed: 920, color: teal });
+    Organic.text(ctx, '28', barX + w47 + w28 / 2, rowY, { font: '14px Georgia', color: ink });
+    Organic.text(ctx, '47 + 28 = 75', zones.midX, zones.top + 20, { font: '16px Menlo, monospace', color: gold });
+    Organic.bracket(ctx, barX, rowY + 18, barX + barMaxW, rowY + 18, '75', { seed: 930, color: gold });
+  }
+});
+
+
+// ── §5 Diagram 1: Ex-Da'if Counting ──
+// Guided exercise: 3 + 4 on a number line, steps highlighted.
+DiagramRegistry.register('02-counting', 'ex-daif-counting', {
+  duration: 7,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY = zones.midY + 10;
+    const startX = zones.left + 40, endX = zones.right - 40;
+    const spacing = (endX - startX) / 9;
+
+    // Number line 1-8
+    Organic.structural(ctx, startX, lineY, endX, lineY, { seed: 1000, color: ink, width: 1.2 });
+    for (let i = 1; i <= 8; i++) {
+      const px = startX + spacing * i;
+      Organic.structural(ctx, px, lineY - 5, px, lineY + 5, { seed: 1010 + i, color: ink, width: 1 });
+      Organic.text(ctx, String(i), px, lineY + 18, { font: '12px Georgia', color: ink });
+    }
+
+    // "3" highlighted
+    const p0 = phase(t, 0.3, 0.6);
+    const threeX = startX + spacing * 3;
+    if (p0 > 0) Organic.point(ctx, threeX, lineY, { r: 6, color: gold, opacity: p0 });
+
+    // Four jumps: 3→4, 4→5, 5→6, 6→7
+    for (let j = 0; j < 4; j++) {
+      const jp = phase(t, 1 + j * 1.0, 0.7);
+      if (jp <= 0) continue;
+      const fromX = startX + spacing * (3 + j);
+      const toX = startX + spacing * (4 + j);
+      const arcY = lineY - 25;
+      ctx.save();
+      ctx.strokeStyle = teal; ctx.lineWidth = 1.3; ctx.globalAlpha = jp;
+      ctx.beginPath();
+      ctx.moveTo(fromX, lineY - 6);
+      ctx.quadraticCurveTo((fromX + toX) / 2, arcY, toX, lineY - 6);
+      ctx.stroke();
+      ctx.restore();
+      if (jp > 0.6) Organic.point(ctx, toX, lineY, { r: 5, color: teal, opacity: (jp - 0.6) * 2.5 });
+    }
+
+    // Question mark
+    const qp = phase(t, 5.5, 1);
+    if (qp > 0) {
+      Organic.text(ctx, '3 + 4 = ?', zones.midX, zones.top + 18,
+        { font: '15px Menlo, monospace', color: gold, opacity: qp });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY = zones.midY + 10;
+    const startX = zones.left + 40, endX = zones.right - 40;
+    const spacing = (endX - startX) / 9;
+    Organic.structural(ctx, startX, lineY, endX, lineY, { seed: 1000, color: ink, width: 1.2 });
+    for (let i = 1; i <= 8; i++) {
+      const px = startX + spacing * i;
+      Organic.structural(ctx, px, lineY - 5, px, lineY + 5, { seed: 1010 + i, color: ink, width: 1 });
+      Organic.text(ctx, String(i), px, lineY + 18, { font: '12px Georgia', color: ink });
+    }
+    Organic.point(ctx, startX + spacing * 3, lineY, { r: 6, color: gold });
+    Organic.point(ctx, startX + spacing * 7, lineY, { r: 6, color: teal });
+    Organic.text(ctx, '3 + 4 = ?', zones.midX, zones.top + 18, { font: '15px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── §5 Diagram 2: Ex-Hasan Induction ──
+// Induction exercise prompt: base + step = all.
+DiagramRegistry.register('02-counting', 'ex-hasan-induction', {
+  duration: 6,
+  aspectRatio: 2.2,
+  draw(t, ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f', subtle = '#7a6e5d';
+    const cy = zones.midY;
+
+    // Three boxes: BASE CASE | INDUCTIVE STEP | CONCLUSION
+    const boxW = 180, boxH = 50, gap = 30;
+    const totalW = boxW * 3 + gap * 2;
+    const sx = zones.midX - totalW / 2;
+
+    const labels = ['BASE CASE', 'INDUCTIVE STEP', 'CONCLUSION'];
+    const sublabels = ['n = 1', 'k → k + 1', '∀ n ∈ Z⁺'];
+    const colors = [gold, teal, gold];
+
+    for (let i = 0; i < 3; i++) {
+      const bp = phase(t, 0.5 + i * 1.5, 1);
+      if (bp <= 0) continue;
+      const bx = sx + i * (boxW + gap);
+
+      Organic.structRect(ctx, bx, cy - boxH / 2, boxW, boxH, { seed: 1100 + i * 10, color: colors[i], progress: bp });
+      if (bp > 0.5) {
+        const textOp = (bp - 0.5) * 2;
+        Organic.text(ctx, labels[i], bx + boxW / 2, cy - 8, { font: '12px Menlo, monospace', color: ink, opacity: textOp });
+        Organic.text(ctx, sublabels[i], bx + boxW / 2, cy + 12, { font: '14px Georgia', color: colors[i], opacity: textOp });
+      }
+
+      // Arrow to next box
+      if (i < 2 && bp > 0.8) {
+        const arrowP = (bp - 0.8) * 5;
+        Organic.guide(ctx, bx + boxW + 4, cy, bx + boxW + gap - 4, cy, { seed: 1150 + i, color: subtle, progress: arrowP });
+      }
+    }
+
+    // Final emphasis
+    const fp = phase(t, 5, 0.8);
+    if (fp > 0) {
+      Organic.text(ctx, 'Verify: (1 + 2) + 3  =  1 + (2 + 3)', zones.midX, zones.bottom - 20,
+        { font: '13px Menlo, monospace', color: gold, opacity: fp });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f', subtle = '#7a6e5d';
+    const cy = zones.midY;
+    const boxW = 180, boxH = 50, gap = 30;
+    const totalW = boxW * 3 + gap * 2;
+    const sx = zones.midX - totalW / 2;
+    const labels = ['BASE CASE', 'INDUCTIVE STEP', 'CONCLUSION'];
+    const sublabels = ['n = 1', 'k → k + 1', '∀ n ∈ Z⁺'];
+    const colors = [gold, teal, gold];
+    for (let i = 0; i < 3; i++) {
+      const bx = sx + i * (boxW + gap);
+      Organic.structRect(ctx, bx, cy - boxH / 2, boxW, boxH, { seed: 1100 + i * 10, color: colors[i] });
+      Organic.text(ctx, labels[i], bx + boxW / 2, cy - 8, { font: '12px Menlo, monospace', color: ink });
+      Organic.text(ctx, sublabels[i], bx + boxW / 2, cy + 12, { font: '14px Georgia', color: colors[i] });
+      if (i < 2) Organic.guide(ctx, bx + boxW + 4, cy, bx + boxW + gap - 4, cy, { seed: 1150 + i, color: subtle });
+    }
+    Organic.text(ctx, 'Verify: (1 + 2) + 3  =  1 + (2 + 3)', zones.midX, zones.bottom - 20,
+      { font: '13px Menlo, monospace', color: gold });
+  }
+});
+
+
+// ── 0.2 §3 Additional visuals (visual-first fix) ──
+
+// Axiom 3+4: No collapse — different inputs, different outputs
+DiagramRegistry.register('02-counting', 'formal-no-collapse', {
+  duration: 6,
+  aspectRatio: 2.2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const ink = '#3a2510', gold = '#c9a84c', red = '#c0392b';
+    // Two sheep (dots) on the left, two numbers on the right
+    const p1 = phase(t, 0.3, 1.5);
+    if (p1 > 0) {
+      // Sheep side
+      Organic.point(ctx, cx - 150, cy - 30, { r: 12, color: '#8a7a6a', opacity: p1 });
+      Organic.point(ctx, cx - 150, cy + 30, { r: 12, color: '#8a7a6a', opacity: p1 });
+      Organic.text(ctx, 'sheep A', cx - 150, cy - 52, { opacity: p1, font: '12px Georgia', color: ink });
+      Organic.text(ctx, 'sheep B', cx - 150, cy + 52, { opacity: p1, font: '12px Georgia', color: ink });
+      // Number side
+      Organic.point(ctx, cx + 150, cy - 30, { r: 12, color: gold, opacity: p1 });
+      Organic.point(ctx, cx + 150, cy + 30, { r: 12, color: gold, opacity: p1 });
+      Organic.text(ctx, '3', cx + 150, cy - 30, { opacity: p1, font: 'bold 14px Menlo, monospace', color: '#fff' });
+      Organic.text(ctx, '4', cx + 150, cy + 30, { opacity: p1, font: 'bold 14px Menlo, monospace', color: '#fff' });
+    }
+    // Arrows: each sheep to its own number (never merging)
+    const p2 = phase(t, 2, 1.5);
+    if (p2 > 0) {
+      Organic.guide(ctx, cx - 136, cy - 30, cx + 136, cy - 30, { progress: p2, seed: 500, color: gold });
+      Organic.guide(ctx, cx - 136, cy + 30, cx + 136, cy + 30, { progress: p2, seed: 510, color: gold });
+    }
+    // Red X on a crossed arrow (showing what CAN'T happen)
+    const p3 = phase(t, 4, 1.5);
+    if (p3 > 0) {
+      ctx.save(); ctx.strokeStyle = red; ctx.lineWidth = 2; ctx.globalAlpha = p3;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(cx - 136, cy + 30); ctx.lineTo(cx + 136, cy - 30); ctx.stroke();
+      ctx.restore();
+      Organic.text(ctx, '✗', cx, cy - 10, { opacity: p3, font: 'bold 22px Georgia', color: red });
+      Organic.text(ctx, 'different sheep → different counts', cx, cy + 80, { opacity: p3, font: '14px Georgia', color: ink });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const ink = '#3a2510', gold = '#c9a84c', red = '#c0392b';
+    Organic.point(ctx, cx - 150, cy - 30, { r: 12, color: '#8a7a6a' });
+    Organic.point(ctx, cx - 150, cy + 30, { r: 12, color: '#8a7a6a' });
+    Organic.point(ctx, cx + 150, cy - 30, { r: 12, color: gold });
+    Organic.point(ctx, cx + 150, cy + 30, { r: 12, color: gold });
+    Organic.text(ctx, '3', cx + 150, cy - 30, { font: 'bold 14px Menlo, monospace', color: '#fff' });
+    Organic.text(ctx, '4', cx + 150, cy + 30, { font: 'bold 14px Menlo, monospace', color: '#fff' });
+    Organic.guide(ctx, cx - 136, cy - 30, cx + 136, cy - 30, { seed: 500, color: gold });
+    Organic.guide(ctx, cx - 136, cy + 30, cx + 136, cy + 30, { seed: 510, color: gold });
+    ctx.save(); ctx.strokeStyle = red; ctx.lineWidth = 2; ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(cx - 136, cy + 30); ctx.lineTo(cx + 136, cy - 30); ctx.stroke(); ctx.restore();
+    Organic.text(ctx, '✗', cx, cy - 10, { font: 'bold 22px Georgia', color: red });
+    Organic.text(ctx, 'different sheep → different counts', cx, cy + 80, { font: '14px Georgia', color: ink });
+  }
+});
+
+// Commutativity: 3+4 vs 4+3 on a number line — same destination
+DiagramRegistry.register('02-counting', 'formal-commutativity', {
+  duration: 8,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY1 = zones.midY - 30, lineY2 = zones.midY + 40;
+    const left = zones.left + 20, right = zones.right - 20;
+    const range = right - left;
+
+    // Top line: 3 + 4 (start at 0, jump 3, then jump 4)
+    const p0 = phase(t, 0.3, 1);
+    if (p0 > 0) {
+      Organic.structural(ctx, left, lineY1, right, lineY1, { seed: 600, color: ink, progress: p0 });
+      Organic.text(ctx, '3 + 4', left + 10, lineY1 - 18, { opacity: p0, font: '14px Menlo, monospace', color: gold, align: 'left' });
+    }
+    // Jump 3
+    const p1 = phase(t, 1.5, 1.5);
+    if (p1 > 0) {
+      const x0 = left + range * 0, x3 = left + range * (3/8);
+      Organic.point(ctx, x0, lineY1, { r: 4, color: ink, opacity: p1 });
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1.5; ctx.globalAlpha = p1;
+      ctx.beginPath(); ctx.moveTo(x0 + 4, lineY1 - 8);
+      ctx.quadraticCurveTo((x0 + x3) / 2, lineY1 - 30, x3 - 4, lineY1 - 8); ctx.stroke(); ctx.restore();
+      Organic.point(ctx, x3, lineY1, { r: 4, color: gold, opacity: p1 });
+      if (p1 > 0.5) Organic.text(ctx, '+3', (x0 + x3) / 2, lineY1 - 32, { opacity: (p1 - 0.5) * 2, font: '12px Menlo, monospace', color: gold });
+    }
+    // Jump 4 more → land at 7
+    const p2 = phase(t, 3, 1.5);
+    if (p2 > 0) {
+      const x3 = left + range * (3/8), x7 = left + range * (7/8);
+      ctx.save(); ctx.strokeStyle = teal; ctx.lineWidth = 1.5; ctx.globalAlpha = p2;
+      ctx.beginPath(); ctx.moveTo(x3 + 4, lineY1 - 8);
+      ctx.quadraticCurveTo((x3 + x7) / 2, lineY1 - 30, x7 - 4, lineY1 - 8); ctx.stroke(); ctx.restore();
+      Organic.point(ctx, x7, lineY1, { r: 5, color: teal, opacity: p2 });
+      if (p2 > 0.5) Organic.text(ctx, '+4', (x3 + x7) / 2, lineY1 - 32, { opacity: (p2 - 0.5) * 2, font: '12px Menlo, monospace', color: teal });
+    }
+
+    // Bottom line: 4 + 3 (start at 0, jump 4, then jump 3)
+    const p3 = phase(t, 4, 1);
+    if (p3 > 0) {
+      Organic.structural(ctx, left, lineY2, right, lineY2, { seed: 620, color: ink, progress: p3 });
+      Organic.text(ctx, '4 + 3', left + 10, lineY2 - 18, { opacity: p3, font: '14px Menlo, monospace', color: teal, align: 'left' });
+    }
+    const p4 = phase(t, 5, 1);
+    if (p4 > 0) {
+      const x0 = left + range * 0, x4 = left + range * (4/8), x7 = left + range * (7/8);
+      Organic.point(ctx, x0, lineY2, { r: 4, color: ink, opacity: p4 });
+      ctx.save(); ctx.strokeStyle = teal; ctx.lineWidth = 1.5; ctx.globalAlpha = p4;
+      ctx.beginPath(); ctx.moveTo(x0 + 4, lineY2 - 8);
+      ctx.quadraticCurveTo((x0 + x4) / 2, lineY2 - 25, x4 - 4, lineY2 - 8); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1.5; ctx.globalAlpha = p4;
+      ctx.beginPath(); ctx.moveTo(x4 + 4, lineY2 - 8);
+      ctx.quadraticCurveTo((x4 + x7) / 2, lineY2 - 25, x7 - 4, lineY2 - 8); ctx.stroke(); ctx.restore();
+      Organic.point(ctx, x7, lineY2, { r: 5, color: teal, opacity: p4 });
+    }
+    // Both land at 7 — golden line connecting them
+    const p5 = phase(t, 6.5, 1.2);
+    if (p5 > 0) {
+      const x7 = left + range * (7/8);
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 2; ctx.globalAlpha = p5;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(x7, lineY1 + 6); ctx.lineTo(x7, lineY2 - 6); ctx.stroke(); ctx.restore();
+      Organic.text(ctx, '= 7', x7 + 20, (lineY1 + lineY2) / 2, { opacity: p5, font: 'bold 16px Menlo, monospace', color: gold });
+    }
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const lineY1 = zones.midY - 30, lineY2 = zones.midY + 40;
+    const left = zones.left + 20, right = zones.right - 20, range = right - left;
+    const x7 = left + range * (7/8);
+    Organic.structural(ctx, left, lineY1, right, lineY1, { seed: 600, color: ink });
+    Organic.structural(ctx, left, lineY2, right, lineY2, { seed: 620, color: ink });
+    Organic.text(ctx, '3 + 4', left + 10, lineY1 - 18, { font: '14px Menlo, monospace', color: gold, align: 'left' });
+    Organic.text(ctx, '4 + 3', left + 10, lineY2 - 18, { font: '14px Menlo, monospace', color: teal, align: 'left' });
+    Organic.point(ctx, x7, lineY1, { r: 5, color: teal });
+    Organic.point(ctx, x7, lineY2, { r: 5, color: teal });
+    ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 2; ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.moveTo(x7, lineY1 + 6); ctx.lineTo(x7, lineY2 - 6); ctx.stroke(); ctx.restore();
+    Organic.text(ctx, '= 7', x7 + 20, (lineY1 + lineY2) / 2, { font: 'bold 16px Menlo, monospace', color: gold });
+  }
+});
+
+// Associativity: (2+3)+4 vs 2+(3+4) — three groups of pebbles, same total
+DiagramRegistry.register('02-counting', 'formal-associativity', {
+  duration: 8,
+  aspectRatio: 1.8,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const dotR = 7, gap = 22;
+    // Three groups: 2 dots, 3 dots, 4 dots
+    const groups = [2, 3, 4];
+    const colors = [gold, teal, '#8a7a6a'];
+    const totalDots = 9;
+    const startX = cx - (totalDots * gap) / 2;
+
+    // Phase 1: All dots appear
+    const p0 = phase(t, 0.3, 2);
+    let dx = 0;
+    if (p0 > 0) {
+      for (let g = 0; g < 3; g++) {
+        for (let d = 0; d < groups[g]; d++) {
+          const x = startX + dx * gap;
+          Organic.point(ctx, x, cy - 10, { r: dotR * Math.min(p0 * 2, 1), color: colors[g], opacity: p0 });
+          dx++;
+        }
+        dx += 0.5; // gap between groups
+      }
+    }
+
+    // Phase 2: First grouping — (2+3) then +4
+    const p1 = phase(t, 2.5, 2);
+    if (p1 > 0) {
+      const bracketLeft = startX - dotR - 6;
+      const bracketRight = startX + (2 + 3 - 1 + 0.5) * gap + dotR + 6;
+      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1.5; ctx.globalAlpha = p1;
+      ctx.setLineDash([5, 3]);
+      // Bracket under first 5 dots
+      ctx.beginPath();
+      ctx.moveTo(bracketLeft, cy + 20); ctx.lineTo(bracketRight, cy + 20);
+      ctx.stroke(); ctx.restore();
+      Organic.text(ctx, '(2 + 3) + 4 = 9', cx, cy + 46, { opacity: p1, font: '15px Menlo, monospace', color: gold });
+    }
+
+    // Phase 3: Second grouping — 2 then (3+4)
+    const p2 = phase(t, 5, 2);
+    if (p2 > 0) {
+      const bracketLeft = startX + (2 + 0.5) * gap - dotR - 6;
+      const bracketRight = startX + (2 + 3 + 4 - 1 + 1) * gap + dotR + 6;
+      ctx.save(); ctx.strokeStyle = teal; ctx.lineWidth = 1.5; ctx.globalAlpha = p2;
+      ctx.setLineDash([5, 3]);
+      ctx.beginPath();
+      ctx.moveTo(bracketLeft, cy + 65); ctx.lineTo(bracketRight, cy + 65);
+      ctx.stroke(); ctx.restore();
+      Organic.text(ctx, '2 + (3 + 4) = 9', cx, cy + 90, { opacity: p2, font: '15px Menlo, monospace', color: teal });
+    }
+
+    // Phase 4: Same answer
+    const p3 = phase(t, 7, 0.8);
+    if (p3 > 0) Organic.text(ctx, 'same total — grouping does not matter', cx, cy + 120, { opacity: p3, font: '13px Georgia', color: ink });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    Organic.text(ctx, '(2 + 3) + 4 = 9', cx, cy + 46, { font: '15px Menlo, monospace', color: gold });
+    Organic.text(ctx, '2 + (3 + 4) = 9', cx, cy + 90, { font: '15px Menlo, monospace', color: teal });
+    Organic.text(ctx, 'same total — grouping does not matter', cx, cy + 120, { font: '13px Georgia', color: ink });
+  }
+});
+
+// Example 2: Shepherd's one-to-one correspondence
+DiagramRegistry.register('02-counting', 'example-shepherd', {
+  duration: 7,
+  aspectRatio: 2,
+  draw(t, ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const ink = '#3a2510', gold = '#c9a84c', teal = '#6a9e8f';
+    const n = 6; // show 6 sheep for clarity (representing 47)
+    const gap = 70;
+    const startX = cx - (n - 1) * gap / 2;
+
+    // Sheep (top row)
+    const p0 = phase(t, 0.3, 1.5);
+    for (let i = 0; i < n; i++) {
+      const x = startX + i * gap;
+      const dp = Math.min(Math.max((p0 - i * 0.1) * 5, 0), 1);
+      if (dp > 0) {
+        Organic.point(ctx, x, cy - 35, { r: 10, color: '#8a7a6a', opacity: dp });
+        if (i < n - 1) Organic.text(ctx, String(i + 1), x, cy - 55, { opacity: dp, font: '11px Georgia', color: ink });
+        else Organic.text(ctx, '...47', x, cy - 55, { opacity: dp, font: '11px Georgia', color: ink });
+      }
+    }
+    // Numbers (bottom row)
+    const p1 = phase(t, 2, 1.5);
+    for (let i = 0; i < n; i++) {
+      const x = startX + i * gap;
+      const dp = Math.min(Math.max((p1 - i * 0.1) * 5, 0), 1);
+      if (dp > 0) {
+        Organic.point(ctx, x, cy + 35, { r: 10, color: gold, opacity: dp });
+        if (i < n - 1) Organic.text(ctx, String(i + 1), x, cy + 35, { opacity: dp, font: 'bold 12px Menlo, monospace', color: '#fff' });
+        else Organic.text(ctx, '47', x, cy + 35, { opacity: dp, font: 'bold 12px Menlo, monospace', color: '#fff' });
+      }
+    }
+    // Arrows connecting them (one-to-one)
+    const p2 = phase(t, 3.5, 2);
+    for (let i = 0; i < n; i++) {
+      const x = startX + i * gap;
+      const dp = Math.min(Math.max((p2 - i * 0.08) * 4, 0), 1);
+      if (dp > 0) {
+        Organic.guide(ctx, x, cy - 23, x, cy + 23, { progress: dp, seed: 700 + i, color: teal });
+      }
+    }
+    // Label
+    const p3 = phase(t, 5.8, 1);
+    if (p3 > 0) Organic.text(ctx, '47 out ↔ 47 back — one-to-one', cx, cy + 75, { opacity: p3, font: '14px Georgia', color: ink });
+  },
+  frozenFrame(ctx, zones) {
+    const cx = zones.midX, cy = zones.midY;
+    const n = 6, gap = 70, startX = cx - (n - 1) * gap / 2;
+    for (let i = 0; i < n; i++) {
+      const x = startX + i * gap;
+      Organic.point(ctx, x, cy - 35, { r: 10, color: '#8a7a6a' });
+      Organic.point(ctx, x, cy + 35, { r: 10, color: '#c9a84c' });
+      Organic.guide(ctx, x, cy - 23, x, cy + 23, { seed: 700 + i, color: '#6a9e8f' });
+    }
+    Organic.text(ctx, '47 out ↔ 47 back — one-to-one', cx, cy + 75, { font: '14px Georgia', color: '#3a2510' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
 // ── Construction Base Class ──
 // Zone system: title (50px top), construction (flexible middle),
 // closing (50px bottom). Overlap impossible by design.
@@ -839,6 +3894,8 @@ function phase(t, start, dur) {
 class Construction {
   get title() { return ''; }
   get duration() { return 25; }
+  // End card: { line1, line2, line3 } — replaces title when present
+  get endCard() { return null; }
 
   constructor(canvas) {
     this.canvas = canvas;
@@ -911,12 +3968,25 @@ class Construction {
     // Construction zone — subclass draws here
     this.drawConstruction(t, ctx, this.zones);
 
-    // Title — appears after construction completes, 2s pause then fade
-    const titleStart = this.duration - 4;
-    const titleP = phase(t, titleStart, 2);
-    if (titleP > 0 && this.title) {
+    // End card or title — appears after construction completes
+    const cardStart = this.duration - 5;
+    const cardP = phase(t, cardStart, 2);
+    if (cardP > 0 && this.endCard) {
+      const card = this.endCard;
+      const baseY = this.zones.bottom - 10;
+      Organic.text(ctx, card.line1, this.zones.midX, baseY,
+        { opacity: cardP * 0.95, font: 'bold 16px Georgia', color: this.ink });
+      const l2P = phase(t, cardStart + 0.6, 1.5);
+      if (l2P > 0)
+        Organic.text(ctx, card.line2, this.zones.midX, baseY + 26,
+          { opacity: l2P * 0.7, font: '13px Georgia', color: this.inkLight });
+      const l3P = phase(t, cardStart + 1.2, 1.5);
+      if (l3P > 0)
+        Organic.text(ctx, card.line3, this.zones.midX, baseY + 50,
+          { opacity: l3P * 0.6, font: 'italic 12px Georgia', color: this.inkLight });
+    } else if (cardP > 0 && this.title) {
       Organic.text(ctx, this.title, this.zones.midX, this.zones.bottom + 25,
-        { opacity: titleP * 0.9, font: 'italic 18px Georgia', color: this.ink });
+        { opacity: cardP * 0.9, font: 'italic 18px Georgia', color: this.ink });
     }
 
     // "1 = 1" — final whisper
@@ -939,784 +4009,33 @@ class Construction {
 }
 
 // ══════════════════════════════════════════════════════════
-// ── V2 Constructions (parliament design language) ──
-// Zero text during construction. One title at end.
-// Jitter=0 on structural geometry. Hooks, not lessons.
+// ── V2 Constructions — thin wrappers delegating to unified Layers ──
+// Each construction delegates drawConstruction to its Layer.
+// The Layer IS the source of truth. One class, two modes.
 // ══════════════════════════════════════════════════════════
 
-// ── 0.7: Completing the Square ──
-class CompletingTheSquareV2 extends Construction {
-  get title() { return 'Completing the Square'; }
-  get duration() { return 28; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-
-    // Scale geometry to fit 9:16 canvas — centered
-    const unit = 18;
-    const S = 10, X = 4.14;
-    const sw = S * unit, xw = X * unit;
-    // Center the completed square horizontally
-    const totalW = sw + xw;
-    const ox = zones.midX - totalW / 2;
-    // Vertically center in construction zone
-    const totalH = sw + xw;
-    const oy = zones.midY - totalH / 2;
-
-    // Phase 0 (0-5s): The courtyard square — 10×10
-    const p0 = phase(t, 0, 4);
-    if (p0 > 0) {
-      Organic.fill(ctx, ox, oy, sw, sw, '#efe0c0', p0 * 0.5);
-      Organic.structRect(ctx, ox, oy, sw, sw, { progress: p0, seed: 42, color: ink });
-    }
-
-    // Phase 1 (6-10s): East strip grows
-    const p1 = phase(t, 6, 3);
-    if (p1 > 0) {
-      Organic.fill(ctx, ox + sw, oy, xw * p1, sw, '#e4d4a8', 0.45);
-      Organic.structural(ctx, ox + sw + xw, oy, ox + sw + xw, oy + sw,
-        { progress: p1, seed: 100, color: ink });
-      Organic.structural(ctx, ox + sw, oy, ox + sw + xw, oy,
-        { progress: p1, seed: 101, color: ink });
-    }
-
-    // Phase 2 (10.5-14s): South strip grows
-    const p2 = phase(t, 10.5, 3);
-    if (p2 > 0) {
-      Organic.fill(ctx, ox, oy + sw, sw, xw * p2, '#e4d4a8', 0.45);
-      Organic.structural(ctx, ox, oy + sw + xw, ox + sw, oy + sw + xw,
-        { progress: p2, seed: 110, color: ink });
-      Organic.structural(ctx, ox, oy + sw, ox, oy + sw + xw,
-        { progress: p2, seed: 111, color: ink });
-    }
-
-    // Phase 3 (15-18s): The gap pulses
-    const p3 = phase(t, 15, 2.5);
-    if (p3 > 0) {
-      const pulse = 0.25 + 0.35 * Math.sin(t * 3);
-      ctx.save();
-      ctx.strokeStyle = highlight;
-      ctx.lineWidth = 2;
-      ctx.setLineDash([6, 5]);
-      ctx.globalAlpha = p3 * pulse;
-      ctx.strokeRect(ox + sw + 1, oy + sw + 1, xw - 2, xw - 2);
-      ctx.restore();
-    }
-
-    // Phase 4 (19-23s): Complete the square
-    const p4 = phase(t, 19, 3);
-    if (p4 > 0) {
-      Organic.fill(ctx, ox + sw, oy + sw, xw, xw, '#d4b878', p4 * 0.7);
-      Organic.structural(ctx, ox + sw + xw, oy + sw, ox + sw + xw, oy + sw + xw,
-        { progress: p4, seed: 130, color: ink });
-      Organic.structural(ctx, ox + sw, oy + sw + xw, ox + sw + xw, oy + sw + xw,
-        { progress: p4, seed: 131, color: ink });
-
-      // Golden dimension brackets
-      if (p4 > 0.5) {
-        const bo = (p4 - 0.5) / 0.5;
-        Organic.guide(ctx, ox, oy - 14, ox + sw + xw, oy - 14,
-          { progress: bo, seed: 140, color: gold });
-        Organic.guide(ctx, ox - 14, oy, ox - 14, oy + sw + xw,
-          { progress: bo, seed: 141, color: gold });
-      }
-    }
-
-    // Phase 5 (23.5-26s): Golden accent on the strip — the answer
-    const p5 = phase(t, 23.5, 2);
-    if (p5 > 0) {
-      Organic.structural(ctx, ox + sw, oy - 5, ox + sw + xw, oy - 5,
-        { progress: p5, seed: 150, color: gold, width: 2.5 });
-      if (p5 > 0.5) {
-        Organic.point(ctx, ox + sw + xw / 2, oy - 5,
-          { r: 3, color: gold, opacity: (p5 - 0.5) * 2 });
-      }
-    }
-  }
+function _layerWrapper(layerId) {
+  return class extends Construction {
+    constructor(canvas) { super(canvas); this._layer = LayerRegistry.get(layerId); }
+    get title() { return this._layer.name; }
+    get duration() { return this._layer.constructionDuration; }
+    get endCard() { return this._layer.endCard; }
+    drawConstruction(t, ctx, zones) { this._layer.drawConstruction(t, ctx, zones); }
+  };
 }
 
-// ── 0.0: The Impossible Sum ──
-class ImpossibleSumV2 extends Construction {
-  get title() { return 'The Impossible Sum'; }
-  get duration() { return 24; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-    // A single bar representing the estate, divided into 24 parts
-    // Four heirs fill it — the fourth overflows
-    const barW = zones.contentW - 20, barH = 40;
-    const barX = zones.left + 10, barY = zones.midY - barH / 2;
-    const segW = barW / 24;
-
-    // Phase 0 (0-3s): Estate bar
-    const p0 = phase(t, 0, 2.5);
-    if (p0 > 0) {
-      Organic.fill(ctx, barX, barY, barW, barH, '#efe0c0', p0 * 0.4);
-      Organic.structRect(ctx, barX, barY, barW, barH, { progress: p0, seed: 50, color: ink });
-      // Right boundary — the edge of 1
-      if (p0 > 0.7) Organic.structural(ctx, barX + barW, barY - 4, barX + barW, barY + barH + 4,
-        { progress: (p0 - 0.7) / 0.3, seed: 54, color: ink, width: 2 });
-    }
-
-    // Phase 1 (3.5-6s): Wife 3/24
-    const p1 = phase(t, 3.5, 2);
-    if (p1 > 0) {
-      Organic.fill(ctx, barX, barY, 3 * segW * p1, barH, '#6a9e8f', 0.6);
-    }
-
-    // Phase 2 (6.5-10s): Daughters 16/24
-    const p2 = phase(t, 6.5, 2.5);
-    if (p2 > 0) {
-      Organic.fill(ctx, barX + 3 * segW, barY, 16 * segW * p2, barH, '#d4a843', 0.55);
-    }
-
-    // Phase 3 (10.5-13s): Father 4/24
-    const p3 = phase(t, 10.5, 2);
-    if (p3 > 0) {
-      Organic.fill(ctx, barX + 19 * segW, barY, 4 * segW * p3, barH, '#b07050', 0.55);
-    }
-
-    // Phase 4 (13.5-18s): Mother — 1 fits, 3 overflow
-    const p4 = phase(t, 13.5, 3);
-    if (p4 > 0) {
-      // The 1 that fits
-      Organic.fill(ctx, barX + 23 * segW, barY, segW * Math.min(p4 * 4, 1), barH, '#b07050', 0.5);
-      // Overflow — 3 segments beyond the boundary
-      if (p4 > 0.3) {
-        const overP = (p4 - 0.3) / 0.7;
-        const ovX = barX + 24 * segW;
-        Organic.fill(ctx, ovX, barY, 3 * segW * overP, barH, '#c0392b', 0.3);
-        // Dashed overflow border
-        if (overP > 0.4) {
-          ctx.save();
-          ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1.5;
-          ctx.setLineDash([5, 4]); ctx.globalAlpha = (overP - 0.4) / 0.6;
-          ctx.strokeRect(ovX, barY, 3 * segW, barH);
-          ctx.restore();
-        }
-      }
-      // Boundary pulses red
-      if (p4 > 0.2) {
-        const pulse = 0.4 + 0.3 * Math.sin(t * 5);
-        ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5;
-        ctx.globalAlpha = pulse * Math.min((p4 - 0.2) * 3, 1);
-        ctx.beginPath(); ctx.moveTo(barX + barW, barY - 6); ctx.lineTo(barX + barW, barY + barH + 6);
-        ctx.stroke(); ctx.restore();
-      }
-    }
-  }
-}
-
-// ── 0.1: The Merchant's Scales ──
-class BalanceBeamV2 extends Construction {
-  get title() { return 'The Scales of Equality'; }
-  get duration() { return 22; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold } = this;
-    const cx = zones.midX, fy = zones.midY + 30;
-    const beamLen = 130, fulcrumH = 50, panDrop = 25;
-
-    // Helper: draw beam at a tilt
-    const drawBeam = (tilt, progress) => {
-      const angle = tilt * 0.12;
-      // Fulcrum
-      Organic.structural(ctx, cx, fy, cx - 16, fy + fulcrumH, { seed: 200, color: ink, progress });
-      Organic.structural(ctx, cx, fy, cx + 16, fy + fulcrumH, { seed: 201, color: ink, progress });
-      Organic.structural(ctx, cx - 16, fy + fulcrumH, cx + 16, fy + fulcrumH, { seed: 202, color: ink, progress });
-      // Beam
-      const lx = cx - Math.cos(angle) * beamLen, ly = fy - Math.sin(angle) * beamLen * 0.3;
-      const rx = cx + Math.cos(angle) * beamLen, ry = fy + Math.sin(angle) * beamLen * 0.3;
-      Organic.structural(ctx, lx, ly, rx, ry, { seed: 203, color: ink, width: 2, progress });
-      // Pan lines + pans
-      Organic.annotation(ctx, lx, ly, lx, ly + panDrop, { seed: 204, color: ink });
-      Organic.annotation(ctx, rx, ry, rx, ry + panDrop, { seed: 205, color: ink });
-      Organic.structural(ctx, lx - 20, ly + panDrop, lx + 20, ly + panDrop, { seed: 206, color: ink, width: 1.3 });
-      Organic.structural(ctx, rx - 20, ry + panDrop, rx + 20, ry + panDrop, { seed: 207, color: ink, width: 1.3 });
-      return { lx, ly: ly + panDrop, rx, ry: ry + panDrop };
-    };
-
-    // Phase 0 (0-4s): Beam appears, balanced
-    const p0 = phase(t, 0, 3);
-    if (p0 > 0) drawBeam(0, p0);
-
-    // Phase 1 (4.5-9s): Objects placed on both sides — beam stays level
-    const p1 = phase(t, 4.5, 3);
-    if (p1 > 0) {
-      const pans = drawBeam(0, 1);
-      if (p1 > 0.3) {
-        const lo = (p1 - 0.3) / 0.7;
-        Organic.point(ctx, pans.lx, pans.ly - 12, { r: 7, color: '#8a7a6a', opacity: lo * 0.7 });
-        Organic.point(ctx, pans.rx, pans.ry - 12, { r: 7, color: '#8a7a6a', opacity: lo * 0.7 });
-      }
-    }
-
-    // Phase 2 (10-15s): Swap — beam tilts, then returns to level
-    const p2 = phase(t, 10, 4);
-    if (p2 > 0) {
-      const swing = Math.sin(p2 * Math.PI) * 3;
-      const pans = drawBeam(swing, 1);
-      const swapped = p2 > 0.5;
-      Organic.point(ctx, pans.lx, pans.ly - 12, { r: 7, color: swapped ? gold : '#8a7a6a', opacity: 0.7 });
-      Organic.point(ctx, pans.rx, pans.ry - 12, { r: 7, color: swapped ? '#8a7a6a' : gold, opacity: 0.7 });
-    }
-
-    // Phase 3 (16-20s): Add to both sides — beam stays level
-    const p3 = phase(t, 16, 3);
-    if (p3 > 0) {
-      const pans = drawBeam(0, 1);
-      Organic.point(ctx, pans.lx - 8, pans.ly - 12, { r: 7, color: '#8a7a6a', opacity: 0.7 });
-      Organic.point(ctx, pans.rx + 8, pans.ry - 12, { r: 7, color: gold, opacity: 0.7 });
-      if (p3 > 0.3) {
-        const drop = Math.min((p3 - 0.3) * 2, 1);
-        const dy = -30 + drop * 18;
-        Organic.point(ctx, pans.lx + 8, pans.ly + dy, { r: 5, color: '#6a9e8f', opacity: drop * 0.6 });
-        Organic.point(ctx, pans.rx - 8, pans.ry + dy, { r: 5, color: '#6a9e8f', opacity: drop * 0.6 });
-      }
-    }
-  }
-}
-
-// ── 0.2: The Shepherd's Gate ──
-class ShepherdsGateV2 extends Construction {
-  get title() { return 'Counting'; }
-  get duration() { return 22; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold } = this;
-    const lineY = zones.midY, startX = zones.left + 10, gap = 30;
-    const count = 10;
-
-    // Phase 0 (0-3s): Number line with arrow
-    const p0 = phase(t, 0, 2.5);
-    if (p0 > 0) {
-      const endX = startX + count * gap + 30;
-      Organic.structural(ctx, startX, lineY, startX + (endX - startX) * p0, lineY, { seed: 300, color: ink });
-      if (p0 > 0.8) {
-        const ax = endX;
-        Organic.structural(ctx, ax - 8, lineY - 5, ax, lineY, { seed: 301, color: ink, width: 1.3 });
-        Organic.structural(ctx, ax - 8, lineY + 5, ax, lineY, { seed: 302, color: ink, width: 1.3 });
-      }
-    }
-
-    // Phase 1 (3-14s): Points appear one by one with successor arcs
-    for (let i = 1; i <= count; i++) {
-      const delay = 3 + (i - 1) * 1.0;
-      const p = phase(t, delay, 0.6);
-      if (p > 0) {
-        const x = startX + i * gap;
-        // Tick mark
-        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 310 + i, color: ink, width: 1.2, progress: p });
-        // Point
-        Organic.point(ctx, x, lineY, { r: 3, color: ink, opacity: p });
-        // Successor arc to next
-        if (i < count && p > 0.5) {
-          const nx = x + gap;
-          ctx.save();
-          ctx.strokeStyle = gold; ctx.lineWidth = 0.8;
-          ctx.globalAlpha = (p - 0.5) * 0.8;
-          ctx.beginPath();
-          ctx.moveTo(x + 4, lineY - 10);
-          ctx.quadraticCurveTo((x + nx) / 2, lineY - 22, nx - 4, lineY - 10);
-          ctx.stroke();
-          ctx.restore();
-        }
-      }
-    }
-
-    // Phase 2 (14-18s): Dots trailing off — infinity
-    const p2 = phase(t, 14, 2);
-    if (p2 > 0) {
-      const dotsX = startX + (count + 1) * gap;
-      for (let i = 0; i < 3; i++) {
-        Organic.point(ctx, dotsX + i * 12, lineY, { r: 2, color: gold, opacity: p2 * (0.8 - i * 0.2) });
-      }
-    }
-  }
-}
-
-// ── 0.3: The Farmer's Grain ──
-class FarmersGrainV2 extends Construction {
-  get title() { return 'Multiplication'; }
-  get duration() { return 22; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold } = this;
-    const rows = 4, cols = 3, dotR = 5, gapX = 36, gapY = 36;
-    const gridW = (cols - 1) * gapX, gridH = (rows - 1) * gapY;
-    const ox = zones.midX - gridW / 2, oy = zones.midY - gridH / 2 - 40;
-
-    // Phase 0 (0-5s): Pebbles appear one by one
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const idx = r * cols + c;
-        const delay = 0.5 + idx * 0.3;
-        const p = phase(t, delay, 0.3);
-        if (p > 0) {
-          Organic.point(ctx, ox + c * gapX, oy + r * gapY, { r: dotR * p, color: '#6a5a4a', opacity: 0.8 });
-        }
-      }
-    }
-
-    // Phase 1 (6-10s): Row grouping — golden brackets
-    const p1 = phase(t, 6, 3);
-    if (p1 > 0) {
-      for (let r = 0; r < rows; r++) {
-        const lo = Math.min(Math.max((p1 - r * 0.15) * 3, 0), 1);
-        if (lo > 0) {
-          ctx.save();
-          ctx.strokeStyle = gold; ctx.lineWidth = 1; ctx.globalAlpha = lo * 0.5;
-          ctx.setLineDash([3, 3]);
-          ctx.strokeRect(ox - dotR - 6, oy + r * gapY - dotR - 4, gridW + dotR * 2 + 12, dotR * 2 + 8);
-          ctx.restore();
-        }
-      }
-    }
-
-    // Phase 2 (11-15s): Rotate — column grouping appears
-    const p2 = phase(t, 11, 3);
-    if (p2 > 0) {
-      // Fade row brackets
-      // Show column brackets
-      for (let c = 0; c < cols; c++) {
-        const lo = Math.min(Math.max((p2 - c * 0.15) * 3, 0), 1);
-        if (lo > 0) {
-          ctx.save();
-          ctx.strokeStyle = '#6a9e8f'; ctx.lineWidth = 1; ctx.globalAlpha = lo * 0.5;
-          ctx.setLineDash([3, 3]);
-          ctx.strokeRect(ox + c * gapX - dotR - 4, oy - dotR - 6, dotR * 2 + 8, gridH + dotR * 2 + 12);
-          ctx.restore();
-        }
-      }
-    }
-
-    // Phase 3 (16-19s): Golden = sign between the two views
-    const p3 = phase(t, 16, 2);
-    if (p3 > 0) {
-      Organic.structural(ctx, zones.midX - 15, oy + gridH + 40, zones.midX + 15, oy + gridH + 40,
-        { seed: 350, color: gold, width: 2, progress: p3 });
-      Organic.structural(ctx, zones.midX - 15, oy + gridH + 48, zones.midX + 15, oy + gridH + 48,
-        { seed: 351, color: gold, width: 2, progress: p3 });
-    }
-  }
-}
-
-// ── 0.4: The Debtor's Position ──
-class DebtorsPositionV2 extends Construction {
-  get title() { return 'Zero and Negatives'; }
-  get duration() { return 22; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold } = this;
-    const lineY = zones.midY, zeroX = zones.midX, gap = 35;
-
-    // Phase 0 (0-3s): Number line
-    const p0 = phase(t, 0, 2.5);
-    if (p0 > 0) {
-      Organic.structural(ctx, zones.left, lineY, zones.right, lineY, { seed: 400, color: ink, progress: p0 });
-      if (p0 > 0.5) Organic.structural(ctx, zeroX, lineY - 10, zeroX, lineY + 10,
-        { progress: (p0 - 0.5) * 2, seed: 401, color: ink, width: 2 });
-    }
-
-    // Phase 1 (3.5-7s): Positive numbers — green ticks right
-    const p1 = phase(t, 3.5, 2.5);
-    if (p1 > 0) {
-      for (let i = 1; i <= 4; i++) {
-        const lo = Math.min(Math.max((p1 - (i - 1) * 0.15) * 4, 0), 1);
-        const x = zeroX + i * gap;
-        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 410 + i, color: '#2d6a4f', width: 1.2, progress: lo });
-        Organic.point(ctx, x, lineY, { r: 2.5, color: '#2d6a4f', opacity: lo });
-      }
-    }
-
-    // Phase 2 (7.5-11s): Negative numbers — red ticks left (the mirror)
-    const p2 = phase(t, 7.5, 2.5);
-    if (p2 > 0) {
-      for (let i = 1; i <= 4; i++) {
-        const lo = Math.min(Math.max((p2 - (i - 1) * 0.15) * 4, 0), 1);
-        const x = zeroX - i * gap;
-        Organic.structural(ctx, x, lineY - 6, x, lineY + 6, { seed: 420 + i, color: '#c0392b', width: 1.2, progress: lo });
-        Organic.point(ctx, x, lineY, { r: 2.5, color: '#c0392b', opacity: lo });
-      }
-    }
-
-    // Phase 3 (12-17s): The debtor — marker at -2, pulsing
-    const p3 = phase(t, 12, 3);
-    if (p3 > 0) {
-      const debtorX = zeroX - 2 * gap;
-      const pulse = 0.7 + 0.3 * Math.sin(t * 3);
-      Organic.point(ctx, debtorX, lineY, { r: 6 * p3, color: '#c0392b', opacity: p3 * pulse });
-      // Faint line from 0 to debtor position
-      if (p3 > 0.4) {
-        ctx.save(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1;
-        ctx.setLineDash([4, 3]); ctx.globalAlpha = (p3 - 0.4) * 0.4;
-        ctx.beginPath(); ctx.moveTo(zeroX, lineY + 16); ctx.lineTo(debtorX, lineY + 16); ctx.stroke();
-        ctx.restore();
-      }
-    }
-  }
-}
-
-// ── 0.5: The Inheritance Fulfilled ──
-class InheritanceFulfilledV2 extends Construction {
-  get title() { return 'Fractions'; }
-  get duration() { return 26; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold } = this;
-    const sq = Math.min(zones.contentW - 40, 260);
-    const ox = zones.midX - sq / 2, oy = zones.midY - sq / 2 - 20;
-    const cellH = sq / 27; // 27 parts after 'awl
-
-    // Phase 0 (0-3s): The estate square
-    const p0 = phase(t, 0, 2.5);
-    if (p0 > 0) {
-      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.4);
-      Organic.structRect(ctx, ox, oy, sq, sq, { progress: p0, seed: 500, color: ink });
-    }
-
-    // Phase 1 (3.5-6s): Wife 3/27
-    const p1 = phase(t, 3.5, 2);
-    if (p1 > 0) Organic.fill(ctx, ox, oy, sq, 3 * cellH * p1, '#6a9e8f', 0.55);
-
-    // Phase 2 (6.5-10s): Daughters 16/27
-    const p2 = phase(t, 6.5, 2.5);
-    if (p2 > 0) Organic.fill(ctx, ox, oy + 3 * cellH, sq, 16 * cellH * p2, '#d4a843', 0.5);
-
-    // Phase 3 (10.5-13s): Father 4/27
-    const p3 = phase(t, 10.5, 2);
-    if (p3 > 0) Organic.fill(ctx, ox, oy + 19 * cellH, sq, 4 * cellH * p3, '#b07050', 0.5);
-
-    // Phase 4 (13.5-17s): Mother 4/27 — fits perfectly
-    const p4 = phase(t, 13.5, 2.5);
-    if (p4 > 0) {
-      Organic.fill(ctx, ox, oy + 23 * cellH, sq, 4 * cellH * p4, '#b07050', 0.45);
-      // The boundary holds — no overflow this time
-      if (p4 > 0.7) {
-        Organic.structural(ctx, ox, oy + sq, ox + sq, oy + sq,
-          { progress: (p4 - 0.7) / 0.3, seed: 530, color: gold, width: 2 });
-      }
-    }
-  }
-}
-
-// ── 0.6: The Merchant's Unknown ──
-class MerchantsUnknownV2 extends Construction {
-  get title() { return 'The Variable'; }
-  get duration() { return 22; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-    const cx = zones.midX, fy = zones.midY - 20;
-    const beamLen = 120;
-
-    // Phase 0 (0-4s): Balance beam
-    const p0 = phase(t, 0, 3);
-    if (p0 > 0) {
-      // Fulcrum
-      Organic.structural(ctx, cx, fy, cx - 14, fy + 40, { seed: 600, color: ink, progress: p0 });
-      Organic.structural(ctx, cx, fy, cx + 14, fy + 40, { seed: 601, color: ink, progress: p0 });
-      // Beam
-      Organic.structural(ctx, cx - beamLen, fy, cx + beamLen, fy, { seed: 602, color: ink, width: 2, progress: p0 });
-    }
-
-    // Phase 1 (4.5-8s): Known objects on the left pan
-    const p1 = phase(t, 4.5, 2.5);
-    if (p1 > 0) {
-      const lx = cx - beamLen;
-      for (let i = 0; i < 5; i++) {
-        const delay = i * 0.12;
-        if (p1 > delay) {
-          const lo = Math.min((p1 - delay) * 4, 1);
-          Organic.point(ctx, lx - 12 + i * 6, fy - 14, { r: 4, color: '#8a7a6a', opacity: lo * 0.7 });
-        }
-      }
-    }
-
-    // Phase 2 (9-14s): The unknown on the right — x appears, golden
-    const p2 = phase(t, 9, 3.5);
-    if (p2 > 0) {
-      const rx = cx + beamLen;
-      // A golden square placeholder
-      const boxSize = 24;
-      Organic.fill(ctx, rx - boxSize / 2, fy - boxSize - 4, boxSize, boxSize, gold, p2 * 0.3);
-      Organic.structRect(ctx, rx - boxSize / 2, fy - boxSize - 4, boxSize, boxSize,
-        { progress: p2, seed: 610, color: gold, width: 1.5 });
-    }
-
-    // Phase 3 (15-19s): Beam stays level — the unknown BALANCES the known
-    const p3 = phase(t, 15, 3);
-    if (p3 > 0) {
-      // Redraw beam level with both sides
-      Organic.structural(ctx, cx - beamLen, fy, cx + beamLen, fy, { seed: 602, color: ink, width: 2 });
-      // Golden glow on equilibrium point
-      if (p3 > 0.5) {
-        Organic.point(ctx, cx, fy, { r: 4, color: gold, opacity: (p3 - 0.5) * 0.6 });
-      }
-    }
-  }
-}
-
-// ── 0.8: The Builder's Diagonal ──
-class BuildersDiagonalV2 extends Construction {
-  get title() { return 'The Irrational Diagonal'; }
-  get duration() { return 24; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-    const sq = Math.min(zones.contentW - 60, 200);
-    const ox = zones.midX - sq / 2, oy = zones.midY - sq / 2 - 40;
-
-    // Phase 0 (0-4s): Unit square
-    const p0 = phase(t, 0, 3);
-    if (p0 > 0) {
-      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.35);
-      Organic.structRect(ctx, ox, oy, sq, sq, { progress: p0, seed: 700, color: ink });
-    }
-
-    // Phase 1 (5-9s): Diagonal drawn — the golden line
-    const p1 = phase(t, 5, 3);
-    if (p1 > 0) {
-      Organic.structural(ctx, ox, oy + sq, ox + sq, oy,
-        { progress: p1, seed: 710, color: gold, width: 2.2 });
-      // Corner points
-      if (p1 > 0.3) {
-        Organic.point(ctx, ox, oy + sq, { r: 3, color: gold, opacity: (p1 - 0.3) / 0.7 });
-        Organic.point(ctx, ox + sq, oy, { r: 3, color: gold, opacity: (p1 - 0.3) / 0.7 });
-      }
-    }
-
-    // Phase 2 (10-15s): Compass arc — sweep from one corner showing the diagonal length
-    const p2 = phase(t, 10, 4);
-    if (p2 > 0) {
-      const diagLen = sq * Math.SQRT2;
-      // Arc from bottom-left corner, radius = diagonal, sweeping down to the number line
-      Organic.arc(ctx, ox, oy + sq, diagLen, -Math.PI / 4, Math.PI / 12,
-        { seed: 720, color: gold, width: 1.5, progress: p2 });
-    }
-
-    // Phase 3 (16-20s): Number line below — √2 position marked
-    const p3 = phase(t, 16, 3);
-    if (p3 > 0) {
-      const nlY = oy + sq + 80;
-      Organic.structural(ctx, zones.left + 10, nlY, zones.right - 10, nlY,
-        { seed: 730, color: ink, width: 1.2, progress: p3 });
-      // Mark 0, 1, √2, 2
-      const nlLeft = zones.left + 30, nlW = zones.contentW - 40;
-      if (p3 > 0.3) {
-        const lo = (p3 - 0.3) / 0.7;
-        // Ticks at 0, 1, 2
-        [0, 0.5, 1].forEach(frac => {
-          const x = nlLeft + frac * nlW;
-          Organic.structural(ctx, x, nlY - 5, x, nlY + 5, { seed: 740 + Math.floor(frac * 10), color: ink, width: 1 });
-        });
-        // √2 point — golden
-        const sqrtX = nlLeft + (Math.SQRT2 / 2) * nlW;
-        Organic.point(ctx, sqrtX, nlY, { r: 4, color: gold, opacity: lo });
-      }
-    }
-  }
-}
-
-// ── 0.9: The Muezzin's Rule ──
-class MuezzinsRuleV2 extends Construction {
-  get title() { return 'The Function'; }
-  get duration() { return 22; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-    const boxW = 70, boxH = 50;
-    const boxX = zones.midX - boxW / 2, boxY = zones.midY - boxH / 2 - 20;
-    const inputs = [boxY - 60, boxY, boxY + 60];
-    const inX = zones.left + 30, outX = zones.right - 30;
-
-    // Phase 0 (0-3s): The rule box
-    const p0 = phase(t, 0, 2.5);
-    if (p0 > 0) {
-      Organic.fill(ctx, boxX, boxY, boxW, boxH, '#efe0c0', p0 * 0.4);
-      Organic.structRect(ctx, boxX, boxY, boxW, boxH, { progress: p0, seed: 800, color: ink });
-    }
-
-    // Phase 1 (3.5-12s): Three inputs flow through, one at a time
-    for (let i = 0; i < 3; i++) {
-      const delay = 3.5 + i * 2.5;
-      const p = phase(t, delay, 2);
-      if (p > 0) {
-        const iy = inputs[i];
-        // Input point
-        Organic.point(ctx, inX, iy, { r: 5, color: ink, opacity: Math.min(p * 3, 1) });
-        // Arrow in
-        if (p > 0.15) {
-          Organic.guide(ctx, inX + 8, iy, boxX - 4, boxY + boxH / 2,
-            { progress: Math.min((p - 0.15) * 2.5, 1), seed: 810 + i, color: gold });
-        }
-        // Arrow out
-        if (p > 0.5) {
-          Organic.guide(ctx, boxX + boxW + 4, boxY + boxH / 2, outX - 8, iy,
-            { progress: (p - 0.5) * 2, seed: 820 + i, color: gold });
-        }
-        // Output point
-        if (p > 0.7) {
-          Organic.point(ctx, outX, iy, { r: 5, color: highlight, opacity: (p - 0.7) / 0.3 });
-        }
-      }
-    }
-
-    // Phase 2 (13-18s): Composition — two boxes chained
-    const p2 = phase(t, 13, 3.5);
-    if (p2 > 0) {
-      const cy = boxY + boxH + 80;
-      const b1x = zones.midX - 60, b2x = zones.midX + 20;
-      const bw = 40, bh = 30;
-      Organic.fill(ctx, b1x, cy, bw, bh, '#efe0c0', p2 * 0.3);
-      Organic.structRect(ctx, b1x, cy, bw, bh, { progress: p2, seed: 850, color: ink, width: 1.2 });
-      if (p2 > 0.3) {
-        Organic.fill(ctx, b2x, cy, bw, bh, '#efe0c0', (p2 - 0.3) / 0.7 * 0.3);
-        Organic.structRect(ctx, b2x, cy, bw, bh, { progress: (p2 - 0.3) / 0.7, seed: 855, color: ink, width: 1.2 });
-        Organic.guide(ctx, b1x + bw + 3, cy + bh / 2, b2x - 3, cy + bh / 2,
-          { progress: (p2 - 0.3) / 0.7, seed: 860, color: gold });
-      }
-      // Input arrow
-      if (p2 > 0.1) Organic.guide(ctx, b1x - 20, cy + bh / 2, b1x - 3, cy + bh / 2, { seed: 865, color: ink, progress: p2 });
-      // Output arrow
-      if (p2 > 0.5) Organic.guide(ctx, b2x + bw + 3, cy + bh / 2, b2x + bw + 20, cy + bh / 2, { seed: 866, color: gold, progress: (p2 - 0.5) * 2 });
-    }
-  }
-}
-
-// ── 0.10: The Traveler's Approach ──
-class TravelersApproachV2 extends Construction {
-  get title() { return 'The Limit'; }
-  get duration() { return 24; }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-    const lineY = zones.midY, nlLeft = zones.left + 10, nlRight = zones.right - 10;
-    const targetX = nlRight - 30;
-
-    // Phase 0 (0-2.5s): Number line + target
-    const p0 = phase(t, 0, 2);
-    if (p0 > 0) {
-      Organic.structural(ctx, nlLeft, lineY, nlRight, lineY, { seed: 900, color: ink, progress: p0 });
-      if (p0 > 0.6) {
-        Organic.point(ctx, targetX, lineY, { r: 5, color: highlight, opacity: (p0 - 0.6) / 0.4 });
-      }
-    }
-
-    // Phase 1 (3-16s): Points converge — each halving the distance
-    const sequence = [0, 0.5, 0.75, 0.875, 0.9375, 0.96875, 0.984375, 0.992];
-    const startX = nlLeft + 20;
-    const range = targetX - startX;
-
-    for (let i = 0; i < sequence.length; i++) {
-      const delay = 3 + i * 1.5;
-      const p = phase(t, delay, 1);
-      if (p > 0) {
-        const x = startX + sequence[i] * range;
-        Organic.point(ctx, x, lineY, { r: Math.max(3.5 - i * 0.3, 1.5), color: gold, opacity: p * 0.8 });
-        // Diminishing arc to next
-        if (i < sequence.length - 1 && p > 0.5) {
-          const nx = startX + sequence[i + 1] * range;
-          ctx.save();
-          ctx.strokeStyle = gold; ctx.lineWidth = 0.7;
-          ctx.globalAlpha = (p - 0.5) * 0.5;
-          ctx.beginPath();
-          ctx.moveTo(x + 3, lineY - 8);
-          ctx.quadraticCurveTo((x + nx) / 2, lineY - 16 + i * 1.5, nx - 2, lineY - 8);
-          ctx.stroke(); ctx.restore();
-        }
-      }
-    }
-
-    // Phase 2 (17-21s): Epsilon band shrinks around L
-    const p2 = phase(t, 17, 3);
-    if (p2 > 0) {
-      const eps = 25 * (1 - p2 * 0.75);
-      ctx.save();
-      ctx.fillStyle = highlight; ctx.globalAlpha = 0.1;
-      ctx.fillRect(targetX - eps, lineY - 18, eps * 2, 36);
-      ctx.restore();
-      ctx.save();
-      ctx.strokeStyle = highlight; ctx.lineWidth = 1; ctx.globalAlpha = p2 * 0.4;
-      ctx.setLineDash([3, 3]);
-      ctx.strokeRect(targetX - eps, lineY - 18, eps * 2, 36);
-      ctx.restore();
-    }
-  }
-}
-
-// ── 0.11: The Fajr Call ──
-class FajrCallV2 extends Construction {
-  get title() { return 'The Derivative'; }
-  get duration() { return 28; }
-
-  curve(x) { return -0.004 * (x - 195) * (x - 195) + 180; }
-  curveDeriv(x) { return -0.008 * (x - 195); }
-
-  drawConstruction(t, ctx, zones) {
-    const { ink, gold, highlight } = this;
-    const ox = zones.left + 10, oy = zones.bottom - 30;
-
-    // Phase 0 (0-4s): Axes and curve
-    const p0 = phase(t, 0, 3.5);
-    if (p0 > 0) {
-      Organic.structural(ctx, ox, oy, zones.right - 10, oy, { seed: 950, color: ink, width: 1.2, progress: p0 });
-      Organic.structural(ctx, ox, oy, ox, zones.top + 20, { seed: 951, color: ink, width: 1.2, progress: p0 });
-      // Curve
-      if (p0 > 0.3) {
-        const cp = (p0 - 0.3) / 0.7;
-        ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 1.8; ctx.globalAlpha = cp;
-        ctx.beginPath();
-        const maxPx = 50 + 280 * cp;
-        for (let px = 50; px <= maxPx; px += 2) {
-          const py = oy - this.curve(px);
-          if (px === 50) ctx.moveTo(ox + px, py); else ctx.lineTo(ox + px, py);
-        }
-        ctx.stroke(); ctx.restore();
-      }
-    }
-
-    // Fixed point for derivative
-    const ax = 120, ay = this.curve(ax);
-
-    // Phase 1 (5-14s): Secant slides — b approaches a
-    const p1 = phase(t, 5, 8);
-    if (p1 > 0) {
-      const aScreenX = ox + ax, aScreenY = oy - ay;
-      Organic.point(ctx, aScreenX, aScreenY, { r: 4, color: highlight, opacity: Math.min(p1 * 3, 1) });
-
-      const bStart = 300, bEnd = 130;
-      const bx = bStart + (bEnd - bStart) * p1;
-      const by = this.curve(bx);
-      const bScreenX = ox + bx, bScreenY = oy - by;
-      Organic.point(ctx, bScreenX, bScreenY, { r: 3, color: gold, opacity: Math.min(p1 * 2, 1) });
-
-      // Secant line (clipped)
-      const slope = (by - ay) / (bx - ax);
-      const lsx = 30, lex = 340;
-      const lsy = Math.max(oy - (ay + slope * (lsx - ax)), zones.top + 30);
-      const ley = Math.min(oy - (ay + slope * (lex - ax)), oy + 5);
-      ctx.save(); ctx.strokeStyle = gold; ctx.lineWidth = 1;
-      ctx.globalAlpha = Math.min(p1 * 2, 1) * 0.6; ctx.setLineDash([5, 4]);
-      ctx.beginPath(); ctx.moveTo(ox + lsx, lsy); ctx.lineTo(ox + lex, ley);
-      ctx.stroke(); ctx.restore();
-    }
-
-    // Phase 2 (14-20s): Tangent — the limit
-    const p2 = phase(t, 14, 4);
-    if (p2 > 0) {
-      const aScreenX = ox + ax, aScreenY = oy - ay;
-      Organic.point(ctx, aScreenX, aScreenY, { r: 4, color: highlight });
-
-      const slope = this.curveDeriv(ax);
-      const lsx = 40, lex = 300;
-      const lsy = Math.max(oy - (ay + slope * (lsx - ax)), zones.top + 30);
-      const ley = Math.min(oy - (ay + slope * (lex - ax)), oy + 5);
-      Organic.structural(ctx, ox + lsx, lsy, ox + lex, ley,
-        { progress: p2, seed: 960, color: highlight, width: 2 });
-    }
-  }
-}
+const ImpossibleSumV2 = _layerWrapper('monad');
+const BalanceBeamV2 = _layerWrapper('equality');
+const ShepherdsGateV2 = _layerWrapper('counting');
+const FarmersGrainV2 = _layerWrapper('multiplication');
+const DebtorsPositionV2 = _layerWrapper('zero');
+const InheritanceFulfilledV2 = _layerWrapper('fractions');
+const MerchantsUnknownV2 = _layerWrapper('variables');
+const CompletingTheSquareV2 = _layerWrapper('quadratics');
+const BuildersDiagonalV2 = _layerWrapper('irrationals');
+const MuezzinsRuleV2 = _layerWrapper('functions');
+const TravelersApproachV2 = _layerWrapper('limits');
+const FajrCallV2 = _layerWrapper('derivatives');
 
 // ══════════════════════════════════════════════════════════
 // ── V1 Constructions (kept for reference during migration) ──
@@ -3651,6 +5970,7 @@ marked.setOptions({
   breaks: false,
   gfm: true,
 });
+
 </script>
 
 </body>

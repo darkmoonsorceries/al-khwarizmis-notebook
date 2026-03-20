@@ -7,35 +7,37 @@
 ## ١. The Ayah
 
 > مَّثَلُ الَّذِينَ يُنفِقُونَ أَمْوَالَهُمْ فِي سَبِيلِ اللَّهِ كَمَثَلِ حَبَّةٍ أَنبَتَتْ سَبْعَ سَنَابِلَ فِي كُلِّ سُنبُلَةٍ مِّائَةُ حَبَّةٍ ۗ وَاللَّهُ يُضَاعِفُ لِمَن يَشَاءُ ۗ وَاللَّهُ وَاسِعٌ عَلِيمٌ
-
-> "The example of those who spend their wealth in the way of Allah is like a seed of grain that grows seven ears; in each ear is a hundred grains. And Allah multiplies for whom He wills. And Allah is all-Encompassing and Knowing."
+> "The example of those who spend their wealth in the way of Allah
+> is like a seed of grain that grows seven ears; in each ear is a
+> hundred grains. And Allah multiplies for whom He wills. And Allah
+> is all-Encompassing and Knowing."
 > *— Surah Al-Baqarah (2:261)*
 
-**Connection grade: HASAN** — the verse's primary purpose is spiritual: encouraging charity by describing how Allah multiplies reward. But the structure IS a computation: 1 seed, 7 ears, 100 grains per ear. The Arabic *yuda'ifu* — "He multiplies" — names the operation. The farmer who needs to count his harvest for zakat encounters this verse and needs the same operation the verse describes. The math is genuinely in the structure, though the verse's point is generosity, not arithmetic.
+**Connection grade: Hasan** — The verse is about spiritual reward for charity. Its primary purpose is to encourage spending in the way of Allah. But the STRUCTURE is explicitly multiplicative: one seed, seven ears, a hundred grains per ear. The Arabic *yuda'ifu* — "He multiplies" — names the operation. The number IS in the verse: 1 × 7 × 100 = 700. Stronger than typical Hasan — borderline Sahih — but the verse's point is generosity, not arithmetic.
 
-**The problem this ayah creates:** The farmer has fields of grain. Zakat is due at the harvest. He must know his total. Seven fields, a hundred measures each — he could add. But his neighbor has twenty-three fields at forty-seven measures each. Adding forty-seven twenty-three times is not a method. It is a punishment.
+**The problem this ayah creates:** A farmer has fields of grain. Zakat is due at the harvest. He must know his total. Seven fields, roughly a hundred measures each — he could add. But his neighbor has twenty-three fields at forty-seven measures each. Adding forty-seven twenty-three times is not a method. It is punishment. Two of the farmer's fields were damaged by locusts. The harvest is not uniform. He needs a tool that addition alone cannot provide.
 
 ---
 
-## ٢. Al-Khwarizmi Thinks
+## ٢. Al-Khwarizmi Discovers
 
 A farmer is waiting for me at the masjid after Dhuhr.
 
-He has come early. His hands are cracked at the knuckles. His robe carries dust from the threshing floor and he has not changed it — he came straight from the fields. Beside him on the stone bench sit two cloth bags, each heavy with grain. Samples from his harvest. The zakat collector comes in six days.
+He has come early. His hands are cracked at the knuckles. His robe carries dust from the threshing floor and he has not changed it — he came straight from the fields. Beside him on the stone bench sit two cloth bags, heavy with grain. Samples from his harvest. The zakat collector comes in six days.
 
-He needs a number. How much grain did his seven fields produce?
+He needs a number.
 
-"Each field gave roughly a hundred measures," he says. "I need the total."
+"Each field gave roughly a hundred measures," he says. "Seven fields. I need the total."
 
-I write it out:
+I write it:
 
 ```
 100 + 100 + 100 + 100 + 100 + 100 + 100
 ```
 
-Seven terms. I add them. Seven hundred measures. The farmer nods. He knew that already — he could feel seven hundred in the weight of the season. But he needed it written.
+Seven terms. I add. Seven hundred measures. The farmer nods. He knew that already — he could feel seven hundred in the weight of the season. But he needed it written.
 
-Then he leans forward. "My neighbor Ibrahim — he came to me this morning. He has twenty-three fields. Each one gave forty-seven measures. He asked me to help him count. I told him I would ask you."
+Then he leans forward. "My neighbor Ibrahim — he has twenty-three fields. Each one gave forty-seven measures. He asked me to help him count."
 
 Twenty-three fields. Forty-seven measures each.
 
@@ -47,25 +49,15 @@ I would need to write:
 
 Twenty-three terms. Each addition is a place where I can make an error. One slip and the total is wrong, and Ibrahim pays the wrong zakat — either cheating himself or cheating the poor.
 
-I stare at the line. Addition works. Addition is correct. But addition does not scale. The tool is honest and slow, like counting sheep one by one through a gate. For seven fields it is tolerable. For twenty-three fields it is miserable. For a merchant with a hundred transactions it is impossible.
+I stare at the line. Addition works. Addition is correct. But addition does not SCALE. The tool is honest and slow, like counting sheep one by one through a gate. For seven fields it is tolerable. For twenty-three it is miserable. For a merchant with a hundred transactions it is impossible.
 
-> *Margin note: The tool is not wrong. It is insufficient. This is different from the souk, where we needed a new concept (equality). Here we have the right concept (addition) but the wrong speed. The problem is not what we compute — it is how long the computation takes.*
+> *Margin note: The tool is not wrong. It is insufficient. This is different from the souk, where I needed a new concept (equality). Here I have the right concept (addition) but the wrong speed. The problem is not WHAT I compute — it is how long the computation takes.*
 
-The farmer is not finished. "Two of my fields had damage," he says. "Locusts. Those two gave only eighty measures, not a hundred."
+---
 
-So his real harvest is: five fields at a hundred measures, and two fields at eighty measures.
+I sit with this. The structure of the problem is: *the same quantity, repeated many times*. That is what "seven fields at a hundred measures" means. It is not seven different numbers being added. It is the same number, added to itself, again and again.
 
-```
-100 + 100 + 100 + 100 + 100 + 80 + 80
-```
-
-I add: five hundreds is five hundred, and eighty and eighty is a hundred and sixty. Five hundred and a hundred and sixty. Six hundred and sixty. Fine. Seven terms is still manageable.
-
-But what about Ibrahim's version of this problem? What if eight of his twenty-three fields were damaged? I would need to add forty-seven fifteen times, then add some smaller number eight times, then combine. The line of additions would sprawl across the page.
-
-I sit with this. The tool I have — addition — is the right operation. The structure of the problem is: *the same quantity, repeated many times*. That is what "seven fields at a hundred measures" means. It is not seven different numbers being added. It is the same number, added to itself, again and again.
-
-The Quran names this. In the ayah the imam recited at Jumu'ah: *a seed that grows seven ears, in each ear a hundred grains*. The Quran does not say "a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains." It says: seven ears. A hundred each. The repetition is named, not performed.
+The imam recited the grain verse at Jumu'ah last week. One seed. Seven ears. A hundred grains per ear. The Quran does not say "a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains, and a hundred grains." It says: seven ears. A hundred each. The repetition is named, not performed.
 
 I need a way to write: "`a` added to itself `b` times" — without writing it `b` times.
 
@@ -77,9 +69,13 @@ a × b = a + a + a + ... + a     (b times)
 
 The farmer's harvest: `100 × 7 = 700`. Ibrahim's harvest: `47 × 23`. One line instead of twenty-three.
 
-But I have only named the shortcut. I have not yet understood what it does.
+But I have only named the shortcut. I have not understood what it DOES.
 
-I pick up a handful of pebbles from the masjid courtyard. I lay them out. Four rows. Three in each row:
+---
+
+I pick up a handful of pebbles from the masjid courtyard. I lay them out. Four rows. Three in each row.
+
+<!-- diagram: grid -->
 
 ```
 ● ● ●
@@ -87,16 +83,22 @@ I pick up a handful of pebbles from the masjid courtyard. I lay them out. Four r
 ● ● ●
 ● ● ●
 ```
+
+> *Twelve pebbles. Four rows of three.*
 
 Twelve pebbles. Four groups of three: `3 × 4 = 12`.
 
-I stand and walk to the other side of the arrangement. From here, I see three rows of four:
+I stand. I walk to the other side of the arrangement and look again. From here, I see three rows of four.
+
+<!-- diagram: rows-vs-columns -->
 
 ```
 ● ● ● ●
 ● ● ● ●
 ● ● ● ●
 ```
+
+> *The same twelve pebbles. Three rows of four.*
 
 `4 × 3 = 12`.
 
@@ -106,35 +108,41 @@ The pebbles did not move. I moved. The count is the same from both sides. Whethe
 
 So `7 × 100 = 100 × 7`. The farmer could count seven groups of a hundred, or a hundred groups of seven. Same total. The field does not care which way he walks through it.
 
-This matters for Ibrahim. `47 × 23 = 23 × 47`. If adding forty-seven twenty-three times is miserable, he could instead add twenty-three forty-seven times. Still miserable — but the *choice* exists. The operation does not depend on which number comes first.
+This matters for Ibrahim. `47 × 23 = 23 × 47`. If adding forty-seven twenty-three times is miserable, he could instead add twenty-three forty-seven times. Still miserable — but the CHOICE exists. The operation does not depend on which number comes first.
 
 I write: **`a × b = b × a`**. The commutative law of multiplication.
 
-Now the ayah. One seed, seven ears, one hundred grains per ear. That is `1 × 7 × 100`. Three numbers chained. Does it matter how I group them?
+---
+
+Now the ayah. One seed, seven ears, a hundred grains per ear. That is `1 × 7 × 100`. Three numbers chained. Does it matter how I group them?
 
 `(1 × 7) × 100 = 7 × 100 = 700`.
 
 `1 × (7 × 100) = 1 × 700 = 700`.
 
-Same answer. The grouping does not matter. I think of the pebble rectangle extended into depth — a box. Layers of rectangles. However I slice the box, I count the same objects.
+Same answer. The grouping does not matter. I think of the pebble rectangle extended into depth — a box of pebbles, layers stacked. However I slice the box, I count the same objects.
 
 **`(a × b) × c = a × (b × c)`**. The associative law.
 
-And one more thing: `a × 1`. One group of `a`. That is just `a`. The number 1 — the same 1 from which everything began — passes through multiplication unchanged. `a × 1 = a`. The multiplicative identity.
+And one thing more. `a × 1`. One group of `a`. That is just `a`. The number 1 — the same 1 from which everything began — passes through multiplication unchanged. `a × 1 = a`. The multiplicative identity.
 
-Now back to the farmer's damaged fields. Five fields at one hundred. Two fields at eighty. He needs:
+---
+
+The farmer is not finished. "Two of my fields had damage," he says. "Locusts. Those two gave only eighty measures, not a hundred."
+
+So his real harvest is: five fields at a hundred measures, and two fields at eighty.
 
 ```
-100 × 5 + 80 × 2
+100 + 100 + 100 + 100 + 100 + 80 + 80
 ```
 
-`100 × 5 = 500`. `80 × 2 = 160`. Total: `660`.
+I add. Five hundreds is five hundred. Eighty and eighty is a hundred and sixty. Five hundred and a hundred and sixty. Six hundred and sixty. Seven terms is manageable.
 
-But wait. All seven fields produced grain. Five at a hundred, two at eighty. The total is `100 × 5 + 80 × 2`. Could I think of this differently?
+But what about Ibrahim's version? Eight of his twenty-three fields damaged. I would need to add forty-seven fifteen times, then some smaller number eight times, then combine. The line of additions would sprawl across the page.
 
-All seven fields would have given a hundred — if not for the locusts. Seven fields at a hundred is `100 × 7 = 700`. The two damaged fields each gave eighty instead of a hundred. Each damaged field gave twenty less than a full field. But I cannot write "twenty less" — I do not have a way to take away. That tool does not exist yet.
+I think about the farmer's five good fields. `100 × 5`. His two damaged fields. `80 × 2`. The total: `100 × 5 + 80 × 2`.
 
-So I think forward instead. The farmer has two groups: five fields at one kind of yield, two fields at another. The total is the sum of the two groups. This is true regardless of what the yields are. If the yield were the same — say all seven fields gave `a` measures — then:
+But suppose all seven fields had been the same yield — say all seven gave `a` measures. Then:
 
 ```
 a × 5 + a × 2 = a × 7
@@ -144,21 +152,42 @@ a × 5 + a × 2 = a × 7
 
 This means: `a × 5 + a × 2 = a × (5 + 2)`. I can split or combine groups freely.
 
-I test it with the farmer's real numbers. His two damaged fields gave `80` measures each. His five good fields gave `100` each. These are different yields, so I cannot combine them directly. But suppose Ibrahim has a field that gives `40 + 7 = 47` measures. Then:
+I test it with small numbers. Is `(4 + 3) × 2` the same as `4 × 2 + 3 × 2`?
+
+`(4 + 3) × 2 = 7 × 2 = 14`.
+
+`4 × 2 + 3 × 2 = 8 + 6 = 14`.
+
+Yes.
+
+---
+
+I go back to the pebbles. I lay out `(4 + 3) × 2` as a rectangle: two columns, seven rows. But I draw a line between the fourth and fifth rows.
+
+<!-- diagram: distributive -->
 
 ```
-(40 + 7) × 23
+● ●  ┐
+● ●  │ 4 × 2
+● ●  │
+● ●  ┘
+-----
+● ●  ┐
+● ●  │ 3 × 2
+● ●  ┘
 ```
 
-Is that the same as `40 × 23 + 7 × 23`? I check with small numbers. `(4 + 3) × 2 = 7 × 2 = 14`. And `4 × 2 + 3 × 2 = 8 + 6 = 14`. Yes.
+> *The rectangle split. Four-by-two above the line. Three-by-two below. Total area unchanged.*
 
-Here is why. `(4 + 3) × 2` means two groups of `(4 + 3)`. Each group has a cluster of four and a cluster of three. Two groups of four is `4 × 2 = 8`. Two groups of three is `3 × 2 = 6`. Total: `8 + 6 = 14`.
+The rectangle is one shape. The line divides it into two sub-rectangles. The total pebbles — fourteen — are the same whether I count the whole rectangle or add the two parts.
 
 The multiplication reaches inside the addition and touches each part separately.
 
 **`a × (b + c) = a × b + a × c`**
 
-The distributive law. And now I can compute Ibrahim's harvest without adding forty-seven twenty-three times:
+The distributive law.
+
+Now I can compute Ibrahim's harvest without adding forty-seven twenty-three times:
 
 ```
 47 × 23 = 47 × (20 + 3)
@@ -171,6 +200,8 @@ The distributive law. And now I can compute Ibrahim's harvest without adding for
 
 Five lines. Not twenty-three additions. The distributive law did this — broke the problem into pieces I could handle, then let me combine the results.
 
+---
+
 The farmer watches me write. "That is what Ibrahim needs?"
 
 "One thousand and eighty-one measures," I say.
@@ -181,9 +212,9 @@ The farmer watches me write. "That is what Ibrahim needs?"
 
 "Then the zakat is one-fortieth of six hundred and sixty." He pauses. "What is one-fortieth of six hundred and sixty?"
 
-`660` divided into `40` equal parts. I try: `16 × 40 = 640`. Not enough. `17 × 40 = 680`. Too much. The answer is between sixteen and seventeen. It is not a whole number.
+I try. `16 × 40 = 640`. Not enough. `17 × 40 = 680`. Too much. The answer is between sixteen and seventeen. It is not a whole number.
 
-I do not have a tool for this. I can multiply. I can add. But I cannot split a whole number into forty equal parts when the split does not come out even. The farmer needs a kind of number I have not built yet.
+I do not have a tool for this. I can multiply. I can add. But I cannot split a whole number into forty equal parts when the split does not come out even.
 
 "I will have your answer," I tell him. "Not today."
 
@@ -211,13 +242,15 @@ This is a definition, not an assumption. I name a process I already understand: 
 
 **Proof:** By definition, `a × 1` means one copy of `a`. One copy of `a` is `a`. ∎
 
-By commutativity of addition (Island 0.2): `1 × a = 1 + 1 + ... + 1` (`a` times) `= a`.
+By commutativity: `1 × a = 1 + 1 + ... + 1` (`a` times) `= a`.
 
 The number 1 is the **multiplicative identity**. It passes through multiplication unchanged — the same 1 from which counting began.
 
 ### Property 2: Commutative Law
 
 **Claim:** `a × b = b × a`
+
+<!-- diagram: formal-commutative -->
 
 **Proof (rectangle argument):**
 
@@ -230,6 +263,8 @@ No object was added or removed. The grid is unchanged. By the reflexive property
 ```
 a × b = b × a    ∎
 ```
+
+**Geometry spec:** A grid of `a` columns and `b` rows. First, gold brackets group rows (count by rows = `a × b`). Then brackets shift to teal, grouping columns (count by columns = `b × a`). The grid does not move. Only the grouping changes.
 
 ### Property 3: Associative Law
 
@@ -258,6 +293,8 @@ This is why the grain verse resolves regardless of grouping:
 
 **Claim:** `a × (b + c) = a × b + a × c`
 
+<!-- diagram: formal-distributive -->
+
 **Proof:**
 
 By definition:
@@ -282,6 +319,8 @@ By definition, the first group is `a × b` and the second is `a × c`:
 By commutativity: `(b + c) × a = b × a + c × a`.
 
 The reverse direction — `a × b + a × c = a × (b + c)` — is **factoring**. Same law, read backward.
+
+**Geometry spec:** A rectangle of width `a` and height `(b + c)`. A horizontal line splits it into two sub-rectangles: width `a`, heights `b` and `c`. The top sub-rectangle glows gold (area `a × b`). The bottom glows teal (area `a × c`). Total area: `a × b + a × c = a × (b + c)`.
 
 ### Summary of Laws
 
@@ -313,6 +352,8 @@ The distributive law is the only law that mentions both operations. Without it, 
 
 ### Example 1: The Farmer's Harvest
 
+<!-- diagram: example-zakat -->
+
 The farmer has five good fields at 100 measures and two damaged fields at 80 measures. Total harvest?
 
 **Solution:**
@@ -325,7 +366,7 @@ Compute each term:
 
 ```
 100 × 5 = 500
-80 × 2 = (80 + 80) = 160
+80 × 2 = 80 + 80 = 160
 ```
 
 Total:
@@ -336,7 +377,9 @@ Total:
 
 The farmer's harvest: **660 measures**.
 
-### Example 2: Ibrahim's Twenty-Three Fields
+### Example 2: Ibrahim's Harvest (Distributive Computation)
+
+<!-- diagram: example-damaged -->
 
 Ibrahim has 23 fields, each yielding 47 measures. Total harvest?
 
@@ -374,14 +417,6 @@ Total:
 
 Ibrahim's harvest: **1081 measures**.
 
-His zakat (one-fortieth): I test `27 × 40`:
-
-```
-27 × 40 = 27 × (4 × 10) = (27 × 4) × 10 = 108 × 10 = 1080
-```
-
-One short. `1081` is not evenly divided by `40`. Ibrahim, like the farmer, needs a kind of number I have not yet built. Both men must wait for Island 0.5.
-
 ### Example 3: The Grain Verse
 
 One seed grows seven ears. Each ear holds a hundred grains. How many grains from twelve seeds?
@@ -415,17 +450,21 @@ Twelve seeds yield **8400 grains**.
 
 ### Da'if (Guided)
 
+<!-- diagram: ex-daif-grid -->
+
 **1.** Compute using the definition (repeated addition):
 (a) `6 × 4`
 (b) `9 × 3`
 (c) `1 × 15`
 *Hint: write each as a sum, then add.*
 
-**2.** The farmer's neighbor Ibrahim sets aside grain for three families. Each family receives 47 measures. Write this as a multiplication, then compute `47 × 3` by adding.
+**2.** Draw a rectangle of pebbles to show that `5 × 3 = 3 × 5`. How many pebbles in total? Which property guarantees they are equal?
 
-**3.** Draw a rectangle of pebbles to show that `5 × 3 = 3 × 5`. How many pebbles in total?
+**3.** The farmer's neighbor Ibrahim sets aside grain for three families. Each family receives 47 measures. Write this as a multiplication, then compute `47 × 3` by adding.
 
 ### Hasan (Exam-level)
+
+<!-- diagram: ex-hasan-distributive -->
 
 **4.** Use the distributive law to compute: [3 marks]
 (a) `8 × 34`
@@ -438,22 +477,17 @@ Show your working for each.
 (b) Compute the total.
 (c) The farmer later discovers a tenth field he forgot — it produced 100 measures. What is his new total? Use your answer from (b).
 
-**6.** Ibrahim's neighbor has 15 fields. Each field yields 7 ears per seed, 100 grains per ear, and he planted 8 seeds per field. [4 marks]
-(a) Write the total grain as a product of four numbers.
-(b) Use associativity to group the computation in the easiest way.
-(c) Compute the total using the distributive law where needed.
-
-**7.** Expand: [3 marks]
+**6.** Expand: [3 marks]
 (a) `3 × (x + 5)`
 (b) `(a + b) × 7`
 (c) `4 × (2a + 3b)`
 
 ### Sahih (Proof and extension)
 
-**8.** Prove that `a × (b + c + d) = a × b + a × c + a × d` using only the two-term distributive law. [4 marks]
+**7.** Prove that `a × (b + c + d) = a × b + a × c + a × d` using only the two-term distributive law. [4 marks]
 *Hint: let `e = c + d` and apply the law twice.*
 
-**9.** Prove that `(a + b) × (c + d) = a × c + a × d + b × c + b × d` using only the distributive and commutative laws. [5 marks]
+**8.** Prove that `(a + b) × (c + d) = a × c + a × d + b × c + b × d` using only the distributive and commutative laws. [5 marks]
 This is *double distribution*. You will use it in Island 0.7 (quadratics) and beyond.
 
 ---
@@ -464,11 +498,11 @@ This is *double distribution*. You will use it in Island 0.7 (quadratics) and be
 >
 > **Single bracket expansion:** `a(b + c) = ab + ac`. The term outside must reach every term inside.
 >
-> **Common error:** `3(x + 4) = 3x + 4`. Wrong. The 3 must multiply both terms: `3(x + 4) = 3x + 12`.
+> **Common error:** `3(x + 4) = 3x + 4`. Wrong. The 3 must multiply BOTH terms: `3(x + 4) = 3x + 12`.
 >
 > **Double bracket expansion:** `(a + b)(c + d)`. Treat `(a + b)` as a single multiplier, distribute over `(c + d)`, then distribute again. Result: `ac + ad + bc + bd`. The mnemonic "FOIL" is a special case of this — the distributive law applied twice.
 >
-> **Factoring:** Same law, reversed. `ab + ac = a(b + c)`. When a mark scheme says "factorise fully," it means the largest common factor: `6x + 12 = 6(x + 2)`, not `2(3x + 6)`.
+> **Factoring:** Same law, reversed. `ab + ac = a(b + c)`. When a mark scheme says "factorise fully," it means extract the largest common factor: `6x + 12 = 6(x + 2)`, not `2(3x + 6)`.
 >
 > **Mental arithmetic:** `17 × 6 = (10 + 7) × 6 = 60 + 42 = 102`. Break the harder number into tens and units. This is the distributive law, whether or not the exam calls it that.
 >
@@ -513,16 +547,14 @@ But I need the laws. The farmer's problem was seven fields. Ibrahim's was twenty
 
 > *Margin note: The distributive law is the only law that connects two operations — multiplication and addition. Every future tool that bridges two structures will echo this pattern. The bridge is always the most important part.*
 
-The overflow persists. `27/24 > 1`. The family waits. But now I can multiply, and when I build fractions, I will need multiplication to compute each heir's share in dinars. The tool learned from the farmer will serve the family.
+The overflow persists. `27/24 > 1`. The family waits. But now I can multiply, and when I build fractions I will need multiplication to compute each heir's share in dinars. The tool learned from the farmer will serve the family.
 
 The farmer asked: what is one-fortieth of six hundred and sixty? I could not answer. Between sixteen and seventeen. Not a whole number. Not any number I have.
 
-A man in the market owes more than he holds. Three dinars in his hand, five dinars on a contract. His honest position is not one, not two, not any counting number the shepherd and I built at the gate. He stands below the lowest number I have. The qadi needs to write his position, and my mathematics has no symbol for it.
+But a harder problem waits first. A man in the market owes more than he holds. Three dinars in his hand, five dinars on a contract. His honest position is not one, not two, not any counting number the shepherd and I built at the gate. He stands below the lowest number I have. The qadi needs to write his position, and my mathematics has no symbol for it.
 
 My numbers do not go low enough. That is the next wall.
 
 *1 = 1 has not been lost.*
 
 ---
-
-*End of Island 0.3. Next: Island 0.4 — Zero and Negatives.*
