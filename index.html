@@ -1,0 +1,2636 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Khwarizmi's Notebook</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --bg-sidebar: #f0ece6;
+      --bg-code: #f5f2ed;
+      --bg-math: #fdf9f3;
+      --bg-exam: #f0f7f4;
+      --bg-active: #e8e0d4;
+      --bg-hover: #ebe5db;
+      --text: #2c2416;
+      --text-muted: #7a6e5d;
+      --text-heading: #1a1208;
+      --accent: #8b6914;
+      --accent-light: #c9a84c;
+      --border: #d4cbbf;
+      --border-light: #e8e0d4;
+      --green: #2d6a4f;
+      --red: #9b2226;
+      --amber: #b07d1e;
+      --sidebar-w: 280px;
+      --content-max: 780px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 17px;
+    }
+
+    /* ── Sidebar ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 24px 0;
+      z-index: 10;
+    }
+
+    nav h1 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 0 20px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    nav .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 16px 20px 6px;
+    }
+
+    nav a {
+      display: block;
+      padding: 7px 20px 7px 28px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-family: 'Helvetica Neue', 'Arial', sans-serif;
+      border-left: 3px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    nav a:hover { background: var(--bg-hover); }
+
+    nav a.active {
+      background: var(--bg-active);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    nav a.disabled {
+      color: var(--text-muted);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    nav .island-num {
+      display: inline-block;
+      width: 32px;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    /* ── Main Content ── */
+    main {
+      margin-left: var(--sidebar-w);
+      padding: 40px 48px 120px;
+      max-width: calc(var(--content-max) + 96px + var(--sidebar-w));
+    }
+
+    #content {
+      max-width: var(--content-max);
+    }
+
+    /* ── Typography ── */
+    #content h1 {
+      font-size: 28px;
+      color: var(--text-heading);
+      margin: 0 0 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--accent-light);
+      line-height: 1.3;
+    }
+
+    #content h2 {
+      font-size: 22px;
+      color: var(--text-heading);
+      margin: 48px 0 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+      line-height: 1.35;
+    }
+
+    #content h3 {
+      font-size: 18px;
+      color: var(--text-heading);
+      margin: 32px 0 12px;
+      font-weight: 700;
+    }
+
+    #content h4 {
+      font-size: 16px;
+      color: var(--accent);
+      margin: 24px 0 8px;
+      font-weight: 700;
+    }
+
+    #content p {
+      margin: 0 0 16px;
+    }
+
+    #content strong {
+      color: var(--text-heading);
+    }
+
+    #content em {
+      font-style: italic;
+    }
+
+    /* ── Blockquotes (margin notes, Quranic verses) ── */
+    #content blockquote {
+      border-left: 3px solid var(--accent-light);
+      padding: 12px 20px;
+      margin: 20px 0;
+      background: var(--bg-math);
+      font-style: italic;
+      color: var(--text);
+    }
+
+    #content blockquote em {
+      font-style: normal;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* ── Code Blocks (math, proofs, diagrams) ── */
+    #content pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    #content pre code {
+      font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+      font-size: 14px;
+      color: var(--text);
+      background: none;
+      padding: 0;
+    }
+
+    /* Math blocks — detected by content patterns */
+    #content pre.math-block {
+      background: var(--bg-math);
+      border-left: 3px solid var(--accent);
+      border-color: var(--accent-light);
+    }
+
+    /* Exam technique boxes */
+    #content pre.exam-block {
+      background: var(--bg-exam);
+      border: 1px solid var(--green);
+      border-left: 3px solid var(--green);
+    }
+
+    /* ASCII diagram blocks */
+    #content pre.diagram-block {
+      text-align: center;
+      background: var(--bg);
+      border: 1px dashed var(--border);
+    }
+
+    /* ── Inline Code ── */
+    #content code {
+      font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+      font-size: 15px;
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--text-heading);
+    }
+
+    /* ── Tables ── */
+    #content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 15px;
+    }
+
+    #content th {
+      background: var(--bg-sidebar);
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    #content td {
+      padding: 8px 14px;
+      border: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+
+    #content tr:nth-child(even) td {
+      background: var(--bg-code);
+    }
+
+    /* ── Lists ── */
+    #content ul, #content ol {
+      margin: 0 0 16px 24px;
+    }
+
+    #content li {
+      margin: 4px 0;
+    }
+
+    /* ── Horizontal Rules ── */
+    #content hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* ── Practice Problems ── */
+    #content p strong:first-child {
+      /* Problem D1, H1, S1 markers get styled by context */
+    }
+
+    /* ── Loading State ── */
+    .loading {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 18px;
+    }
+
+    .error {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--red);
+      font-size: 16px;
+    }
+
+    /* ── Splash Screen ── */
+    .splash {
+      text-align: center;
+      padding: 120px 40px;
+    }
+
+    .splash h2 {
+      border: none !important;
+      font-size: 32px !important;
+      margin-bottom: 16px !important;
+    }
+
+    .splash p {
+      color: var(--text-muted);
+      font-size: 18px;
+      max-width: 500px;
+      margin: 0 auto 12px;
+    }
+
+    .splash .verse {
+      margin-top: 40px;
+      font-style: italic;
+      color: var(--accent);
+      font-size: 16px;
+    }
+
+    .splash .axiom {
+      margin-top: 32px;
+      font-family: 'Menlo', monospace;
+      font-size: 24px;
+      color: var(--text-heading);
+      letter-spacing: 2px;
+    }
+
+    /* ── Keyboard Shortcut Hint ── */
+    .nav-hint {
+      padding: 16px 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+
+    .nav-hint kbd {
+      display: inline-block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    /* ── Construction Animations ── */
+    .construction-container {
+      margin: 0 0 32px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f8f0e0;
+      position: relative;
+    }
+
+    .construction-container canvas {
+      display: block;
+      cursor: pointer;
+    }
+
+    .construction-label {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: 11px;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav { width: 220px; }
+      :root { --sidebar-w: 220px; }
+      main { padding: 24px 24px 80px; }
+    }
+
+    @media (max-width: 640px) {
+      nav {
+        position: static;
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      main {
+        margin-left: 0;
+        padding: 20px 16px 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <h1>Al-Khwarizmi's Notebook</h1>
+
+  <div class="section-label">Arc 0 — Foundation</div>
+  <div id="nav-arc0"></div>
+
+  <div class="section-label">FP1 — Further Pure</div>
+  <div id="nav-fp1"></div>
+
+  <div class="section-label">Tools</div>
+  <a href="#" onclick="loadGapDashboard(); return false;">Gap Dashboard</a>
+
+  <div class="nav-hint">
+    <kbd>j</kbd> / <kbd>k</kbd> next / prev island<br>
+    <kbd>t</kbd> scroll to top
+  </div>
+</nav>
+
+<main>
+  <div id="content">
+    <div class="splash">
+      <h2>Al-Khwarizmi's Notebook</h2>
+      <p>A mathematics curriculum built from a single axiom, grounded in Quranic command, feeding layers to a universe simulator.</p>
+      <p style="font-size: 15px; color: var(--text-muted);">Select an island from the sidebar to begin.</p>
+      <div class="axiom">1 = 1</div>
+      <div class="verse">"Read! In the name of your Lord who created." — 96:1</div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── Configuration ──
+const CURRICULUM_BASE = './curriculum';
+const ARC0_PATH = `${CURRICULUM_BASE}/arc-0`;
+const EXTRACTION_PATH = `${CURRICULUM_BASE}/extraction`;
+
+// ── Island Registry ──
+const arc0Islands = [
+  { id: '00-prologue',      num: '0.0',  title: 'The Impossible Sum' },
+  { id: '01-equality',      num: '0.1',  title: 'Equality — The Scales' },
+  { id: '02-counting',      num: '0.2',  title: 'Counting — The Shepherd\'s Gate' },
+  { id: '03-multiplication', num: '0.3', title: 'Multiplication — The Farmer\'s Grain' },
+  { id: '04-zero-negatives', num: '0.4', title: 'Zero & Negatives — The Debtor\'s Position' },
+  { id: '05-fractions',     num: '0.5',  title: 'Fractions — The Inheritance Fulfilled' },
+  { id: '06-variables',     num: '0.6',  title: 'Variables — The Merchant\'s Unknown' },
+  { id: '07-quadratics',    num: '0.7',  title: 'Quadratics — The Patron\'s Garden' },
+  { id: '08-irrationals',   num: '0.8',  title: 'Irrationals — The Builder\'s Diagonal' },
+  { id: '09-functions',     num: '0.9',  title: 'Functions — The Muezzin\'s Rule' },
+  { id: '10-limits',        num: '0.10', title: 'Limits — The Traveler\'s Approach' },
+  { id: '11-derivatives',   num: '0.11', title: 'Derivatives — The Fajr Call' },
+];
+
+const fp1Chapters = [
+  { id: 'ch1-complex-numbers',     num: 'Ch1', title: 'Complex Numbers', available: false },
+  { id: 'ch2-roots-quadratics',    num: 'Ch2', title: 'Roots of Quadratics', available: false },
+  { id: 'ch3-numerical-solutions', num: 'Ch3', title: 'Numerical Solutions', available: false },
+  { id: 'ch4-coordinate-systems',  num: 'Ch4', title: 'Coordinate Systems', available: false },
+  { id: 'ch5-matrices',            num: 'Ch5', title: 'Matrices', available: false },
+  { id: 'ch6-matrix-transforms',   num: 'Ch6', title: 'Matrix Transformations', available: false },
+  { id: 'ch7-series',              num: 'Ch7', title: 'Series', available: false },
+  { id: 'ch8-proof-induction',     num: 'Ch8', title: 'Proof by Induction', available: false },
+];
+
+// ── State ──
+let currentIndex = -1;
+const allIslands = [...arc0Islands];
+
+// ── Build Navigation ──
+function buildNav() {
+  const arc0Nav = document.getElementById('nav-arc0');
+  arc0Islands.forEach((island, i) => {
+    const a = document.createElement('a');
+    a.href = `#${island.id}`;
+    a.innerHTML = `<span class="island-num">${island.num}</span>${island.title}`;
+    a.dataset.index = i;
+    a.onclick = (e) => { e.preventDefault(); loadIsland(i); };
+    arc0Nav.appendChild(a);
+  });
+
+  const fp1Nav = document.getElementById('nav-fp1');
+  fp1Chapters.forEach((ch) => {
+    const a = document.createElement('a');
+    a.href = '#';
+    a.innerHTML = `<span class="island-num">${ch.num}</span>${ch.title}`;
+    a.className = ch.available ? '' : 'disabled';
+    fp1Nav.appendChild(a);
+  });
+}
+
+// ── Load & Render ──
+async function loadIsland(index) {
+  const island = allIslands[index];
+  if (!island) return;
+
+  currentIndex = index;
+  window.location.hash = island.id;
+  updateActiveNav();
+
+  const content = document.getElementById('content');
+  content.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    const response = await fetch(`${ARC0_PATH}/${island.id}.md`);
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    const markdown = await response.text();
+
+    content.innerHTML = marked.parse(markdown);
+    classifyCodeBlocks();
+    injectConstruction(island.id);
+    window.scrollTo(0, 0);
+  } catch (err) {
+    content.innerHTML = `<div class="error">
+      <p>Could not load <strong>${island.id}.md</strong></p>
+      <p style="font-size: 14px; margin-top: 8px;">${err.message}</p>
+      <p style="font-size: 13px; margin-top: 16px; color: var(--text-muted);">
+        Serve from repo root: <code>python3 -m http.server 8001</code>
+      </p>
+    </div>`;
+  }
+}
+
+// ── Classify Code Blocks ──
+// Detect math, exam, and diagram blocks by content heuristics
+function classifyCodeBlocks() {
+  document.querySelectorAll('#content pre').forEach(pre => {
+    const text = pre.textContent;
+
+    // Exam technique: boxed ASCII sections
+    if (text.includes('┌─') || text.includes('└─') || text.includes('│')) {
+      // Check if it's a diagram (has arrows, graph structure) vs exam box
+      if (text.includes('EXAM') || text.includes('Mark scheme') || text.includes('Common mistake')) {
+        pre.classList.add('exam-block');
+        return;
+      }
+    }
+
+    // ASCII diagrams: boxes with arrows, graphs, visual structures
+    if ((text.includes('┌') || text.includes('╔') || text.includes('+---'))
+        && (text.includes('↓') || text.includes('→') || text.includes('▼') || text.includes('│'))) {
+      pre.classList.add('diagram-block');
+      return;
+    }
+
+    // Simple geometric diagrams
+    if (text.includes('+-----+') || (text.includes('/') && text.includes('|') && text.length < 200)) {
+      pre.classList.add('diagram-block');
+      return;
+    }
+
+    // Math blocks: axioms, theorems, proofs, derivations, equations
+    if (text.match(/^(AXIOM|THEOREM|DEFINITION|DERIVATION|PROOF|Step \d|∴|∎|Let |For any|Suppose)/m)
+        || text.match(/[=≠≤≥<>]/)
+        || text.match(/^\s*(a|b|x|y|f|n|d)\s*[=+\-*/^]/m)) {
+      pre.classList.add('math-block');
+      return;
+    }
+  });
+}
+
+// ── Navigation State ──
+function updateActiveNav() {
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const link = document.querySelector(`nav a[data-index="${currentIndex}"]`);
+  if (link) link.classList.add('active');
+}
+
+// ── Gap Dashboard (placeholder for F3) ──
+async function loadGapDashboard() {
+  const content = document.getElementById('content');
+  currentIndex = -1;
+  updateActiveNav();
+  window.location.hash = 'gap-dashboard';
+
+  try {
+    const response = await fetch(`${EXTRACTION_PATH}/fp1-structure.md`);
+    if (!response.ok) throw new Error('Gap data not loaded');
+    const markdown = await response.text();
+
+    content.innerHTML = '<h1>Gap Dashboard — Arc 0 → FP1</h1>' + marked.parse(markdown);
+    classifyCodeBlocks();
+    window.scrollTo(0, 0);
+  } catch (err) {
+    content.innerHTML = `<div class="error">
+      <p>Could not load gap analysis data.</p>
+      <p style="font-size: 14px; margin-top: 8px;">${err.message}</p>
+    </div>`;
+  }
+}
+
+// ── Keyboard Navigation ──
+document.addEventListener('keydown', (e) => {
+  // Don't intercept if typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  switch (e.key) {
+    case 'j':
+      if (currentIndex < allIslands.length - 1) loadIsland(currentIndex + 1);
+      break;
+    case 'k':
+      if (currentIndex > 0) loadIsland(currentIndex - 1);
+      break;
+    case 't':
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      break;
+  }
+});
+
+// ── Hash Routing ──
+function loadFromHash() {
+  const hash = window.location.hash.slice(1);
+  if (!hash) return;
+  if (hash === 'gap-dashboard') { loadGapDashboard(); return; }
+
+  const index = allIslands.findIndex(i => i.id === hash);
+  if (index >= 0) loadIsland(index);
+}
+
+// ══════════════════════════════════════════════════════════
+// ── CONSTRUCTION ANIMATIONS ──
+// Organic, hand-drawn geometric constructions.
+// Each island can register an animation that plays at the
+// top of its content when loaded.
+// ══════════════════════════════════════════════════════════
+
+let activeConstruction = null;
+
+// ── Organic Drawing Primitives ──
+const Organic = {
+  noise(x, seed) {
+    const n = Math.sin(x * 127.1 + seed * 311.7) * 43758.5453;
+    return (n - Math.floor(n)) - 0.5; // -0.5 to 0.5
+  },
+
+  line(ctx, x1, y1, x2, y2, opts = {}) {
+    const { jitter = 1.3, seed = 0, color = '#3a2510', width = 1.5, progress = 1 } = opts;
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len < 0.5) return;
+    const segments = Math.max(Math.floor(len / 3.5), 6);
+    const nx = -dy / len, ny = dx / len;
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x1 + this.noise(0, seed) * jitter * 0.3, y1 + this.noise(1, seed) * jitter * 0.3);
+
+    const maxSeg = Math.floor(segments * Math.min(progress, 1));
+    for (let i = 1; i <= maxSeg; i++) {
+      const t = i / segments;
+      const n = this.noise(i * 3.7, seed) * jitter;
+      const wv = 1 + this.noise(i * 5.1, seed + 50) * 0.15;
+      ctx.lineWidth = width * wv;
+      ctx.lineTo(x1 + dx * t + nx * n, y1 + dy * t + ny * n);
+    }
+    ctx.stroke();
+    ctx.restore();
+  },
+
+  rect(ctx, x, y, w, h, opts = {}) {
+    const s = opts.seed || 0;
+    const p = opts.progress !== undefined ? opts.progress : 1;
+    // Draw four sides with staggered progress
+    this.line(ctx, x, y, x + w, y, { ...opts, seed: s, progress: Math.min(p * 4, 1) });
+    this.line(ctx, x + w, y, x + w, y + h, { ...opts, seed: s + 7, progress: Math.min(Math.max(p * 4 - 1, 0), 1) });
+    this.line(ctx, x + w, y + h, x, y + h, { ...opts, seed: s + 13, progress: Math.min(Math.max(p * 4 - 2, 0), 1) });
+    this.line(ctx, x, y + h, x, y, { ...opts, seed: s + 19, progress: Math.min(Math.max(p * 4 - 3, 0), 1) });
+  },
+
+  fill(ctx, x, y, w, h, color, opacity = 1) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
+    ctx.restore();
+  },
+
+  text(ctx, str, x, y, opts = {}) {
+    const { font = '16px Georgia', color = '#3a2510', align = 'center', opacity = 1, rotate = 0 } = opts;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.font = font;
+    ctx.fillStyle = color;
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+    if (rotate) {
+      ctx.translate(x, y);
+      ctx.rotate(rotate);
+      ctx.fillText(str, 0, 0);
+    } else {
+      ctx.fillText(str, x, y);
+    }
+    ctx.restore();
+  },
+
+  bracket(ctx, x1, y1, x2, y2, label, opts = {}) {
+    const { seed = 0, color = '#c9a84c', progress = 1 } = opts;
+    this.line(ctx, x1, y1, x2, y2, { seed, color, width: 1.2, progress });
+    // Tick marks at ends
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    const nx = -dy / len * 5, ny = dx / len * 5;
+    if (progress > 0.05) this.line(ctx, x1 - nx, y1 - ny, x1 + nx, y1 + ny, { seed: seed + 3, color, width: 1 });
+    if (progress > 0.95) this.line(ctx, x2 - nx, y2 - ny, x2 + nx, y2 + ny, { seed: seed + 5, color, width: 1 });
+    // Label
+    if (progress > 0.5 && label) {
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      const angle = Math.atan2(dy, dx);
+      const off = 14;
+      this.text(ctx, label, mx - Math.sin(angle) * off, my + Math.cos(angle) * off,
+        { font: '14px Georgia', color, opacity: (progress - 0.5) * 2, rotate: Math.abs(angle) > 1 ? angle + Math.PI / 2 : 0 });
+    }
+  }
+};
+
+// ── Easing ──
+function ease(t) {
+  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+function phase(t, start, dur) {
+  if (t < start) return 0;
+  if (t > start + dur) return 1;
+  return ease((t - start) / dur);
+}
+
+// ── The Balance Beam (Island 0.1 — Equality) ──
+class BalanceBeam {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 400;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d';
+    this.gold = '#c9a84c'; this.highlight = '#c48820';
+    this.startTime = null; this.running = false; this.totalDuration = 18;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  drawBeam(ctx, tilt, progress, seed) {
+    const cx = 360, fy = 260, beamLen = 240;
+    const fulcrumH = 60;
+    // Fulcrum triangle
+    if (progress > 0) {
+      Organic.line(ctx, cx, fy, cx - 20, fy + fulcrumH, { seed: seed, color: this.ink, width: 1.8, progress });
+      Organic.line(ctx, cx, fy, cx + 20, fy + fulcrumH, { seed: seed + 1, color: this.ink, width: 1.8, progress });
+      Organic.line(ctx, cx - 20, fy + fulcrumH, cx + 20, fy + fulcrumH, { seed: seed + 2, color: this.ink, width: 1.8, progress });
+    }
+    // Beam — tilts based on tilt angle
+    const angle = tilt * 0.15;
+    const lx = cx - Math.cos(angle) * beamLen, ly = fy - Math.sin(angle) * beamLen * 0.3;
+    const rx = cx + Math.cos(angle) * beamLen, ry = fy + Math.sin(angle) * beamLen * 0.3;
+    Organic.line(ctx, lx, ly, rx, ry, { seed: seed + 3, color: this.ink, width: 2.2, progress });
+    // Pan lines
+    const panDrop = 30;
+    Organic.line(ctx, lx, ly, lx, ly + panDrop, { seed: seed + 4, color: this.ink, width: 1.2, progress });
+    Organic.line(ctx, rx, ry, rx, ry + panDrop, { seed: seed + 5, color: this.ink, width: 1.2, progress });
+    // Pan arcs (simple)
+    Organic.line(ctx, lx - 25, ly + panDrop, lx + 25, ly + panDrop, { seed: seed + 6, color: this.ink, width: 1.5, progress });
+    Organic.line(ctx, rx - 25, ry + panDrop, rx + 25, ry + panDrop, { seed: seed + 7, color: this.ink, width: 1.5, progress });
+    return { lx, ly: ly + panDrop, rx, ry: ry + panDrop };
+  }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+
+    // Determine active phase — only one draws at a time
+    let ap = 0;
+    if (t >= 16) ap = 5;
+    else if (t >= 12.5) ap = 4;
+    else if (t >= 8.5) ap = 3;
+    else if (t >= 5) ap = 2;
+    else if (t >= 2.5) ap = 1;
+
+    // Title (always)
+    Organic.text(ctx, 'The Merchant\'s Scales', 360, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    if (ap === 0) {
+      // Phase 0 (0-2.5s): Draw the beam, balanced
+      const p0 = phase(t, 0, 2);
+      this.drawBeam(ctx, 0, p0, 200);
+    }
+
+    if (ap === 1) {
+      // Phase 1: Reflexivity — a = a
+      const p1 = phase(t, 2.5, 2);
+      const pans = this.drawBeam(ctx, 0, 1, 200);
+      const so = Math.min(Math.max((p1 - 0.3) / 0.7, 0), 1);
+      Organic.fill(ctx, pans.lx - 8, pans.ly - 16, 16, 14, '#8a7a6a', so * 0.7);
+      Organic.fill(ctx, pans.rx - 8, pans.ry - 16, 16, 14, '#8a7a6a', so * 0.7);
+      Organic.text(ctx, 'a', pans.lx, pans.ly - 24, { opacity: so, font: 'italic 14px Georgia', color: gold });
+      Organic.text(ctx, 'a', pans.rx, pans.ry - 24, { opacity: so, font: 'italic 14px Georgia', color: gold });
+      Organic.text(ctx, 'Reflexive: a = a', 360, 355, { opacity: p1, font: '15px Georgia', color: ink });
+      Organic.text(ctx, 'A thing is itself.', 360, 378, { opacity: p1 * 0.7, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    if (ap === 2) {
+      // Phase 2: Symmetry — swap pans
+      const p2 = phase(t, 5, 2.5);
+      const swing = Math.sin(p2 * Math.PI) * 2;
+      const pans = this.drawBeam(ctx, swing, 1, 210);
+      const so = Math.min(p2 * 2, 1);
+      const swapped = p2 > 0.5;
+      Organic.fill(ctx, pans.lx - 8, pans.ly - 16, 16, 14, swapped ? '#8a7a6a' : '#d4a843', so * 0.7);
+      Organic.fill(ctx, pans.rx - 8, pans.ry - 16, 16, 14, swapped ? '#d4a843' : '#8a7a6a', so * 0.7);
+      Organic.text(ctx, swapped ? 'b' : 'a', pans.lx, pans.ly - 24, { opacity: so, font: 'italic 14px Georgia', color: gold });
+      Organic.text(ctx, swapped ? 'a' : 'b', pans.rx, pans.ry - 24, { opacity: so, font: 'italic 14px Georgia', color: gold });
+      Organic.text(ctx, 'Symmetric: a = b \u2192 b = a', 360, 355, { opacity: p2, font: '15px Georgia', color: ink });
+      Organic.text(ctx, 'Swap the pans. The truth holds.', 360, 378, { opacity: p2 * 0.7, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    if (ap === 3) {
+      // Phase 3: Transitivity — a=b, b=c → a=c
+      const p3 = phase(t, 8.5, 2.5);
+      this.drawBeam(ctx, 0, 1, 220);
+      const colors = ['#d4a843', '#8a7a6a', '#6a9e8f'];
+      const labels = ['a', 'b', 'c'];
+      [220, 360, 500].forEach((x, i) => {
+        const lo = Math.min(Math.max((p3 - i * 0.25) * 3, 0), 1);
+        Organic.fill(ctx, x - 10, 238, 20, 16, colors[i], lo * 0.7);
+        Organic.text(ctx, labels[i], x, 228, { opacity: lo, font: 'italic 15px Georgia', color: gold });
+      });
+      if (p3 > 0.4) {
+        const lo = (p3 - 0.4) * 2;
+        Organic.text(ctx, '=', 290, 246, { opacity: lo, font: '16px Georgia', color: ink });
+        Organic.text(ctx, '=', 430, 246, { opacity: lo, font: '16px Georgia', color: ink });
+      }
+      Organic.text(ctx, 'Transitive: a = b, b = c \u2192 a = c', 360, 355, { opacity: p3, font: '15px Georgia', color: ink });
+      Organic.text(ctx, 'Bridge through a common measure.', 360, 378, { opacity: p3 * 0.7, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    if (ap === 4) {
+      // Phase 4: Preservation — add same to both
+      const p4 = phase(t, 12.5, 2.5);
+      const pans = this.drawBeam(ctx, 0, 1, 230);
+      Organic.fill(ctx, pans.lx - 8, pans.ly - 16, 16, 14, '#d4a843', 0.7);
+      Organic.fill(ctx, pans.rx - 8, pans.ry - 16, 16, 14, '#8a7a6a', 0.7);
+      Organic.text(ctx, 'a', pans.lx, pans.ly - 24, { opacity: 1, font: 'italic 14px Georgia', color: gold });
+      Organic.text(ctx, 'b', pans.rx, pans.ry - 24, { opacity: 1, font: 'italic 14px Georgia', color: gold });
+      if (p4 > 0.3) {
+        const drop = Math.min((p4 - 0.3) * 2, 1);
+        const dropY = pans.ly - 40 + drop * 24;
+        Organic.fill(ctx, pans.lx + 12, dropY, 12, 10, '#6a9e8f', drop * 0.6);
+        Organic.fill(ctx, pans.rx + 12, dropY, 12, 10, '#6a9e8f', drop * 0.6);
+        Organic.text(ctx, '+c', pans.lx + 18, dropY - 8, { opacity: drop, font: 'italic 12px Georgia', color: '#6a9e8f' });
+        Organic.text(ctx, '+c', pans.rx + 18, dropY - 8, { opacity: drop, font: 'italic 12px Georgia', color: '#6a9e8f' });
+      }
+      Organic.text(ctx, 'Preservation: a = b \u2192 a\u2295c = b\u2295c', 360, 355, { opacity: p4, font: '15px Georgia', color: ink });
+      Organic.text(ctx, 'Add the same to both sides. Balance holds.', 360, 378, { opacity: p4 * 0.7, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    if (ap === 5) {
+      // Phase 5: The axiom
+      const p5 = phase(t, 16, 1.5);
+      this.drawBeam(ctx, 0, 1, 200);
+      Organic.text(ctx, '1 = 1', 360, 355, { opacity: p5, font: 'bold 22px Menlo, monospace', color: ink });
+      Organic.text(ctx, 'The scales do not lie.', 360, 385, { opacity: p5 * 0.6, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', 360, this.H - 10,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Shepherd's Gate (Island 0.2 — Counting) ──
+class ShepherdsGate {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 340;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820';
+    this.startTime = null; this.running = false; this.totalDuration = 16;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+
+    const lineY = 140, startX = 80, gap = 48;
+    const count = 12;
+
+    // Phase 0 (0-2s): Draw the number line
+    const p0 = phase(t, 0, 1.5);
+    if (p0 > 0) {
+      const endX = startX + count * gap + 40;
+      Organic.line(ctx, startX - 20, lineY, endX * p0 + startX * (1 - p0), lineY,
+        { seed: 300, color: ink, width: 1.5 });
+      // Arrow at the end
+      if (p0 > 0.8) {
+        const ax = endX;
+        Organic.line(ctx, ax - 12, lineY - 6, ax, lineY, { seed: 301, color: ink, width: 1.3, progress: (p0 - 0.8) * 5 });
+        Organic.line(ctx, ax - 12, lineY + 6, ax, lineY, { seed: 302, color: ink, width: 1.3, progress: (p0 - 0.8) * 5 });
+      }
+      Organic.text(ctx, 'The Shepherd\'s Gate', this.W / 2, 30,
+        { opacity: p0, font: 'italic 18px Georgia', color: ink });
+    }
+
+    // Phase 1 (1.5-8s): Numbers appear one by one
+    for (let i = 1; i <= count; i++) {
+      const delay = 1.5 + (i - 1) * 0.5;
+      const p = phase(t, delay, 0.4);
+      if (p > 0) {
+        const x = startX + i * gap;
+        // Tick mark
+        Organic.line(ctx, x, lineY - 8, x, lineY + 8,
+          { seed: 310 + i, color: ink, width: 1.3, progress: p });
+        // Number
+        Organic.text(ctx, String(i), x, lineY + 24,
+          { opacity: p, font: '15px Georgia', color: ink });
+        // Successor arrow to next
+        if (i < count && p > 0.5) {
+          const nx = x + gap;
+          const arrowP = Math.min((p - 0.5) * 2, 1);
+          ctx.save();
+          ctx.strokeStyle = gold;
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = arrowP * 0.6;
+          ctx.beginPath();
+          ctx.moveTo(x + 8, lineY - 14);
+          ctx.quadraticCurveTo((x + nx) / 2, lineY - 28, nx - 8, lineY - 14);
+          ctx.stroke();
+          // Arrow head
+          ctx.beginPath();
+          ctx.moveTo(nx - 12, lineY - 20);
+          ctx.lineTo(nx - 8, lineY - 14);
+          ctx.lineTo(nx - 14, lineY - 12);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+
+    // Phase 2 (8-10s): The "..." — it never ends
+    const p2 = phase(t, 8, 1.5);
+    if (p2 > 0) {
+      const dotsX = startX + (count + 1) * gap;
+      Organic.text(ctx, '\u2026', dotsX, lineY + 24,
+        { opacity: p2, font: '18px Georgia', color: gold });
+      Organic.text(ctx, '\u221E', dotsX + 30, lineY + 24,
+        { opacity: p2 * 0.5, font: '16px Georgia', color: inkLight });
+    }
+
+    // Phase 3 (10-13s): Labels
+    const p3 = phase(t, 10, 2);
+    if (p3 > 0) {
+      Organic.text(ctx, 'S(n) = n + 1', this.W / 2, lineY + 70,
+        { opacity: p3, font: '16px Georgia', color: ink });
+      Organic.text(ctx, 'The successor. Every number has a next.', this.W / 2, lineY + 95,
+        { opacity: p3 * 0.7, font: 'italic 14px Georgia', color: inkLight });
+      Organic.text(ctx, 'No gaps. No repetitions. No end.', this.W / 2, lineY + 118,
+        { opacity: p3 * 0.6, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    // Phase 4 (13.5-16s): Axiom
+    const p4 = phase(t, 13.5, 1.5);
+    if (p4 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 30,
+        { opacity: p4 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Farmer's Grain (Island 0.3 — Multiplication) ──
+class FarmersGrain {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 400;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820';
+    this.startTime = null; this.running = false; this.totalDuration = 16;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+    const rows = 4, cols = 3, dotR = 6, gapX = 50, gapY = 50;
+    const ox = 200, oy = 80;
+
+    Organic.text(ctx, 'The Farmer\'s Grain', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    // Phase 0 (0-4s): Pebbles appear row by row
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const idx = r * cols + c;
+        const delay = 0.3 + idx * 0.2;
+        const p = phase(t, delay, 0.3);
+        if (p > 0) {
+          const x = ox + c * gapX, y = oy + r * gapY;
+          ctx.save();
+          ctx.globalAlpha = p * 0.8;
+          ctx.fillStyle = '#7a6a5a';
+          ctx.beginPath();
+          ctx.arc(x, y, dotR * p, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
+
+    // Phase 1 (4.5-7s): Row grouping — 4 groups of 3
+    const p1 = phase(t, 4.5, 2);
+    if (p1 > 0) {
+      for (let r = 0; r < rows; r++) {
+        const delay = r * 0.3;
+        if (p1 > delay / 2) {
+          const lo = Math.min((p1 - delay / 2) * 3, 1);
+          ctx.save();
+          ctx.strokeStyle = gold;
+          ctx.lineWidth = 1.5;
+          ctx.globalAlpha = lo * 0.6;
+          ctx.setLineDash([4, 3]);
+          ctx.strokeRect(ox - dotR - 8, oy + r * gapY - dotR - 6, cols * gapX - gapX + dotR * 2 + 16, dotR * 2 + 12);
+          ctx.restore();
+        }
+      }
+      Organic.text(ctx, '4 \u00D7 3 = 12', ox + 50, oy + rows * gapY + 20,
+        { opacity: p1, font: '16px Georgia', color: ink });
+    }
+
+    // Phase 2 (7.5-10s): Column grouping — 3 groups of 4
+    const p2 = phase(t, 7.5, 2);
+    if (p2 > 0) {
+      // Shift the grid right for second view
+      const ox2 = 440;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = ox2 + c * gapX, y = oy + r * gapY;
+          ctx.save(); ctx.globalAlpha = p2 * 0.8; ctx.fillStyle = '#7a6a5a';
+          ctx.beginPath(); ctx.arc(x, y, dotR, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        }
+      }
+      for (let c = 0; c < cols; c++) {
+        const delay = c * 0.3;
+        if (p2 > delay / 2) {
+          const lo = Math.min((p2 - delay / 2) * 3, 1);
+          ctx.save(); ctx.strokeStyle = '#6a9e8f'; ctx.lineWidth = 1.5; ctx.globalAlpha = lo * 0.6;
+          ctx.setLineDash([4, 3]);
+          ctx.strokeRect(ox2 + c * gapX - dotR - 6, oy - dotR - 8, dotR * 2 + 12, rows * gapY - gapY + dotR * 2 + 16);
+          ctx.restore();
+        }
+      }
+      Organic.text(ctx, '3 \u00D7 4 = 12', ox2 + 50, oy + rows * gapY + 20,
+        { opacity: p2, font: '16px Georgia', color: ink });
+    }
+
+    // Phase 3 (10.5-13s): They're equal
+    const p3 = phase(t, 10.5, 2);
+    if (p3 > 0) {
+      Organic.text(ctx, '=', 360, oy + gapY * 1.5,
+        { opacity: p3, font: 'bold 28px Georgia', color: gold });
+      Organic.text(ctx, 'a \u00D7 b = b \u00D7 a', this.W / 2, oy + rows * gapY + 55,
+        { opacity: p3, font: '16px Georgia', color: ink });
+      Organic.text(ctx, 'The pebbles did not move. You moved.', this.W / 2, oy + rows * gapY + 80,
+        { opacity: p3 * 0.7, font: 'italic 14px Georgia', color: inkLight });
+    }
+
+    // Phase 4
+    const p4 = phase(t, 13.5, 1.5);
+    if (p4 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 30,
+        { opacity: p4 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Debtor's Position (Island 0.4 — Zero & Negatives) ──
+class DebtorsPosition {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 380;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c';
+    this.red = '#c0392b'; this.green = '#2d6a4f';
+    this.startTime = null; this.running = false; this.totalDuration = 18;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, red, green } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+    const lineY = 160, zeroX = 360, gap = 50;
+
+    Organic.text(ctx, 'The Debtor\'s Position', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    // Phase 0 (0-2s): Number line with zero at center
+    const p0 = phase(t, 0, 1.8);
+    if (p0 > 0) {
+      Organic.line(ctx, 60, lineY, 660, lineY, { seed: 400, color: ink, width: 1.5, progress: p0 });
+      // Zero mark
+      if (p0 > 0.5) {
+        Organic.line(ctx, zeroX, lineY - 12, zeroX, lineY + 12, { seed: 401, color: ink, width: 2, progress: (p0 - 0.5) * 2 });
+        Organic.text(ctx, '0', zeroX, lineY + 28, { opacity: (p0 - 0.5) * 2, font: 'bold 16px Georgia', color: ink });
+      }
+    }
+
+    // Phase 1 (2-5s): Positive numbers appear right
+    const p1 = phase(t, 2, 2);
+    if (p1 > 0) {
+      for (let i = 1; i <= 5; i++) {
+        const delay = (i - 1) * 0.15;
+        if (p1 > delay) {
+          const lo = Math.min((p1 - delay) * 4, 1);
+          const x = zeroX + i * gap;
+          Organic.line(ctx, x, lineY - 8, x, lineY + 8, { seed: 410 + i, color: green, width: 1.2, progress: lo });
+          Organic.text(ctx, String(i), x, lineY + 26, { opacity: lo, font: '14px Georgia', color: green });
+        }
+      }
+      if (p1 > 0.5) {
+        Organic.text(ctx, 'surplus \u2192', zeroX + 130, lineY - 24,
+          { opacity: (p1 - 0.5) * 2, font: '12px Georgia', color: green });
+      }
+    }
+
+    // Phase 2 (4.5-7.5s): Negative numbers appear left — the mirror
+    const p2 = phase(t, 4.5, 2);
+    if (p2 > 0) {
+      for (let i = 1; i <= 5; i++) {
+        const delay = (i - 1) * 0.15;
+        if (p2 > delay) {
+          const lo = Math.min((p2 - delay) * 4, 1);
+          const x = zeroX - i * gap;
+          Organic.line(ctx, x, lineY - 8, x, lineY + 8, { seed: 420 + i, color: red, width: 1.2, progress: lo });
+          Organic.text(ctx, String(-i), x, lineY + 26, { opacity: lo, font: '14px Georgia', color: red });
+        }
+      }
+      if (p2 > 0.5) {
+        Organic.text(ctx, '\u2190 deficit', zeroX - 220, lineY - 26,
+          { opacity: (p2 - 0.5) * 2, font: '12px Georgia', color: red });
+      }
+    }
+
+    // Phase 3 (8-11s): The debtor's position — marker at -2
+    const p3 = phase(t, 8, 2);
+    if (p3 > 0) {
+      const debtorX = zeroX - 2 * gap;
+      // Pulsing dot
+      const pulse = 0.8 + 0.2 * Math.sin(t * 3);
+      ctx.save();
+      ctx.globalAlpha = p3 * pulse;
+      ctx.fillStyle = red;
+      ctx.beginPath();
+      ctx.arc(debtorX, lineY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      Organic.text(ctx, 'The Debtor', debtorX, lineY - 42,
+        { opacity: p3, font: 'italic 13px Georgia', color: red });
+      Organic.text(ctx, 'Has 3, owes 5. Position: \u22122', this.W / 2, lineY + 60,
+        { opacity: p3, font: '15px Georgia', color: ink });
+    }
+
+    // Phase 4 (11.5-15s): The proof — (-1)×(-1) = 1
+    const p4 = phase(t, 11.5, 3);
+    if (p4 > 0) {
+      const proofY = lineY + 95;
+      const steps = [
+        { t: '(\u22121) \u00D7 [1 + (\u22121)] = (\u22121) \u00D7 0 = 0', at: 0 },
+        { t: '(\u22121)(1) + (\u22121)(\u22121) = 0', at: 0.3 },
+        { t: '\u22121 + (\u22121)(\u22121) = 0', at: 0.55 },
+        { t: '(\u22121)(\u22121) = 1', at: 0.8 },
+      ];
+      steps.forEach((step, i) => {
+        if (p4 > step.at) {
+          const lo = Math.min((p4 - step.at) * 4, 1);
+          const last = i === steps.length - 1;
+          Organic.text(ctx, step.t, this.W / 2, proofY + i * 26,
+            { opacity: lo, font: (last ? 'bold 16px' : '14px') + ' Georgia', color: last ? gold : ink });
+        }
+      });
+      if (p4 > 0.9) {
+        Organic.text(ctx, 'Removing a debt is a gain.', this.W / 2, proofY + 4 * 26 + 5,
+          { opacity: (p4 - 0.9) * 10, font: 'italic 13px Georgia', color: inkLight });
+      }
+    }
+
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Inheritance Fulfilled (Island 0.5 — Fractions) ──
+class InheritanceFulfilled {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 420;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c';
+    this.wife = '#6a9e8f'; this.daughters = '#d4a843'; this.father = '#b07050'; this.overflow = '#c0392b';
+    this.startTime = null; this.running = false; this.totalDuration = 20;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, wife, daughters, father, overflow } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+    // Unit square
+    const sq = 200, ox = 80, oy = 70;
+    const cellH = sq / 24; // each 1/24th
+
+    Organic.text(ctx, 'The Inheritance Fulfilled', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    // Phase 0 (0-2s): Draw the unit square
+    const p0 = phase(t, 0, 1.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.4);
+      Organic.rect(ctx, ox, oy, sq, sq, { progress: p0, seed: 500, color: ink, width: 1.6 });
+      if (p0 > 0.6) {
+        Organic.text(ctx, 'The Estate = 1', ox + sq / 2, oy - 14,
+          { opacity: (p0 - 0.6) / 0.4, font: '14px Georgia', color: ink });
+      }
+    }
+
+    // Phase 1 (2-4s): Grid lines (24 divisions)
+    const p1 = phase(t, 2, 1.5);
+    if (p1 > 0) {
+      for (let i = 1; i < 24; i++) {
+        const pLine = Math.max(Math.min((p1 * 28 - i) / 3, 1), 0);
+        if (pLine > 0) {
+          const y = oy + i * cellH;
+          Organic.line(ctx, ox, y, ox + sq, y,
+            { seed: 510 + i, color: inkLight, width: 0.4, jitter: 0.3, progress: pLine });
+        }
+      }
+    }
+
+    // Phase 2 (4-6s): Wife 3/24 — top portion
+    const p2 = phase(t, 4, 1.5);
+    if (p2 > 0) {
+      Organic.fill(ctx, ox, oy, sq, 3 * cellH, wife, p2 * 0.6);
+      if (p2 > 0.5) {
+        Organic.text(ctx, 'Wife: \u00B9\u2044\u2088 = 3/24', ox + sq + 20, oy + 1.5 * cellH,
+          { opacity: (p2 - 0.5) * 2, font: '13px Georgia', color: wife, align: 'left' });
+      }
+    }
+
+    // Phase 3 (6-8.5s): Daughters 16/24
+    const p3 = phase(t, 6, 2);
+    if (p3 > 0) {
+      Organic.fill(ctx, ox, oy + 3 * cellH, sq, 16 * cellH * p3, daughters, 0.55);
+      if (p3 > 0.5) {
+        Organic.text(ctx, 'Daughters: \u00B2\u2044\u2083 = 16/24', ox + sq + 20, oy + 11 * cellH,
+          { opacity: (p3 - 0.5) * 2, font: '13px Georgia', color: daughters, align: 'left' });
+      }
+    }
+
+    // Phase 4 (8.5-10s): Father 4/24
+    const p4 = phase(t, 8.5, 1.5);
+    if (p4 > 0) {
+      Organic.fill(ctx, ox, oy + 19 * cellH, sq, 4 * cellH * p4, father, 0.55);
+      if (p4 > 0.5) {
+        Organic.text(ctx, 'Father: \u00B9\u2044\u2086 = 4/24', ox + sq + 20, oy + 21 * cellH,
+          { opacity: (p4 - 0.5) * 2, font: '13px Georgia', color: father, align: 'left' });
+      }
+    }
+
+    // Phase 5 (10.5-13s): Mother — overflows the square
+    const p5 = phase(t, 10.5, 2);
+    if (p5 > 0) {
+      // 1 cell fits inside (cell 24), 3 overflow
+      const fitH = 1 * cellH;
+      const overH = 3 * cellH * Math.min(p5 * 1.5, 1);
+      Organic.fill(ctx, ox, oy + 23 * cellH, sq, fitH, father, 0.5);
+      // Overflow below the square
+      if (p5 > 0.3) {
+        Organic.fill(ctx, ox, oy + sq, sq, overH, overflow, 0.35);
+        ctx.save();
+        ctx.strokeStyle = overflow; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+        ctx.globalAlpha = (p5 - 0.3) / 0.7;
+        ctx.strokeRect(ox, oy + sq, sq, 3 * cellH);
+        ctx.restore();
+      }
+      if (p5 > 0.5) {
+        Organic.text(ctx, 'Mother: \u00B9\u2044\u2086 = 4/24', ox + sq + 20, oy + sq + 1.5 * cellH,
+          { opacity: (p5 - 0.5) * 2, font: '13px Georgia', color: overflow, align: 'left' });
+        Organic.text(ctx, '\u2191 OVERFLOW', ox + sq + 20, oy + sq + 1.5 * cellH + 18,
+          { opacity: (p5 - 0.5) * 2, font: 'bold 11px Georgia', color: overflow, align: 'left' });
+      }
+    }
+
+    // Phase 6 (13.5-17s): 'Awl — raise denominator to 27
+    const p6 = phase(t, 13.5, 3);
+    if (p6 > 0) {
+      // Show the fix on the right side
+      const fx = 460, fy = oy + 20;
+      const steps = [
+        { t: '27/24 > 1  \u2014  impossible', at: 0 },
+        { t: 'The \'awl: raise 24 \u2192 27', at: 0.2 },
+        { t: '3/27 + 16/27 + 4/27 + 4/27', at: 0.45 },
+        { t: '= 27/27 = 1  \u2714', at: 0.65 },
+        { t: 'Ratios preserved. Justice held.', at: 0.85 },
+      ];
+      steps.forEach((step, i) => {
+        if (p6 > step.at) {
+          const lo = Math.min((p6 - step.at) * 4, 1);
+          const isResult = i === 3;
+          Organic.text(ctx, step.t, fx, fy + i * 28,
+            { opacity: lo, font: (isResult ? 'bold ' : '') + '14px Georgia',
+              color: isResult ? gold : (i === 0 ? overflow : ink), align: 'left' });
+        }
+      });
+    }
+
+    // Phase 7 (17.5-20s)
+    const p7 = phase(t, 17.5, 1.5);
+    if (p7 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 30,
+        { opacity: p7 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Merchant's Unknown (Island 0.6 — Variables) ──
+class MerchantsUnknown {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 480;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820';
+    this.startTime = null; this.running = false; this.totalDuration = 18;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+
+    Organic.text(ctx, 'The Merchant\'s Unknown', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    // The balance (reused from 0.1 concept)
+    const cx = 360, beamY = 160, beamLen = 200;
+
+    // Phase 0 (0-3s): The ledger with blanks
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      const lx = 100, ly = 80;
+      const entries = [
+        { label: 'Shop:', val: '8,000', known: true },
+        { label: 'Warehouse:', val: '4,000', known: true },
+        { label: 'Goods:', val: '1,200', known: true },
+        { label: 'Ships at sea:', val: '???', known: false },
+      ];
+      entries.forEach((e, i) => {
+        const delay = i * 0.2;
+        if (p0 > delay) {
+          const lo = Math.min((p0 - delay) * 4, 1);
+          Organic.text(ctx, e.label, lx, ly + i * 26,
+            { opacity: lo, font: '14px Georgia', color: ink, align: 'left' });
+          Organic.text(ctx, e.val, lx + 130, ly + i * 26,
+            { opacity: lo, font: e.known ? '14px Georgia' : 'bold italic 14px Georgia',
+              color: e.known ? ink : highlight, align: 'left' });
+        }
+      });
+    }
+
+    // Phase 1 (3-5.5s): The unknown gets a name — shay' → x
+    const p1 = phase(t, 3, 2);
+    if (p1 > 0) {
+      Organic.text(ctx, 'shay\u2019', 440, 105,
+        { opacity: Math.max(1 - p1 * 2, 0), font: 'italic 20px Georgia', color: inkLight });
+      if (p1 > 0.4) {
+        const lo = (p1 - 0.4) / 0.6;
+        Organic.text(ctx, 'x', 440, 105,
+          { opacity: lo, font: 'bold italic 28px Georgia', color: highlight });
+        Organic.text(ctx, '"a thing"', 475, 105,
+          { opacity: lo * 0.6, font: '12px Georgia', color: inkLight, align: 'left' });
+      }
+    }
+
+    // Phase 2 (5.5-9s): The balance equation
+    const p2 = phase(t, 5.5, 3);
+    if (p2 > 0) {
+      // Draw a balance beam
+      const fy = 220;
+      // Fulcrum
+      Organic.line(ctx, cx, fy, cx - 15, fy + 40, { seed: 600, color: ink, width: 1.5, progress: p2 });
+      Organic.line(ctx, cx, fy, cx + 15, fy + 40, { seed: 601, color: ink, width: 1.5, progress: p2 });
+      // Beam
+      Organic.line(ctx, cx - beamLen, fy, cx + beamLen, fy, { seed: 602, color: ink, width: 2, progress: p2 });
+      // Left pan: the total wealth
+      if (p2 > 0.3) {
+        const lo = (p2 - 0.3) / 0.7;
+        Organic.text(ctx, '13,200 + x', cx - beamLen + 40, fy - 18,
+          { opacity: lo, font: '15px Georgia', color: ink });
+        Organic.text(ctx, 'Total Wealth', cx - beamLen + 40, fy - 38,
+          { opacity: lo * 0.6, font: '12px Georgia', color: inkLight });
+      }
+      // Right pan: the equation target
+      if (p2 > 0.5) {
+        const lo = (p2 - 0.5) / 0.5;
+        Organic.text(ctx, '20,000', cx + beamLen - 40, fy - 18,
+          { opacity: lo, font: '15px Georgia', color: ink });
+        Organic.text(ctx, '= W', cx + beamLen - 40, fy - 38,
+          { opacity: lo * 0.6, font: 'italic 12px Georgia', color: gold });
+      }
+    }
+
+    // Phase 3 (9-13s): Extract the unknown
+    const p3 = phase(t, 9, 3);
+    if (p3 > 0) {
+      const eqY = 310;
+      const steps = [
+        { t: '13,200 + x = 20,000', at: 0 },
+        { t: 'x = 20,000 \u2212 13,200', at: 0.3 },
+        { t: 'x = 6,800', at: 0.6 },
+      ];
+      steps.forEach((step, i) => {
+        if (p3 > step.at) {
+          const lo = Math.min((p3 - step.at) * 4, 1);
+          const last = i === steps.length - 1;
+          Organic.text(ctx, step.t, this.W / 2, eqY + i * 30,
+            { opacity: lo, font: (last ? 'bold 17px' : '15px') + ' Georgia', color: last ? highlight : ink });
+        }
+      });
+      if (p3 > 0.8) {
+        Organic.text(ctx, 'The ships carry 6,800 dinars.', this.W / 2, eqY + 3 * 30 + 5,
+          { opacity: (p3 - 0.8) * 5, font: 'italic 14px Georgia', color: inkLight });
+      }
+    }
+
+    // Phase 4 (14-16s): The power
+    const p4 = phase(t, 14, 2.5);
+    if (p4 > 0) {
+      Organic.text(ctx, 'One formula. Every possible estate.', this.W / 2, this.H - 55,
+        { opacity: p4 * 0.8, font: '14px Georgia', color: ink });
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 30,
+        { opacity: p4 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── Completing the Square (Island 0.7) ──
+class CompletingTheSquare {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720;
+    this.H = 460;
+
+    canvas.width = this.W * this.dpr;
+    canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px';
+    canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+
+    // Layout
+    this.ox = 90;
+    this.oy = 65;
+    this.unit = 25;
+    this.S = 10;
+    this.X = 4.14;
+
+    // Palette
+    this.ink = '#3a2510';
+    this.inkLight = '#7a6e5d';
+    this.gold = '#c9a84c';
+    this.courtFill = '#efe0c0';
+    this.stripFill = '#e4d4a8';
+    this.cornerFill = '#d4b878';
+    this.highlight = '#c48820';
+
+    this.startTime = null;
+    this.running = false;
+    this.totalDuration = 19;
+
+    canvas.addEventListener('click', () => this.restart());
+  }
+
+  start() {
+    this.running = true;
+    this.startTime = performance.now();
+    this._frame();
+  }
+
+  restart() {
+    this.startTime = performance.now();
+    if (!this.running) {
+      this.running = true;
+      this._frame();
+    }
+  }
+
+  stop() { this.running = false; }
+
+  _frame() {
+    if (!this.running) return;
+    const t = (performance.now() - this.startTime) / 1000;
+    this.draw(t);
+    if (t < this.totalDuration + 3) {
+      requestAnimationFrame(() => this._frame());
+    }
+  }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ox, oy, unit, S, X, ink, inkLight, gold, highlight } = this;
+    const sw = S * unit;
+    const xw = X * unit;
+
+    // Clear with parchment
+    ctx.fillStyle = '#f8f0e0';
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    // ── Phase 0 (0–2s): The courtyard ──
+    const p0 = phase(t, 0, 1.8);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sw, sw, this.courtFill, p0 * 0.7);
+      Organic.rect(ctx, ox, oy, sw, sw, { progress: p0, color: ink, width: 1.8, seed: 42 });
+      if (p0 > 0.6) {
+        const lo = Math.min((p0 - 0.6) / 0.4, 1);
+        Organic.text(ctx, '10', ox + sw / 2, oy - 16, { opacity: lo, font: '15px Georgia', color: ink });
+        Organic.text(ctx, '10', ox - 22, oy + sw / 2, { opacity: lo, font: '15px Georgia', color: ink });
+      }
+    }
+
+    // ── Phase 1 (2–3.5s): The question ──
+    const p1 = phase(t, 2, 1.2);
+    if (p1 > 0) {
+      const eqX = 480;
+      Organic.text(ctx, 'The Patron\'s Garden', eqX, oy + 10,
+        { opacity: p1, font: 'italic 18px Georgia', color: ink, align: 'left' });
+      Organic.text(ctx, '"I want to double the area.', eqX, oy + 36,
+        { opacity: p1 * 0.8, font: '13px Georgia', color: inkLight, align: 'left' });
+      Organic.text(ctx, ' Add equal strips to east and south."', eqX, oy + 54,
+        { opacity: p1 * 0.8, font: '13px Georgia', color: inkLight, align: 'left' });
+    }
+
+    // ── Phase 2 (3.5–5.5s): East strip ──
+    const p2 = phase(t, 3.5, 1.6);
+    if (p2 > 0) {
+      Organic.fill(ctx, ox + sw, oy, xw * p2, sw, this.stripFill, 0.6);
+      // Top
+      Organic.line(ctx, ox + sw, oy, ox + sw + xw, oy, { progress: p2, seed: 100, color: ink });
+      // Right
+      Organic.line(ctx, ox + sw + xw, oy, ox + sw + xw, oy + sw, { progress: Math.max(p2 - 0.3, 0) / 0.7, seed: 101, color: ink });
+      // Bottom (already part of courtyard at ox+sw, oy+sw)
+      if (p2 > 0.5) {
+        const lo = (p2 - 0.5) * 2;
+        Organic.text(ctx, 'x', ox + sw + xw / 2, oy - 16,
+          { opacity: lo, font: 'italic 16px Georgia', color: highlight });
+        Organic.text(ctx, '10x', ox + sw + xw / 2, oy + sw / 2,
+          { opacity: lo * 0.7, font: '14px Georgia', color: inkLight });
+      }
+    }
+
+    // ── Phase 3 (5.5–7.5s): South strip ──
+    const p3 = phase(t, 5.5, 1.6);
+    if (p3 > 0) {
+      Organic.fill(ctx, ox, oy + sw, sw, xw * p3, this.stripFill, 0.6);
+      // Left
+      Organic.line(ctx, ox, oy + sw, ox, oy + sw + xw, { progress: p3, seed: 110, color: ink });
+      // Bottom
+      Organic.line(ctx, ox, oy + sw + xw, ox + sw, oy + sw + xw, { progress: Math.max(p3 - 0.3, 0) / 0.7, seed: 111, color: ink });
+      if (p3 > 0.5) {
+        const lo = (p3 - 0.5) * 2;
+        Organic.text(ctx, 'x', ox - 22, oy + sw + xw / 2,
+          { opacity: lo, font: 'italic 16px Georgia', color: highlight });
+        Organic.text(ctx, '10x', ox + sw / 2, oy + sw + xw / 2,
+          { opacity: lo * 0.7, font: '14px Georgia', color: inkLight });
+      }
+    }
+
+    // ── Phase 4 (8–10s): The gap pulses ──
+    const p4 = phase(t, 8, 1.5);
+    if (p4 > 0) {
+      const pulse = 0.4 + 0.25 * Math.sin(t * 4);
+      ctx.save();
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2.2;
+      ctx.setLineDash([7, 5]);
+      ctx.globalAlpha = p4 * pulse;
+      ctx.strokeRect(ox + sw + 1, oy + sw + 1, xw - 2, xw - 2);
+      ctx.restore();
+
+      Organic.text(ctx, '?', ox + sw + xw / 2, oy + sw + xw / 2,
+        { opacity: p4 * 0.9, font: 'bold 24px Georgia', color: highlight });
+
+      if (p4 > 0.3) {
+        Organic.text(ctx, 'x\u00B2 + 20x = 100', 480, oy + 100,
+          { opacity: (p4 - 0.3) / 0.7, font: '16px Georgia', color: ink, align: 'left' });
+      }
+    }
+
+    // ── Phase 5 (10.5–13s): Complete the square ──
+    const p5 = phase(t, 10.5, 2);
+    if (p5 > 0) {
+      // Fill corner
+      Organic.fill(ctx, ox + sw, oy + sw, xw, xw, this.cornerFill, p5 * 0.8);
+      // Draw borders
+      Organic.line(ctx, ox + sw + xw, oy + sw, ox + sw + xw, oy + sw + xw,
+        { progress: p5, seed: 130, color: ink, width: 1.6 });
+      Organic.line(ctx, ox + sw, oy + sw + xw, ox + sw + xw, oy + sw + xw,
+        { progress: p5, seed: 131, color: ink, width: 1.6 });
+
+      if (p5 > 0.4) {
+        const lo = (p5 - 0.4) / 0.6;
+        Organic.text(ctx, 'x\u00B2', ox + sw + xw / 2, oy + sw + xw / 2,
+          { opacity: lo, font: 'italic 15px Georgia', color: ink });
+      }
+
+      // Dimension brackets for the full square
+      if (p5 > 0.7) {
+        const bo = (p5 - 0.7) / 0.3;
+        Organic.bracket(ctx, ox, oy - 30, ox + sw + xw, oy - 30, '10 + x',
+          { seed: 140, color: gold, progress: bo });
+        // Left bracket (vertical)
+        Organic.bracket(ctx, ox - 34, oy, ox - 34, oy + sw + xw, '',
+          { seed: 145, color: gold, progress: bo });
+        Organic.text(ctx, '10 + x', ox - 48, oy + (sw + xw) / 2,
+          { opacity: bo, font: '14px Georgia', color: gold, rotate: -Math.PI / 2 });
+      }
+    }
+
+    // ── Phase 6 (13–16s): The algebra unfolds ──
+    const p6 = phase(t, 13, 2.5);
+    if (p6 > 0) {
+      const eqX = 480, eqY = oy + 140;
+      const steps = [
+        { t: '(10 + x)\u00B2 = 100 + 100', at: 0 },
+        { t: '(10 + x)\u00B2 = 200', at: 0.2 },
+        { t: '10 + x = \u221A200', at: 0.4 },
+        { t: '10 + x = 10\u221A2', at: 0.6 },
+        { t: 'x = 10(\u221A2 \u2212 1)', at: 0.8 },
+      ];
+      steps.forEach((step, i) => {
+        if (p6 > step.at) {
+          const lo = Math.min((p6 - step.at) * 5, 1);
+          const last = i === steps.length - 1;
+          Organic.text(ctx, step.t, eqX, eqY + i * 28,
+            { opacity: lo, font: (last ? 'bold ' : '') + '15px Georgia',
+              color: last ? highlight : ink, align: 'left' });
+        }
+      });
+    }
+
+    // ── Phase 7 (16–18s): The answer returns to the geometry ──
+    const p7 = phase(t, 16, 1.5);
+    if (p7 > 0) {
+      Organic.text(ctx, '\u2248 4.14 cubits', ox + sw + xw / 2, oy - 44,
+        { opacity: p7, font: 'bold 14px Georgia', color: highlight });
+      // Closing line
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 24,
+        { opacity: p7 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+
+    // Replay hint
+    if (t > this.totalDuration) {
+      const fade = Math.min(t - this.totalDuration, 1);
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: fade * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Impossible Sum (Island 0.0 — Prologue) ──
+class ImpossibleSum {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720;
+    this.H = 420;
+
+    canvas.width = this.W * this.dpr;
+    canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px';
+    canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+
+    // Layout — the estate bar
+    this.barX = 100;
+    this.barY = 80;
+    this.barH = 56;
+    this.segW = 20; // pixels per 1/24th
+    this.barW = this.segW * 24; // 480px for the whole estate
+
+    // Palette
+    this.ink = '#3a2510';
+    this.inkLight = '#7a6e5d';
+    this.gold = '#c9a84c';
+    this.wife = '#6a9e8f';       // soft teal
+    this.daughters = '#d4a843';  // warm gold
+    this.father = '#b07050';     // warm brown
+    this.mother = '#b07050';     // same — parents share color
+    this.overflow = '#c0392b';   // red for the impossible excess
+    this.barBg = '#efe0c0';
+
+    this.startTime = null;
+    this.running = false;
+    this.totalDuration = 20;
+
+    canvas.addEventListener('click', () => this.restart());
+  }
+
+  start() {
+    this.running = true;
+    this.startTime = performance.now();
+    this._frame();
+  }
+
+  restart() {
+    this.startTime = performance.now();
+    if (!this.running) { this.running = true; this._frame(); }
+  }
+
+  stop() { this.running = false; }
+
+  _frame() {
+    if (!this.running) return;
+    const t = (performance.now() - this.startTime) / 1000;
+    this.draw(t);
+    if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame());
+  }
+
+  fillSegments(ctx, startSeg, count, color, progress) {
+    const filled = count * Math.min(progress, 1);
+    const x = this.barX + startSeg * this.segW;
+    const w = filled * this.segW;
+    Organic.fill(ctx, x, this.barY, w, this.barH, color, 0.65);
+  }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { barX, barY, barW, barH, segW, ink, inkLight, gold, overflow } = this;
+
+    ctx.fillStyle = '#f8f0e0';
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    // ── Phase 0 (0–2s): The estate bar ──
+    const p0 = phase(t, 0, 1.8);
+    if (p0 > 0) {
+      // Background fill
+      Organic.fill(ctx, barX, barY, barW, barH, this.barBg, p0 * 0.5);
+      // Border — draw top, right boundary, bottom, left
+      Organic.line(ctx, barX, barY, barX + barW, barY,
+        { progress: p0, seed: 50, color: ink, width: 1.6 });
+      Organic.line(ctx, barX, barY + barH, barX + barW, barY + barH,
+        { progress: p0, seed: 52, color: ink, width: 1.6 });
+      Organic.line(ctx, barX, barY, barX, barY + barH,
+        { progress: Math.min(p0 * 3, 1), seed: 53, color: ink, width: 1.6 });
+      // Right boundary — the edge of 1
+      if (p0 > 0.5) {
+        Organic.line(ctx, barX + barW, barY, barX + barW, barY + barH,
+          { progress: (p0 - 0.5) * 2, seed: 54, color: ink, width: 2 });
+      }
+      // Label
+      if (p0 > 0.6) {
+        const lo = (p0 - 0.6) / 0.4;
+        Organic.text(ctx, 'The Estate', barX + barW / 2, barY - 20,
+          { opacity: lo, font: 'italic 17px Georgia', color: ink });
+        Organic.text(ctx, '= 1', barX + barW + 20, barY + barH / 2,
+          { opacity: lo, font: '15px Georgia', color: inkLight, align: 'left' });
+      }
+    }
+
+    // ── Phase 1 (2–3.5s): 24 tick marks ──
+    const p1 = phase(t, 2, 1.2);
+    if (p1 > 0) {
+      for (let i = 1; i < 24; i++) {
+        const tickProgress = Math.max(Math.min((p1 * 26 - i) / 2, 1), 0);
+        if (tickProgress > 0) {
+          const x = barX + i * segW;
+          Organic.line(ctx, x, barY + barH - 6, x, barY + barH,
+            { progress: tickProgress, seed: 60 + i, color: inkLight, width: 0.8, jitter: 0.5 });
+        }
+      }
+      if (p1 > 0.8) {
+        Organic.text(ctx, '24 equal parts', barX + barW / 2, barY + barH + 18,
+          { opacity: (p1 - 0.8) * 5, font: '12px Georgia', color: inkLight });
+      }
+    }
+
+    // Label area below bar for heirs
+    const labelY = barY + barH + 42;
+    const fracY = labelY + 20;
+
+    // ── Phase 2 (3.5–6s): Wife — 3/24 ──
+    const p2 = phase(t, 3.5, 1.8);
+    if (p2 > 0) {
+      this.fillSegments(ctx, 0, 3, this.wife, p2);
+      if (p2 > 0.4) {
+        const lo = (p2 - 0.4) / 0.6;
+        const mx = barX + 1.5 * segW;
+        Organic.text(ctx, 'Wife', mx, labelY,
+          { opacity: lo, font: '13px Georgia', color: this.wife });
+        Organic.text(ctx, '\u00B9\u2044\u2088 = \u00B3\u2044\u2082\u2084', mx, fracY,
+          { opacity: lo * 0.7, font: '12px Georgia', color: inkLight });
+      }
+    }
+
+    // ── Phase 3 (5.5–8.5s): Daughters — 16/24 ──
+    const p3 = phase(t, 5.5, 2.2);
+    if (p3 > 0) {
+      this.fillSegments(ctx, 3, 16, this.daughters, p3);
+      if (p3 > 0.3) {
+        const lo = (p3 - 0.3) / 0.7;
+        const mx = barX + (3 + 8) * segW;
+        Organic.text(ctx, 'Two Daughters', mx, labelY,
+          { opacity: lo, font: '13px Georgia', color: this.daughters });
+        Organic.text(ctx, '\u00B2\u2044\u2083 = \u00B9\u2076\u2044\u2082\u2084', mx, fracY,
+          { opacity: lo * 0.7, font: '12px Georgia', color: inkLight });
+      }
+    }
+
+    // ── Phase 4 (8.5–10.5s): Father — 4/24 ──
+    const p4 = phase(t, 8.5, 1.5);
+    if (p4 > 0) {
+      this.fillSegments(ctx, 19, 4, this.father, p4);
+      if (p4 > 0.4) {
+        const lo = (p4 - 0.4) / 0.6;
+        const mx = barX + 21 * segW;
+        Organic.text(ctx, 'Father', mx, labelY,
+          { opacity: lo, font: '13px Georgia', color: this.father });
+        Organic.text(ctx, '\u00B9\u2044\u2086 = \u2074\u2044\u2082\u2084', mx, fracY,
+          { opacity: lo * 0.7, font: '12px Georgia', color: inkLight });
+      }
+    }
+
+    // ── Phase 5 (10.5–14s): Mother — the overflow ──
+    const p5 = phase(t, 10.5, 2.5);
+    if (p5 > 0) {
+      // First segment fits (23→24, inside the bar)
+      const fitProgress = Math.min(p5 * 4, 1);
+      this.fillSegments(ctx, 23, 1, this.mother, fitProgress);
+
+      // The overflow: 3 segments past the boundary
+      if (p5 > 0.3) {
+        const overP = (p5 - 0.3) / 0.7;
+        const ovX = barX + 24 * segW;
+        const ovW = 3 * segW * overP;
+
+        // Overflow fill — red-tinted
+        Organic.fill(ctx, ovX, barY, ovW, barH, overflow, 0.35 * overP);
+
+        // Dashed overflow boundary
+        if (overP > 0.5) {
+          ctx.save();
+          ctx.strokeStyle = overflow;
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 4]);
+          ctx.globalAlpha = (overP - 0.5) * 2;
+          ctx.strokeRect(ovX, barY, 3 * segW, barH);
+          ctx.restore();
+        }
+      }
+
+      // The right boundary pulses — it has been BREACHED
+      if (p5 > 0.25) {
+        const pulse = 0.5 + 0.3 * Math.sin(t * 5);
+        ctx.save();
+        ctx.strokeStyle = overflow;
+        ctx.lineWidth = 2.5;
+        ctx.globalAlpha = pulse * Math.min((p5 - 0.25) * 3, 1);
+        ctx.beginPath();
+        ctx.moveTo(barX + barW, barY - 4);
+        ctx.lineTo(barX + barW, barY + barH + 4);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Mother label
+      if (p5 > 0.5) {
+        const lo = (p5 - 0.5) * 2;
+        const mx = barX + 24.5 * segW;
+        Organic.text(ctx, 'Mother', mx, labelY,
+          { opacity: lo, font: '13px Georgia', color: overflow });
+        Organic.text(ctx, '\u00B9\u2044\u2086 = \u2074\u2044\u2082\u2084', mx, fracY,
+          { opacity: lo * 0.7, font: '12px Georgia', color: overflow });
+      }
+    }
+
+    // ── Phase 6 (14–17s): The equation ──
+    const p6 = phase(t, 14, 2.5);
+    if (p6 > 0) {
+      const eqY = fracY + 50;
+      const steps = [
+        { t: '3  +  16  +  4  +  4  =  27', at: 0 },
+        { t: 'But the estate has only 24 parts.', at: 0.35 },
+        { t: '27 \u2044 24  >  1', at: 0.65 },
+      ];
+      steps.forEach((step, i) => {
+        if (p6 > step.at) {
+          const lo = Math.min((p6 - step.at) * 4, 1);
+          const last = i === steps.length - 1;
+          Organic.text(ctx, step.t, this.W / 2, eqY + i * 30,
+            { opacity: lo, font: (last ? 'bold 18px' : '15px') + ' Georgia',
+              color: last ? overflow : ink });
+        }
+      });
+    }
+
+    // ── Phase 7 (17–19.5s): The axiom ──
+    const p7 = phase(t, 17, 2);
+    if (p7 > 0) {
+      const axY = this.H - 60;
+      if (p7 < 0.5) {
+        Organic.text(ctx, 'I know one thing I cannot doubt:', this.W / 2, axY,
+          { opacity: p7 * 2, font: 'italic 15px Georgia', color: inkLight });
+      } else {
+        Organic.text(ctx, 'I know one thing I cannot doubt:', this.W / 2, axY,
+          { opacity: 1, font: 'italic 15px Georgia', color: inkLight });
+        const lo = (p7 - 0.5) * 2;
+        Organic.text(ctx, '1 = 1', this.W / 2, axY + 30,
+          { opacity: lo, font: 'bold 22px Menlo, monospace', color: ink });
+      }
+    }
+
+    // Replay
+    if (t > this.totalDuration) {
+      const fade = Math.min(t - this.totalDuration, 1);
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 10,
+        { opacity: fade * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Builder's Diagonal (Island 0.8 — Irrationals) ──
+class BuildersDiagonal {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 500;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820'; this.red = '#c0392b';
+    this.startTime = null; this.running = false; this.totalDuration = 22;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight, red } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+    const sq = 180, ox = 120, oy = 80;
+
+    Organic.text(ctx, 'The Builder\'s Diagonal', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    // Phase 0 (0-2.5s): Draw unit square
+    const p0 = phase(t, 0, 2);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sq, sq, '#efe0c0', p0 * 0.4);
+      Organic.rect(ctx, ox, oy, sq, sq, { progress: p0, seed: 700, color: ink, width: 1.8 });
+      if (p0 > 0.6) {
+        const lo = (p0 - 0.6) / 0.4;
+        Organic.text(ctx, '1', ox + sq / 2, oy + sq + 18, { opacity: lo, font: '15px Georgia', color: ink });
+        Organic.text(ctx, '1', ox - 18, oy + sq / 2, { opacity: lo, font: '15px Georgia', color: ink });
+      }
+    }
+
+    // Phase 1 (2.5-5s): Draw diagonal
+    const p1 = phase(t, 2.5, 2);
+    if (p1 > 0) {
+      Organic.line(ctx, ox, oy + sq, ox + sq, oy, { progress: p1, seed: 710, color: highlight, width: 2.2 });
+      if (p1 > 0.6) {
+        const lo = (p1 - 0.6) / 0.4;
+        Organic.text(ctx, 'd', ox + sq / 2 + 14, oy + sq / 2 - 10,
+          { opacity: lo, font: 'italic 18px Georgia', color: highlight });
+      }
+    }
+
+    // Phase 2 (5-8s): Pythagorean theorem
+    const p2 = phase(t, 5, 2.5);
+    if (p2 > 0) {
+      const eqX = 380, eqY = oy + 20;
+      const steps = [
+        { t: 'd\u00B2 = 1\u00B2 + 1\u00B2', at: 0 },
+        { t: 'd\u00B2 = 2', at: 0.35 },
+        { t: 'd = \u221A2', at: 0.65 },
+      ];
+      steps.forEach((step, i) => {
+        if (p2 > step.at) {
+          const lo = Math.min((p2 - step.at) * 4, 1);
+          const last = i === steps.length - 1;
+          Organic.text(ctx, step.t, eqX, eqY + i * 30,
+            { opacity: lo, font: (last ? 'bold 18px' : '16px') + ' Georgia', color: last ? highlight : ink, align: 'left' });
+        }
+      });
+    }
+
+    // Phase 3 (8.5-14s): Proof by contradiction
+    const p3 = phase(t, 8.5, 4.5);
+    if (p3 > 0) {
+      const pX = 380, pY = oy + 130;
+      const steps = [
+        { t: 'Proof: \u221A2 is irrational', at: 0, bold: true },
+        { t: 'Assume \u221A2 = p/q (lowest terms)', at: 0.12 },
+        { t: 'Then 2 = p\u00B2/q\u00B2, so p\u00B2 = 2q\u00B2', at: 0.28 },
+        { t: '\u2234 p\u00B2 is even \u2192 p is even \u2192 p = 2k', at: 0.44 },
+        { t: '(2k)\u00B2 = 2q\u00B2 \u2192 4k\u00B2 = 2q\u00B2 \u2192 q\u00B2 = 2k\u00B2', at: 0.6 },
+        { t: '\u2234 q is also even. Contradiction!', at: 0.76, red: true },
+        { t: '\u221A2 cannot be written as p/q.  \u220E', at: 0.9 },
+      ];
+      steps.forEach((step, i) => {
+        if (p3 > step.at) {
+          const lo = Math.min((p3 - step.at) * 6, 1);
+          Organic.text(ctx, step.t, pX, pY + i * 22,
+            { opacity: lo, font: (step.bold ? 'bold ' : '') + '13px Georgia',
+              color: step.red ? red : ink, align: 'left' });
+        }
+      });
+    }
+
+    // Phase 4 (15-18s): Number line — √2 between rationals
+    const p4 = phase(t, 15, 2.5);
+    if (p4 > 0) {
+      const nlY = 390, nlX = 100, nlW = 520;
+      Organic.line(ctx, nlX, nlY, nlX + nlW, nlY, { seed: 720, color: ink, width: 1.3, progress: p4 });
+      // Marks at 0, 1, 2
+      [0, 1, 2].forEach((n, i) => {
+        const x = nlX + (n / 2) * nlW;
+        if (p4 > i * 0.15) {
+          Organic.line(ctx, x, nlY - 8, x, nlY + 8, { seed: 730 + i, color: ink, width: 1.3 });
+          Organic.text(ctx, String(n), x, nlY + 22, { opacity: p4, font: '14px Georgia', color: ink });
+        }
+      });
+      // √2 position (~0.707 of the way between 1 and 2)
+      if (p4 > 0.4) {
+        const sqrtX = nlX + (Math.SQRT2 / 2) * nlW;
+        const lo = (p4 - 0.4) / 0.6;
+        ctx.save();
+        ctx.globalAlpha = lo; ctx.fillStyle = highlight;
+        ctx.beginPath(); ctx.arc(sqrtX, nlY, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        Organic.text(ctx, '\u221A2', sqrtX, nlY - 16,
+          { opacity: lo, font: 'bold 15px Georgia', color: highlight });
+        Organic.text(ctx, '\u2248 1.414...', sqrtX, nlY + 24,
+          { opacity: lo * 0.7, font: '12px Georgia', color: inkLight });
+      }
+      if (p4 > 0.7) {
+        Organic.text(ctx, 'It lives on the line. But no fraction names it.', this.W / 2, nlY + 50,
+          { opacity: (p4 - 0.7) / 0.3, font: 'italic 14px Georgia', color: inkLight });
+      }
+    }
+
+    // Phase 5 (18.5-22s)
+    const p5 = phase(t, 18.5, 2);
+    if (p5 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 25,
+        { opacity: p5 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 8,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Muezzin's Rule (Island 0.9 — Functions) ──
+class MuezzinsRule {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 460;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820';
+    this.startTime = null; this.running = false; this.totalDuration = 18;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+
+    Organic.text(ctx, 'The Muezzin\'s Rule', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    const boxX = 300, boxY = 110, boxW = 120, boxH = 70;
+    const inputs = [
+      { label: 'Fajr', y: 90 },
+      { label: 'Dhuhr', y: 145 },
+      { label: 'Asr', y: 200 },
+    ];
+    const outputs = [
+      { label: 'Call to Fajr', y: 90 },
+      { label: 'Call to Dhuhr', y: 145 },
+      { label: 'Call to Asr', y: 200 },
+    ];
+
+    // Phase 0 (0-3s): The rule box appears
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      Organic.fill(ctx, boxX, boxY, boxW, boxH, '#efe0c0', p0 * 0.5);
+      Organic.rect(ctx, boxX, boxY, boxW, boxH, { progress: p0, seed: 800, color: ink, width: 1.8 });
+      if (p0 > 0.5) {
+        Organic.text(ctx, 'f', boxX + boxW / 2, boxY + boxH / 2,
+          { opacity: (p0 - 0.5) * 2, font: 'italic 24px Georgia', color: gold });
+        Organic.text(ctx, 'the rule', boxX + boxW / 2, boxY + boxH / 2 + 20,
+          { opacity: (p0 - 0.5) * 2 * 0.6, font: '11px Georgia', color: inkLight });
+      }
+    }
+
+    // Phase 1 (3-7s): Inputs appear and arrows flow through
+    for (let i = 0; i < inputs.length; i++) {
+      const delay = 3 + i * 1.2;
+      const p = phase(t, delay, 1);
+      if (p > 0) {
+        const inp = inputs[i];
+        const outp = outputs[i];
+        // Input label
+        Organic.text(ctx, inp.label, 140, inp.y,
+          { opacity: p, font: '15px Georgia', color: ink });
+        // Arrow: input → box
+        if (p > 0.2) {
+          const ap = (p - 0.2) / 0.4;
+          Organic.line(ctx, 190, inp.y, boxX - 5, boxY + boxH / 2,
+            { progress: Math.min(ap, 1), seed: 810 + i, color: gold, width: 1.2 });
+        }
+        // Arrow: box → output
+        if (p > 0.5) {
+          const ap = (p - 0.5) / 0.5;
+          Organic.line(ctx, boxX + boxW + 5, boxY + boxH / 2, 490, outp.y,
+            { progress: ap, seed: 820 + i, color: gold, width: 1.2 });
+          // Arrow head
+          if (ap > 0.8) {
+            Organic.line(ctx, 482, outp.y - 5, 490, outp.y, { seed: 830 + i, color: gold, width: 1 });
+            Organic.line(ctx, 482, outp.y + 5, 490, outp.y, { seed: 840 + i, color: gold, width: 1 });
+          }
+        }
+        // Output label
+        if (p > 0.7) {
+          Organic.text(ctx, outp.label, 570, outp.y,
+            { opacity: (p - 0.7) / 0.3, font: '15px Georgia', color: highlight });
+        }
+      }
+    }
+
+    // Phase 2 (7.5-10s): The key property
+    const p2 = phase(t, 7.5, 2);
+    if (p2 > 0) {
+      Organic.text(ctx, 'Same input \u2192 same output. Always.', this.W / 2, 260,
+        { opacity: p2, font: '15px Georgia', color: ink });
+      Organic.text(ctx, 'f(x) maps each x to exactly one value.', this.W / 2, 285,
+        { opacity: p2 * 0.7, font: 'italic 14px Georgia', color: inkLight });
+    }
+
+    // Phase 3 (10.5-14s): Composition — f then g
+    const p3 = phase(t, 10.5, 3);
+    if (p3 > 0) {
+      const cy = 340;
+      // Two boxes
+      if (p3 > 0) {
+        const lo = Math.min(p3 * 2, 1);
+        Organic.fill(ctx, 220, cy - 20, 80, 40, '#efe0c0', lo * 0.4);
+        Organic.rect(ctx, 220, cy - 20, 80, 40, { progress: lo, seed: 850, color: ink, width: 1.3 });
+        Organic.text(ctx, 'f', 260, cy, { opacity: lo, font: 'italic 18px Georgia', color: gold });
+      }
+      if (p3 > 0.3) {
+        const lo = Math.min((p3 - 0.3) * 3, 1);
+        Organic.fill(ctx, 380, cy - 20, 80, 40, '#efe0c0', lo * 0.4);
+        Organic.rect(ctx, 380, cy - 20, 80, 40, { progress: lo, seed: 855, color: ink, width: 1.3 });
+        Organic.text(ctx, 'g', 420, cy, { opacity: lo, font: 'italic 18px Georgia', color: gold });
+        // Arrow between
+        Organic.line(ctx, 305, cy, 375, cy, { progress: lo, seed: 860, color: gold, width: 1.2 });
+      }
+      // Labels
+      if (p3 > 0.5) {
+        const lo = (p3 - 0.5) / 0.5;
+        Organic.text(ctx, 'x', 180, cy, { opacity: lo, font: 'italic 15px Georgia', color: ink });
+        Organic.line(ctx, 195, cy, 215, cy, { progress: lo, seed: 865, color: ink, width: 1 });
+        Organic.text(ctx, 'g(f(x))', 500, cy, { opacity: lo, font: 'italic 15px Georgia', color: highlight, align: 'left' });
+        Organic.line(ctx, 465, cy, 493, cy, { progress: lo, seed: 866, color: gold, width: 1 });
+        Organic.text(ctx, 'Composition: chain rules together.', this.W / 2, cy + 35,
+          { opacity: lo * 0.7, font: 'italic 13px Georgia', color: inkLight });
+      }
+    }
+
+    const p4 = phase(t, 15, 1.5);
+    if (p4 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 20,
+        { opacity: p4 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 5,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Traveler's Approach (Island 0.10 — Limits) ──
+class TravelersApproach {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 440;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820'; this.red = '#c0392b';
+    this.startTime = null; this.running = false; this.totalDuration = 20;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight, red } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+
+    Organic.text(ctx, 'The Traveler\'s Approach', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    const nlY = 140, nlLeft = 80, nlRight = 640;
+    // The target: the city at the right end
+    const targetX = nlRight - 40;
+
+    // Phase 0 (0-2s): Number line
+    const p0 = phase(t, 0, 1.5);
+    if (p0 > 0) {
+      Organic.line(ctx, nlLeft, nlY, nlRight, nlY, { seed: 900, color: ink, width: 1.5, progress: p0 });
+      // Target point
+      if (p0 > 0.6) {
+        const lo = (p0 - 0.6) / 0.4;
+        ctx.save(); ctx.globalAlpha = lo; ctx.fillStyle = highlight;
+        ctx.beginPath(); ctx.arc(targetX, nlY, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        Organic.text(ctx, 'L', targetX, nlY - 22,
+          { opacity: lo, font: 'bold 16px Georgia', color: highlight });
+        Organic.text(ctx, '(the limit)', targetX - 40, nlY + 28,
+          { opacity: lo * 0.6, font: '11px Georgia', color: inkLight });
+      }
+    }
+
+    // Phase 1 (2-10s): Sequence of points approaching
+    // Each point is half the remaining distance
+    const sequence = [0, 0.5, 0.75, 0.875, 0.9375, 0.96875, 0.984375];
+    const startX = nlLeft + 40;
+    const range = targetX - startX;
+
+    for (let i = 0; i < sequence.length; i++) {
+      const delay = 2 + i * 1.0;
+      const p = phase(t, delay, 0.7);
+      if (p > 0) {
+        const x = startX + sequence[i] * range;
+        // Point appears
+        ctx.save(); ctx.globalAlpha = p * 0.8; ctx.fillStyle = gold;
+        ctx.beginPath(); ctx.arc(x, nlY, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        // Label
+        const labels = ['a\u2081', 'a\u2082', 'a\u2083', 'a\u2084', 'a\u2085', '', ''];
+        if (labels[i]) {
+          Organic.text(ctx, labels[i], x, nlY + (i % 2 === 0 ? 24 : -20),
+            { opacity: p * 0.8, font: '12px Georgia', color: gold });
+        }
+        // Arrow to next (diminishing)
+        if (i < sequence.length - 1 && p > 0.5) {
+          const nx = startX + sequence[i + 1] * range;
+          ctx.save();
+          ctx.strokeStyle = gold; ctx.lineWidth = 0.8;
+          ctx.globalAlpha = (p - 0.5) * 0.6;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(x + 6, nlY - 10);
+          ctx.quadraticCurveTo((x + nx) / 2, nlY - 22 + i * 2, nx - 4, nlY - 10);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+
+    // Phase 2 (10-13s): The gap shrinks — show epsilon
+    const p2 = phase(t, 10, 2.5);
+    if (p2 > 0) {
+      // Epsilon band around L
+      const eps = 30 * (1 - p2 * 0.7);
+      ctx.save();
+      ctx.fillStyle = highlight; ctx.globalAlpha = 0.12;
+      ctx.fillRect(targetX - eps, nlY - 20, eps * 2, 40);
+      ctx.restore();
+      ctx.save();
+      ctx.strokeStyle = highlight; ctx.lineWidth = 1; ctx.globalAlpha = p2 * 0.5;
+      ctx.setLineDash([4, 3]);
+      ctx.strokeRect(targetX - eps, nlY - 20, eps * 2, 40);
+      ctx.restore();
+      Organic.text(ctx, '\u03B5', targetX + eps + 8, nlY - 18,
+        { opacity: p2, font: 'italic 14px Georgia', color: highlight });
+    }
+
+    // Phase 3 (13-17s): Definition
+    const p3 = phase(t, 13, 3);
+    if (p3 > 0) {
+      const defY = 210;
+      const steps = [
+        { t: 'For every \u03B5 > 0, no matter how small,', at: 0 },
+        { t: 'there exists N such that for all n > N:', at: 0.25 },
+        { t: '|a\u2099 \u2212 L| < \u03B5', at: 0.55, bold: true },
+        { t: 'Getting closer. Never arriving. Always within reach.', at: 0.8 },
+      ];
+      steps.forEach((step, i) => {
+        if (p3 > step.at) {
+          const lo = Math.min((p3 - step.at) * 4, 1);
+          Organic.text(ctx, step.t, this.W / 2, defY + i * 28,
+            { opacity: lo, font: (step.bold ? 'bold 16px' : '14px') + ' Georgia',
+              color: step.bold ? highlight : ink });
+        }
+      });
+    }
+
+    // Phase 4 (17.5-20s)
+    const p4 = phase(t, 17.5, 1.5);
+    if (p4 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 25,
+        { opacity: p4 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 8,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── The Fajr Call (Island 0.11 — Derivatives) ──
+class FajrCall {
+  constructor(canvas) {
+    this.canvas = canvas; this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+    this.W = 720; this.H = 520;
+    canvas.width = this.W * this.dpr; canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px'; canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+    this.ink = '#3a2510'; this.inkLight = '#7a6e5d'; this.gold = '#c9a84c'; this.highlight = '#c48820';
+    this.startTime = null; this.running = false; this.totalDuration = 22;
+    canvas.addEventListener('click', () => this.restart());
+  }
+  start() { this.running = true; this.startTime = performance.now(); this._frame(); }
+  restart() { this.startTime = performance.now(); if (!this.running) { this.running = true; this._frame(); } }
+  stop() { this.running = false; }
+  _frame() { if (!this.running) return; const t = (performance.now() - this.startTime) / 1000; this.draw(t); if (t < this.totalDuration + 3) requestAnimationFrame(() => this._frame()); }
+
+  // The curve: y = -0.003(x-300)^2 + 250 (a parabola, peak at x=300)
+  curve(x) { return -0.003 * (x - 300) * (x - 300) + 250; }
+  curveDeriv(x) { return -0.006 * (x - 300); }
+
+  draw(t) {
+    const ctx = this.ctx;
+    const { ink, inkLight, gold, highlight } = this;
+    ctx.fillStyle = '#f8f0e0'; ctx.fillRect(0, 0, this.W, this.H);
+
+    Organic.text(ctx, 'The Fajr Call', this.W / 2, 30,
+      { opacity: Math.min(t, 1), font: 'italic 18px Georgia', color: ink });
+
+    const ox = 60, oy = 400; // origin (bottom-left of graph area)
+
+    // Phase 0 (0-3s): Draw axes and curve
+    const p0 = phase(t, 0, 2.5);
+    if (p0 > 0) {
+      // X axis
+      Organic.line(ctx, ox, oy, ox + 600, oy, { seed: 950, color: ink, width: 1.3, progress: p0 });
+      // Y axis
+      Organic.line(ctx, ox, oy, ox, oy - 300, { seed: 951, color: ink, width: 1.3, progress: p0 });
+      // Curve
+      if (p0 > 0.3) {
+        const cp = (p0 - 0.3) / 0.7;
+        ctx.save();
+        ctx.strokeStyle = ink; ctx.lineWidth = 2; ctx.globalAlpha = cp;
+        ctx.beginPath();
+        const maxX = 100 + 460 * cp;
+        for (let px = 100; px <= maxX; px += 2) {
+          const py = oy - this.curve(px);
+          if (px === 100) ctx.moveTo(px + ox - 60, py); else ctx.lineTo(px + ox - 60, py);
+        }
+        ctx.stroke(); ctx.restore();
+      }
+      // Labels
+      if (p0 > 0.7) {
+        Organic.text(ctx, 'time', ox + 560, oy + 18, { opacity: (p0 - 0.7) / 0.3, font: '12px Georgia', color: inkLight, align: 'left' });
+        Organic.text(ctx, 'light', ox - 10, oy - 280, { opacity: (p0 - 0.7) / 0.3, font: '12px Georgia', color: inkLight });
+      }
+    }
+
+    // The fixed point (where we want the derivative)
+    const ax = 200, ay = this.curve(ax);
+
+    // Phase 1 (3-9s): Secant line slides — point b approaches point a
+    const p1 = phase(t, 3, 5);
+    if (p1 > 0) {
+      // Point a (fixed)
+      const aScreenX = ax + ox - 60, aScreenY = oy - ay;
+      ctx.save(); ctx.globalAlpha = Math.min(p1 * 3, 1); ctx.fillStyle = highlight;
+      ctx.beginPath(); ctx.arc(aScreenX, aScreenY, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      Organic.text(ctx, 'a', aScreenX - 14, aScreenY - 10,
+        { opacity: Math.min(p1 * 3, 1), font: 'italic 14px Georgia', color: highlight });
+
+      // Point b slides from far to near
+      const bStart = 450, bEnd = 210;
+      const bx = bStart + (bEnd - bStart) * p1;
+      const by = this.curve(bx);
+      const bScreenX = bx + ox - 60, bScreenY = oy - by;
+
+      ctx.save(); ctx.globalAlpha = Math.min(p1 * 2, 1); ctx.fillStyle = gold;
+      ctx.beginPath(); ctx.arc(bScreenX, bScreenY, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      Organic.text(ctx, 'b', bScreenX + 10, bScreenY - 8,
+        { opacity: Math.min(p1 * 2, 1), font: 'italic 14px Georgia', color: gold });
+
+      // Secant line through a and b (extended)
+      const slope = (by - ay) / (bx - ax);
+      const lineStartX = 120, lineEndX = 480;
+      const lineStartY = Math.max(oy - (ay + slope * (lineStartX - ax + 60)), 55);
+      const lineEndY = Math.min(oy - (ay + slope * (lineEndX - ax + 60)), oy + 10);
+
+      ctx.save();
+      ctx.strokeStyle = gold; ctx.lineWidth = 1.3;
+      ctx.globalAlpha = Math.min(p1 * 2, 1) * 0.7;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(lineStartX, lineStartY);
+      ctx.lineTo(lineEndX, lineEndY);
+      ctx.stroke();
+      ctx.restore();
+
+      // Label
+      if (p1 < 0.8) {
+        Organic.text(ctx, 'secant line', 500, 80,
+          { opacity: 1 - p1 * 1.2, font: '13px Georgia', color: gold });
+      }
+    }
+
+    // Phase 2 (9-13s): At the limit — tangent line
+    const p2 = phase(t, 9, 3);
+    if (p2 > 0) {
+      const aScreenX = ax + ox - 60, aScreenY = oy - ay;
+      // Point a
+      ctx.save(); ctx.globalAlpha = 1; ctx.fillStyle = highlight;
+      ctx.beginPath(); ctx.arc(aScreenX, aScreenY, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // Tangent line (derivative at a)
+      const slope = this.curveDeriv(ax);
+      const lineStartX = 100, lineEndX = 460;
+      const lineStartY = Math.max(oy - (ay + slope * (lineStartX - ax + 60)), 55);
+      const lineEndY = Math.min(oy - (ay + slope * (lineEndX - ax + 60)), oy + 10);
+
+      Organic.line(ctx, lineStartX, lineStartY, lineEndX, lineEndY,
+        { seed: 960, color: highlight, width: 2, progress: p2 });
+
+      if (p2 > 0.4) {
+        Organic.text(ctx, 'tangent', 480, lineEndY - 10,
+          { opacity: (p2 - 0.4) / 0.6, font: 'bold 14px Georgia', color: highlight, align: 'left' });
+      }
+      if (p2 > 0.6) {
+        Organic.text(ctx, 'b \u2192 a', 500, 100,
+          { opacity: (p2 - 0.6) / 0.4, font: 'italic 14px Georgia', color: inkLight });
+        Organic.text(ctx, 'The secant becomes the tangent.', 500, 122,
+          { opacity: (p2 - 0.6) / 0.4 * 0.7, font: '12px Georgia', color: inkLight });
+      }
+    }
+
+    // Phase 3 (13.5-18s): The definition
+    const p3 = phase(t, 13.5, 3.5);
+    if (p3 > 0) {
+      const defX = 380, defY = 280;
+      const steps = [
+        { t: 'f\'(a) = lim    f(b) \u2212 f(a)', at: 0 },
+        { t: '         b\u2192a     b \u2212 a', at: 0 },
+        { t: '', at: 0.3 },
+        { t: 'The rate of change at an instant.', at: 0.5 },
+        { t: 'How fast the light changes at Fajr.', at: 0.7 },
+      ];
+      steps.forEach((step, i) => {
+        if (step.t && p3 > step.at) {
+          const lo = Math.min((p3 - step.at) * 4, 1);
+          const isMath = i < 2;
+          Organic.text(ctx, step.t, defX, defY + i * 22,
+            { opacity: lo, font: (isMath ? '14px Menlo, monospace' : 'italic 13px Georgia'),
+              color: isMath ? ink : inkLight, align: 'left' });
+        }
+      });
+    }
+
+    // Phase 4
+    const p4 = phase(t, 18.5, 2);
+    if (p4 > 0) {
+      Organic.text(ctx, '1 = 1 has not been lost.', this.W / 2, this.H - 22,
+        { opacity: p4 * 0.5, font: 'italic 13px Georgia', color: inkLight });
+    }
+    if (t > this.totalDuration) {
+      Organic.text(ctx, 'click to replay', this.W / 2, this.H - 6,
+        { opacity: Math.min(t - this.totalDuration, 1) * 0.35, font: '11px Helvetica, sans-serif', color: inkLight });
+    }
+  }
+}
+
+// ── Construction Registry ──
+// Maps island IDs to their construction animation class
+const constructions = {
+  '00-prologue': ImpossibleSum,
+  '01-equality': BalanceBeam,
+  '02-counting': ShepherdsGate,
+  '03-multiplication': FarmersGrain,
+  '04-zero-negatives': DebtorsPosition,
+  '05-fractions': InheritanceFulfilled,
+  '06-variables': MerchantsUnknown,
+  '07-quadratics': CompletingTheSquare,
+  '08-irrationals': BuildersDiagonal,
+  '09-functions': MuezzinsRule,
+  '10-limits': TravelersApproach,
+  '11-derivatives': FajrCall,
+};
+
+// ── Inject Construction ──
+function injectConstruction(islandId) {
+  // Stop any running animation
+  if (activeConstruction) {
+    activeConstruction.stop();
+    activeConstruction = null;
+  }
+
+  const Constructor = constructions[islandId];
+  if (!Constructor) return;
+
+  const content = document.getElementById('content');
+  const container = document.createElement('div');
+  container.className = 'construction-container';
+  const canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+  const label = document.createElement('div');
+  label.className = 'construction-label';
+  label.textContent = 'geometric construction';
+  container.appendChild(label);
+
+  // Insert before the first heading
+  const firstH1 = content.querySelector('h1');
+  if (firstH1) {
+    firstH1.after(container);
+  } else {
+    content.prepend(container);
+  }
+
+  activeConstruction = new Constructor(canvas);
+  activeConstruction.start();
+}
+
+// ══════════════════════════════════════════════════════════
+
+// ── Init ──
+buildNav();
+loadFromHash();
+
+// Configure marked
+marked.setOptions({
+  breaks: false,
+  gfm: true,
+});
+</script>
+
+</body>
+</html>
