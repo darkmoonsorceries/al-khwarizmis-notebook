@@ -352,11 +352,17 @@
       overflow: hidden;
       background: #f8f0e0;
       position: relative;
+      /* 9:16 aspect ratio — mobile first */
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .construction-container canvas {
       display: block;
       cursor: pointer;
+      width: 100%;
+      height: auto;
     }
 
     .construction-label {
@@ -426,6 +432,7 @@
 
 <script>
 // ── Configuration ──
+// Paths relative to repo root (serve with: python3 -m http.server 8001)
 const CURRICULUM_BASE = './curriculum';
 const ARC0_PATH = `${CURRICULUM_BASE}/arc-0`;
 const EXTRACTION_PATH = `${CURRICULUM_BASE}/extraction`;
@@ -691,6 +698,60 @@ const Organic = {
     ctx.restore();
   },
 
+  // ── Semantic Presets ──
+  // Structural: mathematical geometry. No jitter. Clean.
+  structural(ctx, x1, y1, x2, y2, opts = {}) {
+    this.line(ctx, x1, y1, x2, y2, { ...opts, jitter: 0, width: opts.width || 1.8 });
+  },
+  // Annotation: context lines, physical objects. Slight organic quality.
+  annotation(ctx, x1, y1, x2, y2, opts = {}) {
+    this.line(ctx, x1, y1, x2, y2, { ...opts, jitter: 0.4, width: opts.width || 1.2 });
+  },
+  // Guide: faint construction guides, arrows, hints.
+  guide(ctx, x1, y1, x2, y2, opts = {}) {
+    this.line(ctx, x1, y1, x2, y2, { ...opts, jitter: 0.2, width: opts.width || 0.8, color: opts.color || '#7a6e5d' });
+  },
+  // Structural rectangle
+  structRect(ctx, x, y, w, h, opts = {}) {
+    const s = opts.seed || 0;
+    const p = opts.progress !== undefined ? opts.progress : 1;
+    this.structural(ctx, x, y, x + w, y, { ...opts, seed: s, progress: Math.min(p * 4, 1) });
+    this.structural(ctx, x + w, y, x + w, y + h, { ...opts, seed: s + 7, progress: Math.min(Math.max(p * 4 - 1, 0), 1) });
+    this.structural(ctx, x + w, y + h, x, y + h, { ...opts, seed: s + 13, progress: Math.min(Math.max(p * 4 - 2, 0), 1) });
+    this.structural(ctx, x, y + h, x, y, { ...opts, seed: s + 19, progress: Math.min(Math.max(p * 4 - 3, 0), 1) });
+  },
+  // Structural arc (compass construction)
+  arc(ctx, cx, cy, r, startAngle, endAngle, opts = {}) {
+    const { seed = 0, color = '#3a2510', width = 1.8, progress = 1 } = opts;
+    const segments = Math.max(Math.floor(r * Math.abs(endAngle - startAngle) / 4), 12);
+    const maxSeg = Math.floor(segments * Math.min(progress, 1));
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (let i = 0; i <= maxSeg; i++) {
+      const t = i / segments;
+      const a = startAngle + (endAngle - startAngle) * t;
+      const x = cx + Math.cos(a) * r;
+      const y = cy + Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+  },
+  // Point marker
+  point(ctx, x, y, opts = {}) {
+    const { r = 4, color = '#c9a84c', opacity = 1 } = opts;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  },
+
   bracket(ctx, x1, y1, x2, y2, label, opts = {}) {
     const { seed = 0, color = '#c9a84c', progress = 1 } = opts;
     this.line(ctx, x1, y1, x2, y2, { seed, color, width: 1.2, progress });
@@ -720,6 +781,215 @@ function phase(t, start, dur) {
   if (t > start + dur) return 1;
   return ease((t - start) / dur);
 }
+
+// ══════════════════════════════════════════════════════════
+// ── Construction Base Class ──
+// Zone system: title (50px top), construction (flexible middle),
+// closing (50px bottom). Overlap impossible by design.
+// ══════════════════════════════════════════════════════════
+class Construction {
+  get title() { return ''; }
+  get duration() { return 25; }
+
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.dpr = window.devicePixelRatio || 1;
+
+    // 9:16 aspect ratio — mobile first
+    this.W = 390;
+    this.H = Math.round(this.W * 16 / 9); // 693
+
+    canvas.width = this.W * this.dpr;
+    canvas.height = this.H * this.dpr;
+    canvas.style.width = this.W + 'px';
+    canvas.style.height = this.H + 'px';
+    this.ctx.scale(this.dpr, this.dpr);
+
+    // Zone boundaries — generous spacing for phone
+    this.zones = {
+      top: 60,               // below top padding
+      bottom: this.H - 80,   // above closing zone
+      left: 30,              // side margins
+      right: this.W - 30,
+      w: this.W,
+      h: this.H,
+      contentW: this.W - 60, // usable width
+      midY: (60 + this.H - 80) / 2,
+      midX: this.W / 2,
+    };
+
+    // Palette
+    this.ink = '#3a2510';
+    this.inkLight = '#7a6e5d';
+    this.gold = '#c9a84c';
+    this.highlight = '#c48820';
+    this.parchment = '#f8f0e0';
+
+    this.startTime = null;
+    this.running = false;
+
+    canvas.addEventListener('click', () => this.restart());
+  }
+
+  start() {
+    this.running = true;
+    this.startTime = performance.now();
+    this._frame();
+  }
+
+  restart() {
+    this.startTime = performance.now();
+    if (!this.running) { this.running = true; this._frame(); }
+  }
+
+  stop() { this.running = false; }
+
+  _frame() {
+    if (!this.running) return;
+    const t = (performance.now() - this.startTime) / 1000;
+    this._draw(t);
+    if (t < this.duration + 4) requestAnimationFrame(() => this._frame());
+  }
+
+  _draw(t) {
+    const ctx = this.ctx;
+
+    // Clear with parchment
+    ctx.fillStyle = this.parchment;
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    // Construction zone — subclass draws here
+    this.drawConstruction(t, ctx, this.zones);
+
+    // Title — appears after construction completes, 2s pause then fade
+    const titleStart = this.duration - 4;
+    const titleP = phase(t, titleStart, 2);
+    if (titleP > 0 && this.title) {
+      Organic.text(ctx, this.title, this.zones.midX, this.zones.bottom + 25,
+        { opacity: titleP * 0.9, font: 'italic 18px Georgia', color: this.ink });
+    }
+
+    // "1 = 1" — final whisper
+    const axiomP = phase(t, this.duration - 2, 1.5);
+    if (axiomP > 0) {
+      Organic.text(ctx, '1 = 1', this.zones.midX, this.H - 30,
+        { opacity: axiomP * 0.25, font: '14px Menlo, monospace', color: this.inkLight });
+    }
+
+    // Replay hint
+    if (t > this.duration + 1) {
+      const fade = Math.min(t - this.duration - 1, 1);
+      Organic.text(ctx, 'tap to replay', this.zones.midX, this.H - 12,
+        { opacity: fade * 0.25, font: '11px Helvetica, sans-serif', color: this.inkLight });
+    }
+  }
+
+  // Override in subclass
+  drawConstruction(t, ctx, zones) {}
+}
+
+// ══════════════════════════════════════════════════════════
+// ── V2 Constructions (parliament design language) ──
+// Zero text during construction. One title at end.
+// Jitter=0 on structural geometry. Hooks, not lessons.
+// ══════════════════════════════════════════════════════════
+
+// ── 0.7: Completing the Square ──
+class CompletingTheSquareV2 extends Construction {
+  get title() { return 'Completing the Square'; }
+  get duration() { return 28; }
+
+  drawConstruction(t, ctx, zones) {
+    const { ink, gold, highlight } = this;
+
+    // Scale geometry to fit 9:16 canvas — centered
+    const unit = 18;
+    const S = 10, X = 4.14;
+    const sw = S * unit, xw = X * unit;
+    // Center the completed square horizontally
+    const totalW = sw + xw;
+    const ox = zones.midX - totalW / 2;
+    // Vertically center in construction zone
+    const totalH = sw + xw;
+    const oy = zones.midY - totalH / 2;
+
+    // Phase 0 (0-5s): The courtyard square — 10×10
+    const p0 = phase(t, 0, 4);
+    if (p0 > 0) {
+      Organic.fill(ctx, ox, oy, sw, sw, '#efe0c0', p0 * 0.5);
+      Organic.structRect(ctx, ox, oy, sw, sw, { progress: p0, seed: 42, color: ink });
+    }
+
+    // Phase 1 (6-10s): East strip grows
+    const p1 = phase(t, 6, 3);
+    if (p1 > 0) {
+      Organic.fill(ctx, ox + sw, oy, xw * p1, sw, '#e4d4a8', 0.45);
+      Organic.structural(ctx, ox + sw + xw, oy, ox + sw + xw, oy + sw,
+        { progress: p1, seed: 100, color: ink });
+      Organic.structural(ctx, ox + sw, oy, ox + sw + xw, oy,
+        { progress: p1, seed: 101, color: ink });
+    }
+
+    // Phase 2 (10.5-14s): South strip grows
+    const p2 = phase(t, 10.5, 3);
+    if (p2 > 0) {
+      Organic.fill(ctx, ox, oy + sw, sw, xw * p2, '#e4d4a8', 0.45);
+      Organic.structural(ctx, ox, oy + sw + xw, ox + sw, oy + sw + xw,
+        { progress: p2, seed: 110, color: ink });
+      Organic.structural(ctx, ox, oy + sw, ox, oy + sw + xw,
+        { progress: p2, seed: 111, color: ink });
+    }
+
+    // Phase 3 (15-18s): The gap pulses
+    const p3 = phase(t, 15, 2.5);
+    if (p3 > 0) {
+      const pulse = 0.25 + 0.35 * Math.sin(t * 3);
+      ctx.save();
+      ctx.strokeStyle = highlight;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 5]);
+      ctx.globalAlpha = p3 * pulse;
+      ctx.strokeRect(ox + sw + 1, oy + sw + 1, xw - 2, xw - 2);
+      ctx.restore();
+    }
+
+    // Phase 4 (19-23s): Complete the square
+    const p4 = phase(t, 19, 3);
+    if (p4 > 0) {
+      Organic.fill(ctx, ox + sw, oy + sw, xw, xw, '#d4b878', p4 * 0.7);
+      Organic.structural(ctx, ox + sw + xw, oy + sw, ox + sw + xw, oy + sw + xw,
+        { progress: p4, seed: 130, color: ink });
+      Organic.structural(ctx, ox + sw, oy + sw + xw, ox + sw + xw, oy + sw + xw,
+        { progress: p4, seed: 131, color: ink });
+
+      // Golden dimension brackets
+      if (p4 > 0.5) {
+        const bo = (p4 - 0.5) / 0.5;
+        Organic.guide(ctx, ox, oy - 14, ox + sw + xw, oy - 14,
+          { progress: bo, seed: 140, color: gold });
+        Organic.guide(ctx, ox - 14, oy, ox - 14, oy + sw + xw,
+          { progress: bo, seed: 141, color: gold });
+      }
+    }
+
+    // Phase 5 (23.5-26s): Golden accent on the strip — the answer
+    const p5 = phase(t, 23.5, 2);
+    if (p5 > 0) {
+      Organic.structural(ctx, ox + sw, oy - 5, ox + sw + xw, oy - 5,
+        { progress: p5, seed: 150, color: gold, width: 2.5 });
+      if (p5 > 0.5) {
+        Organic.point(ctx, ox + sw + xw / 2, oy - 5,
+          { r: 3, color: gold, opacity: (p5 - 0.5) * 2 });
+      }
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// ── V1 Constructions (kept for reference during migration) ──
+// These will be replaced one by one as V2 versions are built.
+// ══════════════════════════════════════════════════════════
 
 // ── The Balance Beam (Island 0.1 — Equality) ──
 class BalanceBeam {
@@ -2579,7 +2849,7 @@ const constructions = {
   '04-zero-negatives': DebtorsPosition,
   '05-fractions': InheritanceFulfilled,
   '06-variables': MerchantsUnknown,
-  '07-quadratics': CompletingTheSquare,
+  '07-quadratics': CompletingTheSquareV2,
   '08-irrationals': BuildersDiagonal,
   '09-functions': MuezzinsRule,
   '10-limits': TravelersApproach,
